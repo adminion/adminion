@@ -1,4 +1,4 @@
 adminion
 ========
 
-administrate
+administrate your deck
