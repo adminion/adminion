@@ -24,12 +24,14 @@ function generatePlayer() {
 }
 // 	name	           cost, value,quantity
 var treasureTemplate = [
-	['copper', 	0, 1, 100	],
-	['silver', 		3, 2, 50		],
-	['gold',		6, 3, 25		],
-	['platinum', 	9, 5, 15		],
-	['potion', 	4, 0, 20		]
+	['copper', 	0, 1, 100, 'treasure'	],
+	['silver', 		3, 2, 50, 'treasure'		],
+	['gold',		6, 3, 25, 'treasure'		],
+	['platinum', 	9, 5, 15, 'treasure'		],
+	['potion', 	4, 0, 20, 'treasure'		]
 ]; 
+//for now, i added 'treasure' to the end, until the constructor function is built
+
 
 // 	name	           cost, value,quantity
 var victoryTemplate = [
@@ -55,8 +57,8 @@ function turn(player) {
 }
 
 function playCard(player) {
-
-var chosenCard = prompt('choose a card from your hand to play'+'available: '+player.hand);
+	var chosenCard = null;
+// var chosenCard = prompt('choose a card from your hand to play'+'available: '+player.hand);
 
 	if (chosenCard) {
 
@@ -88,20 +90,25 @@ var chosenCard = prompt('choose a card from your hand to play'+'available: '+pla
 
 //move the discarded cards back into the deck, empty the discard pile. this function essentially swaps each card in the deck (from place 0 to end of deck) with a random other card in the deck. i found this method of shuffling online somewhere- if it isn't random enough, maybe it would work better running through the for loop multiple times?
 function shuffleDeck(player) {
-	player.deck = player.discarded;
-	player.discarded = [];
-	for (var n = 0; n < player.deck.length - 1; n++) {
-		var k = n + Math.floor(Math.random() * (player.deck.length - n));
-		var temp = player.deck[k];
-		player.deck[k] = player.deck[n];
-		player.deck[n] = temp;
+
+	for (var n = 0; n < player.discard.length - 1; n++) {
+		var k = n + Math.floor(Math.random() * (player.discard.length - n));
+		var temp = player.discard[k];
+		player.discard[k] = player.discard[n];
+		player.discard[n] = temp;
 	}
+	player.deck = player.discard;
+	player.discard = [];
 }
+var chosenCard = {};
 
 //as player enters buy phase, add up the treasure cards and add them to the player's money attribute
 function buyCard(player) {
+
 	for (var card in player.hand) {
-		if (card.type == 'treasure') {
+		console.log(player.hand[card]);
+		if (player.hand[card][4] == 'treasure') {
+		console.log(player.hand[card]);
 			player.money += card.value;
 		}
 	}
@@ -109,6 +116,7 @@ function buyCard(player) {
 
 //player chooses card to buy (var = chosenCard). i'm not sure how we want to do that interaction
 //if the player can afford the card, add it to their discard pile, use their buy, take the money for the card out of the player's money, and take off 1 from the chosenCard pile
+	chosenCard.cost = 1;
 	if (player.money >= chosenCard.cost) {
 		player.discard.push(chosenCard);
 		player.buys --;
@@ -134,24 +142,27 @@ function pickPiles() {
 }
 function deal() {
 	for (var player in players) {
-		player = generatePlayer();
+		var newPlayer = generatePlayer();
+		players.splice(player, 1, newPlayer);
 	console.log("player: ");
-	console.log(player);
-		player.deck.push((victoryTemplate[0]),(victoryTemplate[0]),(victoryTemplate[0]),(treasureTemplate[0]),(treasureTemplate[0]),(treasureTemplate[0]),(treasureTemplate[0]),(treasureTemplate[0]),(treasureTemplate[0]),(treasureTemplate[0]));
+	console.log(newPlayer);
+		newPlayer.discard.push((victoryTemplate[0]),(victoryTemplate[0]),(victoryTemplate[0]),(treasureTemplate[0]),(treasureTemplate[0]),(treasureTemplate[0]),(treasureTemplate[0]),(treasureTemplate[0]),(treasureTemplate[0]),(treasureTemplate[0]));
 	}
-	console.log('players deck consists of ');
-	console.log(player.deck); 
-	console.log(player.deck[0]);
+
 	drawHand(player);
+	shuffleDeck(newPlayer);
 };
 //the start of the game
 deal();
-
-
+console.log(players[0]);
+var player = players[0];
+console.log(player.hand);
+buyCard(player);
 //a function to draw a card - add a new card from the top of the deck to the player's hand, remove the new card from the top of the deck
 function drawCard(player){
+	player = players[player];
 	player.hand.push(player.deck[0]);
-	player.deck.splice(player.deck[0], 1);
+	player.deck.splice(0, 1);
 
 //if the splice leaves the deck with no cards in it, shuffle the deck!
 	if (player.deck.length == 0) {
@@ -164,14 +175,15 @@ function drawHand(player) {
 	for (n = 0; n<5; n++) {
 		drawCard(player);
 	}
-	console.log(player.hand);
+	console.log('players hand consists of');
+console.log(players[player].hand[0] , players[player].hand[1], players[player].hand[2], players[player].hand[3], players[player].hand[4]);
 }
 
 //each player takes a turn, as long as end condition isn't met
 //while (gameConfig.exhausted.length < gameConfig.exhaustLimit) {
-	for (var num in players) {
-		turn(num);
-	}
+//	for (var num in players) {
+//		turn(players[num]);
+//	}
 // }
 
 
