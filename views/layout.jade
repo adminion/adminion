@@ -1,12 +1,7 @@
-!!!
+doctype 5
 html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src='javascripts/index.js', type='text/javascript')
-        var socket = io.connect('http://localhost');
-        socket.on('news', function (data) {
-            console.log(data);
-            socket.emit('private message', { from: 'jeff', msg: 'data' });
-        });
-  body!= body
+  body
+    block content
