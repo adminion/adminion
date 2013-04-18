@@ -1,5 +1,0 @@
-adminion
-========
-
-administrate your deck
-
