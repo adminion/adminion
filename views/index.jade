@@ -1,5 +1,56 @@
 extends layout
-
 block content
-  h1= title
-  p Welcome to #{title}
+  body(onload="document.getElementById('chat_name').focus()")
+    script(src='/socket.io/socket.io.js')
+    script
+      var socket = io.connect();
+      socket.on('news', function(data) {
+        var msg = '<p>' + data.update + '<p>';  
+        document.getElementById('chat_room').innerHTML+=msg;
+        document.getElementById('chat_room').focus();
+        console.log('News Update: ', data.update);
+      });
+
+      function sendMessage() {
+        var chatInput = document.getElementById('chat_input').value;
+        console.log(sessionStorage.name,':', chatInput);
+        socket.emit('public message', {
+          from: sessionStorage.name,
+          msg: chatInput
+        });
+        document.getElementById('chat_input').select();
+      };
+      
+      function changeName() {
+        var oldName = sessionStorage.name;
+        var newName = document.getElementById('chat_name').value;
+        
+        sessionStorage.name = newName;
+        socket.emit('changeName', {before: oldName, after: newName});
+      };
+      
+      function joinGame() {
+        sessionStorage.name = document.getElementById('chat_name').value;
+        socket.emit('joinGame', {name: sessionStorage.name}); 
+        document.getElementById('chat_input').focus();
+        document.getElementById('join_game').style.display='none';
+        document.getElementById('change_name').style.display='inline';
+        
+        
+      };
+        
+
+    h1= title
+    //p Welcome to #{title}
+    
+    #chat_room
+    
+    input#chat_name
+    button#join_game(onClick="joinGame()") Join Game
+    button#change_name(onClick="changeName()", style="display:none") Change Name  
+    br
+    input#chat_input(onkeyup="if(event.keyCode == 13){document.getElementById('send').click();}")
+    button#send(onClick="sendMessage()") send message
+    
+    
+    

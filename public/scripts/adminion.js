@@ -1,3 +1,32 @@
+
+/**
+ * application flow: 
+ *   1) host starts server, shares address with clients
+ *   2) host sets game configuration with input from clients while connecting,
+ *   3) when all connected clients say "i'm ready!" host starts game:
+ *     a) pick and generate Random cards
+ *     b) generate players
+ *     c) deal starting decks
+ *   4) when game loop completes, announce the Winner
+ *   5) display game stats, and options to "play again" and "edit game config"
+ *   6) host can kill the server at any time
+ * 
+ */
+
+requirejs.config({
+    //By default load any module IDs from js/lib
+    baseUrl: 'scripts/lib',
+    //except, if the module ID starts with "app",
+    //load it from the js/app directory. paths
+    //config is relative to the baseUrl, and
+    //never includes a ".js" extension since
+    //the paths config could be for a directory.
+    paths: {
+//        app: '../app'
+    }
+});
+
+// we'll use temporary gameConfig here, because we don't have the 'game configurator' built yet
 var gameConfig = {
 	numPlayers:2,
 	cards: { treasure : [], victory : [], action : [] },
@@ -5,10 +34,28 @@ var gameConfig = {
 	exhausted : [],
 	exhaustLimit : 3
 };
-console.log(gameConfig);
-var exhausted = 0;
-var players = ['zane', 'jeff'];
-var trash = [];
+
+function startGame(config) {
+	// load the adminion module
+	var Game = new require(['adminion']);
+		
+	return Game(config);
+	
+};
+
+
+
+var Adminion = function (_config) {
+	console.log(_config);
+	
+	var Game = {	
+		exhausted: 0,
+		players: ['zane', 'jeff'],
+		trash: []
+	};
+	
+};
+
 function generatePlayer() {
 	return {
 		id : 0,
