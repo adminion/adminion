@@ -4,13 +4,23 @@ block content
     script(src='/socket.io/socket.io.js')
     script
       var socket = io.connect();
-      socket.on('news', function(data) {
-        var msg = '<p>' + data.update + '<p>';  
-        document.getElementById('chat_room').innerHTML+=msg;
-        document.getElementById('chat_room').focus();
-        console.log('News Update: ', data.update);
-      });
+      function joinGame() {
+        sessionStorage.name = document.getElementById('chat_name').value;
+                
+        document.getElementById('chat_input').focus();
+        document.getElementById('join_game').style.display='none';
+        document.getElementById('change_name').style.display='inline';
+        
+        socket.on('news', function(data) {
+          var msg = '<p>' + data.update + '<p>';  
+          document.getElementById('chat_room').innerHTML+=msg;
+          document.getElementById('chat_room').focus();
+          console.log('News Update: ', data.update);
+        });
+        
+        socket.emit('joinGame', {name: sessionStorage.name});
 
+      }; 
       function sendMessage() {
         var chatInput = document.getElementById('chat_input').value;
         console.log(sessionStorage.name,':', chatInput);
@@ -29,16 +39,11 @@ block content
         socket.emit('changeName', {before: oldName, after: newName});
       };
       
-      function joinGame() {
-        sessionStorage.name = document.getElementById('chat_name').value;
-        socket.emit('joinGame', {name: sessionStorage.name}); 
-        document.getElementById('chat_input').focus();
-        document.getElementById('join_game').style.display='none';
-        document.getElementById('change_name').style.display='inline';
-        
-        
+      function clearRoom() {
+        document.getElementById('chat_room').innerHTML='';
+        document.getElementById('chat_input').select();
       };
-        
+      
 
     h1= title
     //p Welcome to #{title}
@@ -51,6 +56,9 @@ block content
     br
     input#chat_input(onkeyup="if(event.keyCode == 13){document.getElementById('send').click();}")
     button#send(onClick="sendMessage()") send message
+    br
+    br
+    button#clear(onClick="clearRoom()") clear
     
     
     
