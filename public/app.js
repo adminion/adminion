@@ -74,14 +74,10 @@ io.sockets.on('connection', function (newSocket) {
 		console.log(msg.group);
 	});
 	
-	newSocket.on('kyleIsLame', function (data) {
-		newSocket.broadcast.emit('haha', {});
-	});
-	
 	newSocket.on('public message', function (data) {
 		var update = util.format('%s - %s: %s', new Date(), data.from, data.msg);
 		console.log('public message from %s', update);;
 		newSocket.emit('news', { update: update});
 		newSocket.broadcast.emit('news', { update: update});
 	});
-});
+} /* socketEvents.connection */);
