@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script type="text/javascript" src="index.js" ></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io.connect('http://localhost');
+  socket.on('news', function (data) {
+    console.log('News Update: ', data);
+    socket.emit('private message', { from: 'jeff', msg: 'did you mean, _hello_ world?' });
+  });
+</script>
+<body>
+
+
+
+
+</body>
+</html>
