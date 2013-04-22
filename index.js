@@ -74,6 +74,142 @@ var actionTemplate = [
 			}
 		}		
 	},
+	{
+		name:"Cellar",
+		cost:2,
+		instructions:"+1 Action. Discard any number of cards. +1 Card per card discarded.",
+		duration:0,
+		effects:{
+			actions: 1,
+			cards: num_discarded
+		},
+		action: function (player) {
+
+//prompt player to choose cards from hand to discard (var = discardCard), not written
+			while (discardCard) {
+				player.discard.push(discardCard);
+
+//add the chosen card(s) to the discard pile and remove them from player's hand
+				player.hand.splice(player.hand.indexOf(discardCard),1);
+				var num_discarded ++;
+				
+//prompt again if they want to discard another card- if not though, set discardCard to false or null, to close the loop, not written yet
+			}
+		}	
+	},
+	{
+		name:"Chapel",
+		cost:2,
+		instructions:"Trash up to 4 cards from your hand.",
+		duration:0,
+		action: function() {
+//have player pick a card to trash (var = trashCard)
+//remove trashed card from hand, put into trashlist, limit to 4 trashed, then add all to a global list of trashed cards
+			var trashed =[]
+			while (trashed.length <= 4) {
+				if (trashCard) {
+					player.hand.splice(player.hand.indexOf(trashCard),1);
+					trashed.push(trashCard);
+				}
+				else {
+					for (var each in trashed) {
+						trash.push(each);
+					}
+				}
+			}
+		}
+	},
+	{
+		name:"Chancellor",
+		cost:3,
+		instructions:"+2 money. You may immediately put your deck into your discard pile.",
+		duration:0,
+		effects:{
+			actions: 0,
+			buys: 0,
+			money: 2,
+			cards: 0
+		}	
+		action: function() {
+			for (var card in player.deck) {
+				player.discard.push(card);
+			}
+		}
+	},
+	{
+		name:"Laboratory",
+		cost:5,
+		instructions:"+2 cards, +1 action",
+		duration:0,
+		effects:{
+			actions: 1,
+			buys: 0,
+			money: 0,
+			cards: 2
+		}	
+	},
+	{
+		name:"Throne Room",
+		cost:4,
+		instructions:"2x",
+		duration:0,
+		effects:{
+			actions: 0,
+			buys: 0,
+			money: 0,
+			cards: 0
+		}	
+	},
+	{
+		name:"Festival",
+		cost:5,
+		instructions:"+2 actions, +2 money, +1 buy",
+		duration:0,
+		effects:{
+			actions: 2,
+			buys: 1,
+			money: 2,
+			cards: 0
+		}	
+	},
+{
+		name:"Market",
+		cost:5,
+		instructions:"+1 actions, +1 money, +1 buy, +1 card",
+		effects:{
+			actions: 1,
+			buys: 1,
+			money: 1,
+			cards: 1
+		}	
+	},
+
+	{
+		name:"Woodcutter",
+		cost:3,
+		instructions:"+1 Buy. +$2.",
+		effects:{
+			buys: 1,
+			money: 2,
+		}	
+	},
+	{
+		name:"Workshop",
+		cost:3,
+		instructions:"Gain a card costing up to $4.",
+		action: function (player){
+			gainCard(player, 4);
+		}
+	},
+	{
+		name:"Feast",
+		cost:4,
+		instructions:"Trash this card. Gain a card costing up to $5.",
+		action: function (player) {
+			
+		}
+	}
+
 ]
 
 function cardConstructor (type, cards) {
