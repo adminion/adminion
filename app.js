@@ -6,7 +6,6 @@
 var express = require('express')
   , socketio = require('socket.io')
   , routes = require('./routes')
-  , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
   , util = require('util');
@@ -30,7 +29,7 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.get('/users', user.list);
+app.get('/lobby', routes.lobby)
 
 var server = http.createServer(app);
 var io = socketio.listen(server);

@@ -1,10 +1,27 @@
 doctype 5
 html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src='/scripts/adminion.js')
-    block HeadScripts
-  block content
-    body
-    
+	head
+		title= title
+		link(rel='stylesheet', href='/stylesheets/style.css')
+		script(src='/scripts/adminion.js')
+		block HeadScripts
+		body
+			#wrapper
+				p wrapper
+				#header
+					p header
+				#body
+					p body
+					#left
+						p let 
+						#roster
+							p roster
+						#chat
+							p chat
+							block chat
+					#right
+						p right
+						#config
+							p config
+				#footer
+					p footer
