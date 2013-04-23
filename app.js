@@ -32,8 +32,8 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/users', user.list);
 
-server = http.createServer(app);
-io = socketio.listen(server);
+var server = http.createServer(app);
+var io = socketio.listen(server);
 
 server.listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
