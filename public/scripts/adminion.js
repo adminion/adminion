@@ -19,6 +19,15 @@ var gameConfig = {
 	piles:[],
 	exhausted : [],
 	exhaustLimit : 1
+
+};
+function startGame(config) {
+	// load the adminion module
+	var Game = new require(['adminion']);
+		
+	return Game(config);
+	
+
 };
 console.log(gameConfig);
 var exhausted = 0;
@@ -117,6 +126,7 @@ var actionTemplate = [
 		instructions:"Trash up to 4 cards from your hand.",
 		duration:0,
 		action: function() {
+
 //have player pick a card to trash (var = trashedCard)
 //remove trashed card from hand, put into trashlist, limit to 4 trashed, then add all to a global list of trashed cards
 			var trashed =[];
@@ -128,6 +138,7 @@ var actionTemplate = [
 				else {
 					for (var each in trashed) {
 						trashCard(player, trashed[each]);
+
 					}
 				}
 			}
@@ -340,6 +351,7 @@ function actionPhase(player){
 		
 
 
+
 //if they do choose a card, continue
 			if (playCard) {
 			
@@ -352,6 +364,7 @@ function actionPhase(player){
 					}
 				}
 //discard played card. might not work in instances where multiple of the same card exist in players hand.
+
 
 				discardCard(player, player.hand[placeHolder]);
 
