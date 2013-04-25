@@ -12,9 +12,8 @@ block content
         document.getElementById('change_name').style.display='inline';
         
         socket.on('news', function(data) {
-          var msg = '<p>' + data.update + '<p>';  
+          var msg = '<p>' + data.update + '</p>';  
           document.getElementById('chat_room').innerHTML+=msg;
-          document.getElementById('chat_room').focus();
           console.log('News Update: ', data.update);
         });
         

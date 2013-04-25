@@ -291,7 +291,7 @@ console.log(this);
 				$('button[name="add"]').click(function() {
 					var highlighted = $('#availableExp .highlight').html();
 			console.log(highlighted);
-					$('#selectedExp').append('<li>'+highlighted);
+					$('#selectedExp').append('<li class="expansion" id="' +highlighted+'">'+highlighted+'</li>');
 					$('.highlight').addClass('expansion');
 					$('#'+highlighted).remove();
 					$('.expansion').removeClass('highlight');
