@@ -53,7 +53,7 @@ ul.menu {
 }
 
 #wrapper { 
-	border: 0px solid black;
+	border: 1px solid black;
 	height: auto;
 	left: 0px;
 	padding: 0px;
@@ -63,13 +63,14 @@ ul.menu {
 }
 
 	#header {
-		border: 0px solid black;
+		background-color:#00FFFF;
+		border: 1px solid black;
 		height: inherit;
 		padding: 5px;
 		position: relative;
 	}
 		#session { 
-			border: px solid black;
+			border: 1px solid black;
 			float: right; 
 			margin: 0px;
 			padding: 5px;
@@ -92,15 +93,18 @@ ul.menu {
 		}
 
 	#body {
+		background-color:#ff00ff;
 		border: 1px solid black;
-		float:left;
+		display:inline-block;
 		padding-left: 5px;
 		padding-right: 5px;
 		padding-bottom: 5px;
-		width: auto;
+		position:relative;
+		width:100%;
 	}
 
 		#left {
+			background-color:#400fff;
 			border: 1px solid black;
 			float:left;
 			margin-right: 5px;
@@ -119,6 +123,7 @@ ul.menu {
 			}
 	
 		#right {
+			background-color:#fff00f;
 			border: 1px solid black;
 			float: left;
 			height: inherit;
@@ -131,4 +136,13 @@ ul.menu {
 				padding: 5px;
 				width: 65%;
 			}
+	#footer {
+		background-color:#ffff00;
+		display:block;
+		border: 1px solid black;
+		padding-left: 5px;
+		padding-right: 5px;
+		padding-bottom: 5px;
+		position:relative;
+	}
 				

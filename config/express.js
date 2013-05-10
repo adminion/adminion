@@ -3,9 +3,9 @@ var config = require('./index');
 
 var express = module.exports = {
 	host 		: 'localhost',						// default: 'localhost'
-	port 		: '4000',							// default: '8080'	
+	port 		: '1337',							// default: '8080'	
 	protocol	: 'http',							// default: 'http'
-	pub 		: config.prefix + '/static',		// default: '../public'
+	pub 		: config.prefix + '/public',		// default: '../public'
 	controllers	: config.prefix + '/controllers',	// default: '../routes'
 	views		: config.prefix + '/views',			// default: './views' 
 	viewEngine 	: 'jade'							// default: 'jade'

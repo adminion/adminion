@@ -1,0 +1,11 @@
+extends products
+
+block content
+	h1 All Products
+	p
+		input(size='10', name='id', id='id')
+		button(onclick="window.location = '/products/' + $('#id').value") By ID
+	#products	
+		each product in products
+			.product 
+				include peices/product

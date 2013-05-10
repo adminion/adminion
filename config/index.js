@@ -1,32 +1,18 @@
 /**
- * configuration file for smb
+ * configuration file 
  * 
  * assigns a map of configuration settings to module.exports
  */
-
-// get this directory string, the split it into an array
-var prefix = __dirname.split('/');
-
-// pop this directory off the end of the array
-prefix.pop();
-
-// put the array back together 
-prefix = prefix.join('/');
-
-// output the result 
-//console.log('prefix: %j', prefix);
+ var express = require('./express');
 
 var config = module.exports = {
-	appName : 'IT Help Desk', 
-	prefix	: prefix, 
+	appName : 'Adminion', 
+	express : express,
+	banner : {
+		title: 	'Adminion',
+		src: 	'/images/logo-meadows-white.png',
+		url: 	express.host +':'+express.port
+	}
 };
-
-config.banner = {
-	title: 	'Mt. Hood Meadows Ski Resort',
-	src: 	'/images/logo-meadows-white.png',
-	url: 	'www.skihood.com'
-},
-
-config.express = require('./express');
 
 console.log('config', config);

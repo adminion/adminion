@@ -1,12 +1,12 @@
 {
-  "name": "application-name",
-  "version": "0.0.1",
-  "private": true,
+  "name": "adminion",
+  "version": "0.2.0",
   "scripts": {
-    "start": "node app.js"
+    "start": "./adminion.sh"
   },
   "dependencies": {
-    "express": "3.2.0",
-    "jade": "*"
+    "express": "*",
+    "jade": "*",
+    "mysql":"*"
   }
 }

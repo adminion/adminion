@@ -1,0 +1,8 @@
+extends products
+
+block content
+	h1 Editing 
+		a(href='/products/'+product.id)=product.name
+	form(action='/products/'+product.id, method='POST')
+		input(type='hidden', name='_method', value='PUT')
+		include peices/product-form

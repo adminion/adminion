@@ -1,0 +1,144 @@
+a {
+	color: #00B7FF;
+}
+
+body {
+	padding: 0px;
+	font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+h1 {
+	font-size: 180%;
+}
+
+h2 {
+	font-size: 160%;
+}
+
+h3 {
+	font-size: 140%;
+}
+
+h4 {
+	font-size: 120%;
+}
+
+h5 {
+	font-size: 100%;
+}
+
+div.results {
+	display:inline;
+}
+
+td {
+	border:0px solid black;
+	padding: 5px;
+	vertical-align:top;
+}
+
+td.filter {
+	padding: 0px;
+}
+
+ul.menu {
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+#spacer {
+	height: 5px;
+	width: 5px;
+}
+
+#wrapper { 
+	border: 0px solid black;
+	height: auto;
+	left: 0px;
+	padding: 0px;
+	position: absolute;
+	top: 0px;
+	width: 100%;
+}
+
+	#header {
+		border: 0px solid black;
+		height: inherit;
+		padding: 5px;
+		position: relative;
+	}
+		#session { 
+			border: px solid black;
+			float: right; 
+			margin: 0px;
+			padding: 5px;
+			position: relative;
+			right: 0px;
+		}
+	
+		#banner { 
+			border: 1px solid black;
+			margin-bottom: 5px;
+			padding-left: 5px;
+			padding-right: 5px;
+			padding-top: 5px;
+		}
+		
+		#nav { 
+			border: 1px solid black;
+			font-size: 120%;
+			padding: 5px;
+		}
+
+	#body {
+		border: 0px solid black;
+		float:left;
+		padding-left: 5px;
+		padding-right: 5px;
+		padding-bottom: 5px;
+		width: auto;
+	}
+
+		#menu {
+			border: 0px solid black;
+			float:left;
+			margin-right: 5px;
+			padding: 0px;
+		}
+		
+			#links { 
+				border: 0px solid black;
+				padding: 0px;
+			}
+			
+			#context {
+				border: 1px solid black;
+				margin-bottom:5px;
+				padding: 5px;
+			}
+			
+			#global { 
+				border: 1px solid black;
+				padding: 5px;
+			}
+	
+		#main {
+			border: 1px solid black;
+			float: left;
+			height: inherit;
+			padding: 5px;
+		}
+			#content { 
+				border: 0px solid black;
+				height: auto;
+				margin: 0px;
+				padding: 5px;
+				width: 65%;
+			}
+				.product { 
+					border: 1px solid black;
+					margin: 0px;
+					padding: 5px;
+				}
+			

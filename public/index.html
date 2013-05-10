@@ -4,10 +4,10 @@
 <script type="text/javascript" src="index.js" ></script>
 <script src="/socket.io/socket.io.js"></script>
 <script>
-  var socket = io.connect('http://localhost');
-  socket.on('news', function (data) {
-    console.log('News Update: ', data);
-    socket.emit('private message', { from: 'jeff', msg: 'did you mean, _hello_ world?' });
+  var socket = io.connect('http://localhost/chat/games/0');
+  socket.on('private', function (data) {
+    console.log('Game #' + data.game + '- Private Message: ', data.msg);
+    socket.emit('private message', 'jeff', 'did you mean, _hello_ world?');
   });
 </script>
 <body>
