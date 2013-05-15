@@ -1,7 +1,8 @@
 
+
 var app = require('./lib/')
 	, root = require('./controllers/root')
-	, products = require('./controllers/products');
+//	, products = require('./controllers/products');
 
 var port = app.config.express.port;
 
@@ -31,3 +32,5 @@ app.put('/products/:id', app.auth, products.put);
 app.listen(port, function() {
 	console.log('express server listening: http://localhost:%d.', port);
 });
+
+
