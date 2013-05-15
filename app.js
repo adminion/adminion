@@ -1,7 +1,7 @@
 
 
 var app = require('./lib/')
-	, root = require('./controllers/root')
+	, root = require('./controllers/index')
 //	, products = require('./controllers/products');
 
 var port = app.config.express.port;
