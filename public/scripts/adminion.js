@@ -97,7 +97,7 @@ var actionTemplate = [
 			}
 		}		
 	},
-	{
+/*	{
 		name:"Cellar",
 		cost:2,
 		instructions:"+1 Action. Discard any number of cards. +1 Card per card discarded.",
@@ -120,7 +120,9 @@ var actionTemplate = [
 			}
 		}	
 	},
-	{
+*/	
+
+{
 		name:"Chapel",
 		cost:2,
 		instructions:"Trash up to 4 cards from your hand.",
@@ -141,23 +143,6 @@ var actionTemplate = [
 
 					}
 				}
-			}
-		}
-	},
-	{
-		name:"Chancellor",
-		cost:3,
-		instructions:"+2 money. You may immediately put your deck into your discard pile.",
-		duration:0,
-		effects:{
-			actions: 0,
-			buys: 0,
-			money: 2,
-			cards: 0
-		}	
-		action: function() {
-			for (var card in player.deck) {
-				player.discard.push(card);
 			}
 		}
 	},
@@ -223,9 +208,12 @@ var actionTemplate = [
 		cost:3,
 		instructions:"Gain a card costing up to $4.",
 		action: function (player){
-			gainCard(player, 4);
+
 		}
 	},
+
+
+
 	{
 		name:"Feast",
 		cost:4,
@@ -264,10 +252,10 @@ function cardConstructor (type, cards) {
 		gameConfig.piles.push(newCard);
 	};
 };
-cardConstructor ('treasure', treasureTemplate);
-cardConstructor ('victory', victoryTemplate);
-cardConstructor ('action', actionTemplate);
-console.log(gameConfig.piles)
+
+cardConstructor (		'treasure', 	treasureTemplate		);
+cardConstructor (		'victory', 		victoryTemplate			);
+cardConstructor (		'action', 		actionTemplate			);
 
 //when trashing a card, the trashed card is put in trash and taken out of player's hand
 function trashCard(player, card) {
@@ -281,10 +269,18 @@ function deal() {
 //CREATES A NEW PLAYER PROFILE AND INSERTS IT INTO THE ARRAY OF PLAYERS
 		var newPlayer = generatePlayer(players[player]);
 
-	console.log("player: ");
-	console.log(newPlayer);
+
 //PUSHES 7 COPPER AND 3 ESTATES INTO NEW PLAYER'S DISCARD PILE (SHUFFLEDECK() WILL LATER MOVE DISCARD PILE INTO DECK
-		newPlayer.discard.push(gameConfig.piles[0], gameConfig.piles[0], gameConfig.piles[0], gameConfig.piles[0], gameConfig.piles[0], gameConfig.piles[0], gameConfig.piles[0],gameConfig.piles[5], gameConfig.piles[5], gameConfig.piles[5]);
+		newPlayer.discard.push(		gameConfig.piles[0], 
+															gameConfig.piles[0], 
+															gameConfig.piles[0], 
+															gameConfig.piles[0], 
+															gameConfig.piles[0],
+ 															gameConfig.piles[0], 
+															gameConfig.piles[0],
+															gameConfig.piles[5], 
+															gameConfig.piles[5], 
+															gameConfig.piles[5]);
 	var estate = gameConfig.piles[5];
 	estate.quantity -= 3;
 	var copper = gameConfig.piles[0];
@@ -305,11 +301,13 @@ function drawCard(player){
 	if (player.deck.length == 0) {
 		shuffleDeck(player);
 	};
-	player.hand.push(player.deck[0]);
-console.log(player);
-console.log(player.deck[0]);
-	alert(player.Name+' drew a '+player.deck[0].name+' card');
-	player.deck.splice(0, 1);
+
+	console.log(	player.Name							 +
+								' drew a '							 +
+								player.deck[0].name			 +
+								' card'									);
+	player.hand.push(player.deck.shift()	);
+
 
 }
 
@@ -325,7 +323,26 @@ function shuffleDeck(player) {
 	player.deck = player.discard;
 	player.discard = [];
 }
+
+function findCard(myArray, property, searchTerm) {
+	var finding = true;
+	while (finding) {
+		for(var i = 0; i < myArray.length; i++) {
+			if (myArray[i][property] === searchTerm) 
+				finding = false;
+				return myArray[i];
+    	}
+    alert(		'could not find requested card \n' +
+							searchTerm
+																								);
+	}
+}
+
+
+
+
 function actionPhase(player){
+
 	do {
 		var action = false;
 
@@ -340,54 +357,65 @@ function actionPhase(player){
 				action = true;
 //adds the name of the action card to the list of available action cards.
 				actionCards += player.hand[n].name+', ';
-				console.log(actionCards, player.hand[n]);
+
 			}
 		}
 
-//if there is one or more action cards in your hand, the following runs and asks if player wants to play a card. need to figure out a way to redo the prompt if the users input isn't in their hand or is misspelled
+//if there is one or more action cards in your hand, the following runs and asks if player wants to play a card. 
+
+
 		if (action) {
-				var playCard = prompt(player.Name+', you have action card(s) in your hand\n'+actionCards+'\nwhich, if any do you want to play?\nleave blank if you choose not to play anything');
-				console.log(actionCards.indexOf(playCard));
+				var playCard = prompt(	player.Name 																			 +
+														', 	you have action card(s) in your hand	 					\n'+ 
+
+																/*list of*/		
+																actionCards													 					+'\n'+
+
+																'Which, if any do you want to play?     				\n'+
+																'(leave blank if you choose not to play anything)');
+
 		
-
-
-
 //if they do choose a card, continue
 			if (playCard) {
 			
-//goes through each card in the players hand to see if what the player entered matches a card. if it does indeed match a card, var playCard is set equal to the card that exists in players hand, and the placeholder of the card is saved for later removal of the card from the hand
-				var placeHolder;
-				for (var each in player.hand) {
-					if (player.hand[each].name == playCard) {
-						playCard = player.hand[each];
-						placeHolder = each;
-					}
-				}
-//discard played card. might not work in instances where multiple of the same card exist in players hand.
 
 
-				discardCard(player, player.hand[placeHolder]);
+//discards the card in players hand with the name matching playCard
 
-//once thats all settled, run the action function of the played card, and remove one action from the player's attributes. 
-		console.log(player.hand.length);
-		console.log(player.actions);
-				alert('you played a '+playCard.name+' card\n'+playCard.instructions);
-				playCard.action(player);
-console.log(player.hand.length);
-console.log(player.actions);
+				var playedCard = findCard(player.hand, 'name', playCard);
+				discardCard(playedCard);
+
+//once thats all settled, run the action function of the played card
+				console.log(	player.Name								 +
+									 		' played a '							 +
+											playedCard.name							 +
+									 		' card									\n'+
+
+											playedCard.instructions			);
+
 			}
 		}
+
 		else if (player.actions > 0) {
-			alert('you have '+player.actions+' actions left, but no action cards to action them with!');
+			console.log(		player.Name																								+
+											', you have '																							+ 
+											player.actions	 																					+
+											' actions left, but no action cards to action them with!'	);
 			break;
 		}
+
 		else {
-			alert(player.Name+", you don't have any actions cards to play!");
+			alert	(		player.Name 																	 +
+								", you don't have any actions cards to play!"	);
 		}
+
 		player.actions --;
+
 	}
+
 	while (player.actions > 0);
 }
+
 function buyPhase(player) {
 	for (var card in player.hand) {
 		if (player.hand[card].type == 'treasure') {
@@ -396,8 +424,13 @@ function buyPhase(player) {
 		}
 	}
 	do {
-		console.log(player.Name+" has "+player.buys+' buys and '+player.money+" moneys!");
-		console.log("and can buy the following cards:");
+		console.log(	player.Name	 											+ 
+								" has " 			 											+ 
+									player.buys	 											+
+								' buys and ' 	 											+ 
+									player.money 											+
+								' moneys!'													+
+								'	and can buy the following cards:');
 		var buyableCards = [];
 
 // goes through all the available cards in piles and gathers a list of buyable cards
@@ -408,45 +441,71 @@ function buyPhase(player) {
 		}
 		console.log(buyableCards);
 //asks player which of the buyable cards they would like to buy
-		var buy = prompt(player.Name+'! \n with your '+player.money+' money and '+player.buys+' buys,\n what card do you want?\n' + buyableCards+'?');
+		var buy = prompt(		player.Name 									+ 
+												'! 												 \n'+
 
-//with the chosen card, go through each pile and check if it was the chosen one, if it is, gain() that card
-		for (var pile in gameConfig.piles){
-			if (gameConfig.piles[pile].name == buy) { 
+												'with your ' 									+
+												player.money									+
+												' money and ' 								+
+												player.buys 									+
+												' buys,'+ 
 
-//i made a gainCard function because later on, some action cards will call for gaining a card instead of buying it. 
-				gainCard(gameConfig.piles[pile])
-		player.money -= gameConfig.piles[pile].cost;
-			}
-		}
+												'what card do you want? 	 \n'+ 
+												/*list of */
+												buyableCards 							  	+
+												'?													');
+
+//finds the index of the card in gameConfig.piles whose name matches var buy, and player gains that card
+
+		gainCard(buy, player);	
+		var boughtCard = findCard(gameConfig.piles, 'name', buy)
+		player.money -= boughtCard.cost;
 		player.buys --;
 	}
 // we want the buying to continue while player has buys 
 	while (player.buys > 0);
 }
 
-function gainCard(card) {
-	players[player].discard.push(card);
-	card.quantity --;
-	alert(players[player].Name+' gained a '+card.name+' and added it to their discard pile\n'+card.name+' pile now has '+card.quantity+' cards left in it');
+function gainCard(card,player) {
+	var gainingCard = findCard(gameConfig.piles, 'name', card);
+	player.discard.push(gainingCard);
+	gainingCard.quantity --;
+	console.log(		player.Name															 +
+			 						' gained a '														 +
+									gainingCard.name																 +
+						 			' and added it to their discard pile	\n'+
 
-	if (card.quantity <= 0) {
-		exhausted ++;
-		gameConfig.exhausted.push(card);
+									gainingCard.name																 +
+						 			' pile now has '												 +
+									gainingCard.quantity														 +
+						 			' cards left in it'											);
+
+	if (gainingCard.quantity <= 0) {
+
+		gameConfig.exhausted.push(gainingCard);
 		
-		gameConfig.piles.splice(gameConfig.piles.indexOf(card), 1);
-		alert(card.name+' pile has been EXHAUSTED\n'+(gameConfig.exhaustLimit - exhausted)+' piles left til the end of the game!');
-	}
+		gameConfig.piles.splice(gameConfig.piles.indexOf(gainingCard), 1);
+		console.log(	gainingCard.name								 								+
+							 ' 	pile has been EXHAUSTED							 \n'+
 
-	console.log(players[player]);
+							 (	gameConfig.exhaustLimit - exhausted)	  +
+							 '	piles left til the end of the game!		');
+	}
 } 
 
 function turn(player) {
-	alert(player.Name+'! \n your hand consists of: \n'+player.hand[0].name +'\n'+player.hand[1].name+'\n'+ player.hand[2].name+'\n'+ player.hand[3].name+'\n'+ player.hand[4].name);
+	console.log(		player.Name		+
+									"'s hand: "		
+	 														 );
+
+	for (i =0; i<player.hand.length; i++) {
+		console.log('| '+ player.hand[i].name);
+	}
 
 	actionPhase(player);
 	buyPhase(player);
-	endTurn(player);
+	cleanupPhase(player);
+
 }
 
 function discardCard(player, card) {
@@ -461,22 +520,19 @@ function discardHand(player) {
 }
 
 //to prepare for the players next turn, all player attributes get reset to default values, hand is discarded and a new one drawn
-function endTurn(player) {
+function cleanupPhase(player) {
 		discardHand(player);
-	if (exhausted < gameConfig.exhaustLimit) {
 		drawHand(player);
 		player.money = 0;
 		player.actions = 1;
 		player.buys = 1;
-		console.log(player.discard);
-	}
 }
 
 
 //
 //
 //THE START OF THE GAME
-// for testing purposes, i have just made it do x amount of turns. eventually, a turn will happen in a while loop
+
 deal();
 while (exhausted < gameConfig.exhaustLimit) {
 	for (var player in players) {
@@ -492,32 +548,50 @@ function endGame() {
 		player = players[player];
 
 //go through each card in player's hand and put them into player's deck
-		for (var card in player.hand) {
-			player.deck.push(player.hand[card]);
+		for (i=0; i<player.hand.length; i++) {
+			player.deck.push(player.hand.pop());
 		}
-		player.hand.splice(0,player.hand.length);
 
 //go through each card in player's discard pile and puts them into their deck
 		for (var card in player.discard) {
-			player.deck.push(player.discard[card]);
+			player.deck.push(player.discard.pop());
 		}
-		player.discard.splice(0,player.discard.length);
 //then loop through each players deck
 		for (var card in player.deck) {
 
 //set the variable card equal to the player's card in their deck
-			card = player.deck[card];
+			var Card = player.deck[card];
 
 //if the card is a victory card, add a victory point to the victor
 			if (card.type == 'victory') {
 				player.victory += card.value;
 			}
 		}
-	alert(player.Name+' has '+player.victory+' victory points!');
+	console.log(	 	player.Name					 +
+									' has '							 +
+									player.victory			 +
+									' victory points!'	);
+	var winner;
+	for (var i = 0; i < players.length-1; i ++) {
+		if (players[i].victory > players[i+1].victory) {
+			winner = players[i];
+		}
+		else {
+			winner = players[i+1];
+		}
 	}
+	console.log(	players[i].Name			+
+								': '								+
+								players[i].victory	+
+								' Victory Points ' );
+	}
+	alert(	winner.Name 								+
+					' has won the gamE with ' 	+
+					winner.victory 							+
+					' Victory Points!'				 );
 }
 
-alert('end of game');
+
 
 endGame();
-console.log(player);
+
