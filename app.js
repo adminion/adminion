@@ -59,11 +59,10 @@ app.get('/play', auth.verify, game.get.play);
 // GET requests for /spectate will check for authorization
 app.get('/spectate', auth.verify, game.get.spectate);
 
+console.log('app.js 62 - config', config);
+
 // create https server instance and listen!
-https.createServer({
-	cert: 	config.express.cert, 
-	key: 	config.express.key
-},app).listen(config.express.port, function() {
-	console.log('express server listening: http://localhost:%d.', config.express.port);
+https.createServer(config.https, app).listen(config.port, function() {
+	console.log('express server listening: %s', env.url);
 });
 
