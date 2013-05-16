@@ -1,36 +1,62 @@
 
+// load main library and controllers
+var adminion = require('./lib/')
+	, controllers = require('./controllers/');
 
-var app = require('./lib/')
-	, root = require('./controllers/index')
-//	, products = require('./controllers/products');
+// breaking main library into peices for easier, simpler, and smoother code
+var app = adminion.app
+	, auth = adminion.auth
+	, config = adminion.config
+	, env = adminion.env;
 
-var port = app.config.express.port;
+app.locals = {env: env};
 
-app.locals = {env: app.env};
-
-/*
- * /  
+/* 
+ * The root of the site displays info about the game server:
+ *	- IP address and hostname
+ *	- Server status: not started, started, finished
+ *	- List of all Players' usernames
+ *	- Current time
+ *	- Elapsed time
+ *	- Creation timestamp
+ *	- Start timestamp
+ *	- End timestamp
+ *
+ * Non-Authenticated users are give the option to logon
+ * Authenticated users, depending on privacy policy set by Player 1, users may 
+ * be given options to:
+ *	- Join if: 
+ *		* There is a reserved seat for that user, or
+ *		* There is at least one public seat open
+ *	- Spectate if:
+ *		* Specating is enabled, and
+ * 		* That user has been authorized as spectator
  */
+app.get('/', game.root);
 
-app.get('/', root.index);
+// GET requests for /logon will respond with the logon form
 app.get('/logon', root.logon);
-app.get('/logoff', root.logoff);
+
+// POST requests for /auth will attempt to authenticate the user POSTed
 app.post('/auth', root.auth);
 
+// GET requests for /logoff will kill the users session and redirect to root
+app.get('/logoff', root.logoff);
 
-/*
- * / P R O D U C T S
- */
+// GET requests for /join will authenticate the user and then 
+app.get('/join', auth.verify, game.joinGame);
 
-app.get('/products', app.auth, products.get.index);
-app.get('/products/add', app.auth, products.get.add);
-app.post('/products', app.auth, products.post);
-app.get('/products/:id', app.auth, products.get.one);
-app.get('/products/:id/edit', app.auth, products.get.edit);
-app.put('/products/:id', app.auth, products.put);
+// GET requests for /lobby will display the game lobby if authorized
+app.get('/lobby', auth.verify, game.lobby);
 
+// GET requests for /play will check for authorization then display the game
+app.get('/play', auth.verify, game.play);
+
+// GET requests for /spectate will check for authorization
+app.get('/spectate', auth.verify, game.spectate);
+
+// now listen!
 app.listen(port, function() {
 	console.log('express server listening: http://localhost:%d.', port);
 });
-
 
