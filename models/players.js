@@ -12,12 +12,17 @@ var mongoose = require('mongoose');
 var playerSchema = mongoose.Schema({
 	firstName: String,
 	lastName: String,
-	email: String,
+	email: {type: String, unique : true},
 	password: String,
-	handle: String
+	handle: {type: String, unique : true},
+	stats: {
+		created : Date,
+		gamesPlayed: Number,
+		gamesWone: Number,
+		mostPoints: Number,
+		totalPoints: Number,
+		totalPlayTime: Number
+	}
 });
 
-var Players = module.exports = {};
-
-var Player = Players.Player = mongoose.model('Player', playerSchema);
-
+var Players = module.exports = mongoose.model('Player', playerSchema);

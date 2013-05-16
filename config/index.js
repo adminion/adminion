@@ -3,7 +3,9 @@
  * 
  * assigns a map of configuration settings to module.exports
  */
- var express = require('./express');
+var express = require('./express');
+
+console.log('config/index.js - express: %j', express);
 
 var config = module.exports = {
 	appName : 'Adminion', 

@@ -1,7 +1,10 @@
 
+// load core node modules
+var https = require('https');
+
 // load main library and controllers
 var adminion = require('./lib/')
-	, controllers = require('./controllers/');
+	, game = require('./controllers/');
 
 // breaking main library into peices for easier, simpler, and smoother code
 var app = adminion.app
@@ -9,6 +12,7 @@ var app = adminion.app
 	, config = adminion.config
 	, env = adminion.env;
 
+// make the properties this object available as variables in all views
 app.locals = {env: env};
 
 /* 
@@ -32,31 +36,34 @@ app.locals = {env: env};
  *		* Specating is enabled, and
  * 		* That user has been authorized as spectator
  */
-app.get('/', game.root);
+app.get('/', game.get.root);
 
 // GET requests for /logon will respond with the logon form
-app.get('/logon', root.logon);
+app.get('/logon', game.get.logon);
 
 // POST requests for /auth will attempt to authenticate the user POSTed
-app.post('/auth', root.auth);
+app.post('/auth', game.post.auth);
 
 // GET requests for /logoff will kill the users session and redirect to root
-app.get('/logoff', root.logoff);
+app.get('/logoff', game.get.logoff);
 
 // GET requests for /join will authenticate the user and then 
-app.get('/join', auth.verify, game.joinGame);
+app.get('/join', auth.verify, game.get.joinGame);
 
 // GET requests for /lobby will display the game lobby if authorized
-app.get('/lobby', auth.verify, game.lobby);
+app.get('/lobby', auth.verify, game.get.lobby);
 
 // GET requests for /play will check for authorization then display the game
-app.get('/play', auth.verify, game.play);
+app.get('/play', auth.verify, game.get.play);
 
 // GET requests for /spectate will check for authorization
-app.get('/spectate', auth.verify, game.spectate);
+app.get('/spectate', auth.verify, game.get.spectate);
 
-// now listen!
-app.listen(port, function() {
-	console.log('express server listening: http://localhost:%d.', port);
+// create https server instance and listen!
+https.createServer({
+	cert: 	config.express.cert, 
+	key: 	config.express.key
+},app).listen(config.express.port, function() {
+	console.log('express server listening: http://localhost:%d.', config.express.port);
 });
 
