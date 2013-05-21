@@ -62,7 +62,7 @@ app.get('/spectate', auth.verify, game.get.spectate);
 console.log('app.js 62 - config', config);
 
 // create https server instance and listen!
-https.createServer(config.ssl, app).listen(config.port, function() {
+https.createServer(config.https, app).listen(config.port, function() {
 	console.log('express server listening: %s', env.url);
 });
 
