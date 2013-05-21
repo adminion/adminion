@@ -1,6 +1,6 @@
 {
-	"serverName" : 	"Adminion",
-	"host" : 		"localhost",
-	"port" : 		"1337",
-	"https" :		"/home/jeff/.ssl"
+	"serverName" : 	"Adminion"
+	, "host" : 		"localhost"
+	, "port" : 		"1337"
+	, "https" :		".ssl"
 }
