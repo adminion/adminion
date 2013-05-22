@@ -388,10 +388,10 @@ function actionPhase(player){
 //once thats all settled, run the action function of the played card
 				console.log(	player.Name								 +
 									 		' played a '							 +
-											playedCard.name							 +
+											playedCard.name						 +
 									 		' card									\n'+
 
-											playedCard.instructions			);
+											playedCard.instructions		 );
 
 			}
 		}
@@ -472,12 +472,12 @@ function gainCard(card,player) {
 	gainingCard.quantity --;
 	console.log(		player.Name															 +
 			 						' gained a '														 +
-									gainingCard.name																 +
+									gainingCard.name												 +
 						 			' and added it to their discard pile	\n'+
 
-									gainingCard.name																 +
+									gainingCard.name												 +
 						 			' pile now has '												 +
-									gainingCard.quantity														 +
+									gainingCard.quantity										 +
 						 			' cards left in it'											);
 
 	if (gainingCard.quantity <= 0) {
@@ -485,7 +485,7 @@ function gainCard(card,player) {
 		gameConfig.exhausted.push(gainingCard);
 		
 		gameConfig.piles.splice(gameConfig.piles.indexOf(gainingCard), 1);
-		console.log(	gainingCard.name								 								+
+		console.log(	gainingCard.name								 				+
 							 ' 	pile has been EXHAUSTED							 \n'+
 
 							 (	gameConfig.exhaustLimit - exhausted)	  +
