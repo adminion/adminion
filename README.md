@@ -64,9 +64,9 @@ You can generate a key and self-signed certificate pair with default names using
 	
 You may optionally provide a server name to prepend to cert and key files:
 
-	# ./gen-key-sign-cert.sh serverName
+	# ./gen-key-sign-cert.sh myServer
 	
-*the example above will generate .ssl/serverName-key.pem and .ssl/serverName-cert.pem.*
+*the example above will generate .ssl/myServer-key.pem and .ssl/myServer-cert.pem.*
 
 #### Custom path and filenames	
 If you gave your own filenames, or want to serve your key and certificate elsewhere:
@@ -76,7 +76,7 @@ If you gave your own filenames, or want to serve your key and certificate elsewh
 	, "host" : 		"localhost"
 	, "port" : 		"1337"
 	, "https" :		"/path/to/.ssl"
-	, "cert" : 		"my-cert.pem"
-	, "key" : 		"my-key.pem"
+	, "cert" : 		"myServer-cert.pem"
+	, "key" : 		"myServer-key.pem"
 }
 ```
