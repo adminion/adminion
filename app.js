@@ -41,5 +41,5 @@ if (config.https) {
 	http.createServer(app).listen(config.port, app.listening);
 }
 
-// now we sit back and wait for requests!
+// now sit back and wait for requests!
 

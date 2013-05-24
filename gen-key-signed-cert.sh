@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # require root
-if [ `test $USER != "root"` ]
+if [ $USER != "root" ]
 then 
 	echo "$0: error: must be root" && exit 2
 fi
@@ -17,8 +17,7 @@ else
 fi
 
 # ouput the server name to be used
-echo "server name: $serverName"
-
+#echo "server name: $serverName"
 
 key=".ssl/$serverName-key.pem"
 csr=".ssl/$serverName-csr.pem"

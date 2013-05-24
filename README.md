@@ -57,7 +57,7 @@ If you want to use ssl with default settings:
 ```
 
 #### Generate key and certificate
-You can generate a key and self-signed certificate pair with default names using:
+You may want to just generate a key and self-signed certificate pair with default names:
 
 	# ./gen-key-sign-cert.sh
 *the example above will generate .ssl/adminion-key.pem and .ssl/adminion-cert.pem.*
