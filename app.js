@@ -21,16 +21,29 @@ app.get('/', game.get.root);
 app.get('/logon', game.get.logon);
 
 // note that this is a POST request...
-app.post('/auth', game.post.auth);
+app.post('/logon', auth.passport.authenticate(
+	'local', { 
+		successRedirect: '/',
+		failureRedirect: '/login',
+	})
+);
 
 app.get('/logoff', game.get.logoff);
+
+/**
+ * authorization required
+ */
 app.get('/join', auth.verify, game.get.joinGame);
 app.get('/lobby', auth.verify, game.get.lobby);
 app.get('/play', auth.verify, game.get.play);
 app.get('/spectate', auth.verify, game.get.spectate);
 
-// optionally we display our configuration settings for debugging purposes
+// display configuration settings for debugging purposes...
 //console.log('app.js 62 - config', config);
+
+/**
+ * this is where Cluster code will go, eventually...
+ */
 
 // if https was enabled in the config
 if (config.https) {

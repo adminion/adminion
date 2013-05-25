@@ -18,11 +18,13 @@ var playerSchema = mongoose.Schema({
 	stats: {
 		created : Date,
 		gamesPlayed: Number,
-		gamesWone: Number,
+		gamesWon: Number,
 		mostPoints: Number,
 		totalPoints: Number,
 		totalPlayTime: Number
 	}
 });
 
-var Players = module.exports = mongoose.model('Player', playerSchema);
+var Player = module.exports = mongoose.model('Player', playerSchema);
+
+

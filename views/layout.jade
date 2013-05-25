@@ -4,7 +4,7 @@ html
 		block head
 			link(rel='stylesheet', href='/stylesheets/styles.css')
 			script(type="text/javascript", src='/scripts/jquery-1.8.3.min.js')
-			title= env.appName
+			title= env.serverName
 	body
 		#wrapper
 			block wrapper
@@ -13,7 +13,7 @@ html
 						block session
 							#session
 								if (session.user)
-									span Logged on as #{session.user.username}. 
+									span Logged on as #{session.user.handle}. 
 										[&nbsp;
 										a(href='/logoff') Logoff
 										&nbsp;]
@@ -22,29 +22,10 @@ html
 										[&nbsp; 
 										a(href='/logon') Logon
 										&nbsp;]
-						block banner
-							#banner 
-								a(href='http://' + env.banner.url)
-									img(src=env.banner.src, alt=env.banner.title)
-						block nav
-							#nav
-								span!=nav
 				#body
 					block body
 						block menu
 							#menu
-								block links
-									#links
-										block context
-											#context
-												ul.menu
-													each url, name in links.context
-														li.links-context: a(href=url) #{name}
-										block global
-											#global
-												ul.menu
-													each url, name in links.global
-														li.links-global: a(href=url) #{name}
 						block main
 							#main
 								block content

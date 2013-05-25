@@ -10,11 +10,11 @@ block content
 			if (err)
 				p.err=err
 	
-			form(action='/auth', method='POST')
+			form(action='/logon', method='POST')
 				input(type='hidden', name='redir', value=redir)
 				p 
-					label(for='username') Username:
-					input(type='text', name='username', id='username')
+					label(for='email') Email:
+					input(type='text', name='email', id='email')
 				p
 					label(for='password') Password: 
 					input(type='password', name='password', id='password')

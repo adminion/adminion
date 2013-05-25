@@ -1,10 +1,12 @@
 
+// require node core modules
+var crypto = require('crypto')
+	, url = require('url');
+
 // require adminion modules
 var env = require('../lib/env')
-	, players = require('../models/players');
-
-// require node core modules
-var _url= require('url');
+	, player = require('../models/player')
+	, shasum = crypto.createHash('sha1');
 
 var game = module.exports = {
 	get: {},
@@ -23,7 +25,7 @@ var game = module.exports = {
  *	- Start timestamp
  *	- End timestamp
  *
- * Non-Authenticated users are give the option to logon
+ * Non-Authenticated users are given the option to logon
  * Authenticated users, depending on privacy policy set by Player 1, users may 
  * be given options to:
  *	- Join if: 
@@ -43,18 +45,20 @@ game.get.root = function(request, response) {
 game.get.logon = function(request, response) {
 	response.render('logon', {
 		err: false,
-		redir: _url.parse(request.url,true).query.redir || '/'
+		redir: url.parse(request.url,true).query.redir || '/'
 	});
 };
 
 // POST requests for /auth will attempt to authenticate the user POSTed
-game.post.auth = function(request, response){
+game.post.logon = function(request, response){
+	shasum.update(request.body.password, 'ascii');
+	
 	var credentials = {
-		username: request.body.username, 
-		password: request.body.password
+		email: request.body.email, 
+		password: shasum.digest('hex')
 	};
 	
-	players.findOne(credentials, function(player) {
+	player.findOne(credentials, function(player) {
 		if (player) {
 			request.session.started = Date();
 			request.session.player = player;
