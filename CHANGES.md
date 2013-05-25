@@ -1,18 +1,17 @@
-
 ## v0.2.4
 * overhauled README.md, now its actually a nice readme 
 * zane uploaded graphical card selector
-* renamed `https` configuration option to `ssl` is in config.json for consistency
-* created CHANGES.md (see this file)
-* renamed lib/index.js to adminion.json
-* created lib/package.json to tell node to use adminion.js as the library index
+* renamed `https` configuration option to `ssl` is in `config.json` for consistency
+* created `CHANGES.md` (see this file)
+* renamed `lib/index.js` to `adminion.js`
+* created `lib/package.json` to tell node to use `adminion.js` as the library index
 * now using `MongoStore` for session storage via `connect-mongo`
 
 ## v0.2.3
 * no longer tracking `.ssl/` - need to be generated per-machine
 * created script to generate key/signed-cert required for https out-of-box
 * updated how `lib/config.js` handles `https` configuration option
-  * `true or a filesystem path will enable https
+  * `true` or a filesystem path will enable SSL
   * if `true` the default directory `.ssl/` will be used as prefix
   * otherwise the given path with be used as prefix
 * updated `lib/ssl.js` to reflect changes to `lib/config.js`
