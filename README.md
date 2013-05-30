@@ -12,7 +12,7 @@ The easiest way to get (and later update) adminion is using git:
 ## Dependencies
 Adminion depends on [node](http://nodejs.org) and [mongodb](http://www.mongodb.org).  To install on debian/ubuntu:
 
-	# apt-get update && apt-get install mongodb node
+	# apt-get update && apt-get install node mongodb
 
 ## Installation is easy
 Once you have adminion, get in there and install all module-based dependancies:
@@ -20,11 +20,11 @@ Once you have adminion, get in there and install all module-based dependancies:
 	$ cd adminion && sudo npm install
 	
 ## Start the game server
-You can either run app.js directly using node:
+You can either run `app.js` directly using node:
 
 	$ node app.js
 	
-or, you can define your own startup script for logging and such:
+or, you can define your own startup procedure within `adminion.sh`:
 
 	$ sudo ./adminion.sh
 
@@ -36,7 +36,7 @@ All server configuration options are defined within `config.json`.  If an option
 * `serverName`: name of the server. default: `Adminion`
 * `host`: network address to be used. default: `localhost`
 * `port`: port number to be used. default: `1337`
-* `ssl`: turns on or off SSL encryption. see [SSL](http://github.com/adminion/adminion#SSL) below for details. default: `false`
+* `ssl`: turns on or off SSL encryption. see [SSL](http://github.com/adminion/adminion#ssl) below for details. default: `false`
 * `cert`: path to the certificate. see [Custom paths](http://github.com/adminion/adminion#custom-paths) below for details. default: `adminion-cert.pem`
 * `key`: path to the public key. see [Custom paths](http://github.com/adminion/adminion#custom-paths) below for details. default: `adminion-key.pem`
 
