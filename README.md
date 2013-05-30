@@ -10,7 +10,7 @@ The easiest way to get (and later update) adminion is using git:
 	$ git clone git://github.com/adminion/adminion.git
 
 ## Dependencies
-Adminion depends on node and mongodb.  To install on debian/ubuntu:
+Adminion depends on [node](http://nodejs.org) and [mongodb](http://www.mongodb.org).  To install on debian/ubuntu:
 
 	# apt-get update && apt-get install mongodb node
 
