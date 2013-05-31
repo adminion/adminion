@@ -21,12 +21,7 @@ app.get('/', game.get.root);
 app.get('/logon', game.get.logon);
 
 // note that this is a POST request...
-app.post('/logon', auth.passport.authenticate(
-	'local', { 
-		successRedirect: '/',
-		failureRedirect: '/login',
-	})
-);
+app.post('/logon', auth.passport.authenticate('local'), game.post.logon);
 
 app.get('/logoff', game.get.logoff);
 
@@ -48,10 +43,10 @@ app.get('/spectate', auth.verify, game.get.spectate);
 // if https was enabled in the config
 if (config.https) {
 	// create https server instance, then listen!
-	https.createServer(config.https, app).listen(config.port, app.listening);
+	https.createServer(config.https, app).listen(config.port, adminion.listening);
 } else {
 	// create http server instance, then listen!
-	http.createServer(app).listen(config.port, app.listening);
+	http.createServer(app).listen(config.port, adminion.listening);
 }
 
 // now sit back and wait for requests!
