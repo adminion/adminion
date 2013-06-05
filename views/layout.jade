@@ -12,8 +12,8 @@ html
 					block header
 						block session
 							#session
-								if (session.user)
-									span Logged on as #{session.user.handle}. 
+								if (session.passport.user)
+									span Logged on as #{session.passport.user.handle}. 
 										[&nbsp;
 										a(href='/logoff') Logoff
 										&nbsp;]

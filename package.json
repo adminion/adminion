@@ -1,14 +1,15 @@
 {
   "name": "adminion",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "scripts": {
     "start": "./adminion.sh"
   },
   "dependencies": {
+  	"connect-mongo": "*",
     "express": "*",
     "jade": "*",
     "mongoose":"*",
     "passport":"*",
-    "passport-local":"*"
+    "passport-local-mongoose":"*"
   }
 }

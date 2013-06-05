@@ -1,0 +1,33 @@
+extends layout
+block session
+block nav
+block menu
+block content
+	#content
+		center
+			h1 Register
+	
+			if (err)
+				p.err=err
+	
+			form(action='/register', method='POST')
+				input(type='hidden', name='redir', value=redir)
+				p 
+					label(for='FirstName') First Name: 
+					input(type='text', name='FirstName', id='FirstName')
+				p
+					label(for='LastName') Last Name: 
+					input(type='text', name='LastName', id='LastName')
+				p
+					label(for='email') Email:
+					input(type='text', name='email', id='email')
+				p
+					label(for='password') Password: 
+					input(type='password', name='password', id='password')
+				p
+					label(for='handle') Handle: 
+					input(type='text', name='handle', id='handle')
+				p
+					input(type='submit')
+				p
+					a(href="/logon") Logon
