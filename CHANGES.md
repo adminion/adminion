@@ -1,3 +1,38 @@
+
+## v0.3.0
+* adminion is now an EventEmitter.
+* db library is now an EventEmitter
+* sessions work!
+* user registration, logon, logoff all work
+* routes shall now be referred to as "Portals" because IT magic is cool
+* one gameServer will host a variable nubmer games created by users
+* created function logWrapper() which is optionally set as event handler for adminion's 'log' event if debug is enabled in the configuration
+
+### Todo
+* create GameSchema
+* define game portals: 
+  * /games
+  * /games/create
+  * /games/:game
+  * /games/:game/join
+  * /games/:game/lobby
+  * /games/:game/play
+  * /games/:game/spectate
+* develop layouts and views
+* build library to support user-interface
+* port game library to GameSchema
+* create CardSchema
+* define card portals:
+  * /cards
+  * /cards/create
+  * /cards/import
+  * /cards/export
+  * /cards/:card
+  * /cards/:card/update
+  * /cards/:card/delete
+  
+
+
 ## v0.2.4
 * overhauled README.md, now its actually a nice readme 
 * zane uploaded graphical card selector

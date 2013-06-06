@@ -10,7 +10,7 @@ block content
 			if (err)
 				p.err=err
 	
-			form(action='/register', method='POST')
+			form(action='/players/register', method='POST')
 				input(type='hidden', name='redir', value=redir)
 				p 
 					label(for='FirstName') First Name: 

@@ -5,8 +5,6 @@
 // load main library and controllers
 var Adminion = require('./lib/');
 
-
-Adminion.startGame();
-
-// now sit back and wait for requests!
+// now sit back and wait for requests
+Adminion.Start();
 

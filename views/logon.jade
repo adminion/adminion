@@ -9,6 +9,8 @@ block content
 	
 			if (err)
 				p.err=err
+			if (request.query.err) 
+				strong.err=request.query.err
 	
 			form(action='/logon', method='POST')
 				input(type='hidden', name='redir', value=redir)

@@ -10,24 +10,33 @@ html
 			block wrapper
 				#header
 					block header
+						block banner
+							#banner
+								h1
+									a(href='/') #{env.serverName}
 						block session
 							#session
-								if (session.passport.user)
-									span Logged on as #{session.passport.user.handle}. 
+								if (request.session.passport.user)
+									span Logged on as 
+										a(href='/players/' + request.session.passport.user) #{request.session.passport.user} 
 										[&nbsp;
 										a(href='/logoff') Logoff
 										&nbsp;]
 								else
 									span Not logged on. 
 										[&nbsp; 
-										a(href='/logon') Logon
+										a(href='/logon?redir=' + request.url) Logon
 										&nbsp;]
 				#body
 					block body
 						block menu
 							#menu
+								ul
+									li
+										a(href='/games') Games
+									li
+										a(href='/players') Players
 						block main
 							#main
 								block content
 									#content
-
