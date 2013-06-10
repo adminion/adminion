@@ -31,12 +31,13 @@ html
 					block body
 						block menu
 							#menu
-								ul
-									li
-										a(href='/games') Games
-									li
-										a(href='/players') Players
+								if (links)
+									ul
+										each url, title in links
+											li: a(href=url) #{title}
 						block main
 							#main
 								block content
 									#content
+									
+									

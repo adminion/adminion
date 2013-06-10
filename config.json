@@ -3,5 +3,5 @@
 	, "serverName" : 	"Adminion"
 	, "host" : 		"localhost"
 	, "port" : 		"1337"
-	, "https" :		true
+	, "https" :		false
 }

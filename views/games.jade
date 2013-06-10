@@ -3,3 +3,11 @@ extends layout
 block content
 	#content
 		h2 Games: 
+			ol
+				each id, name in games
+					li 
+						a(href='/games/' + id) #{name}
+						&nbsp;[&nbsp;
+						a(href='/games/' + id + '/join') Join
+						&nbsp;][&nbsp;
+						a(href='/games/' + id + '/spectate') Spectate]
