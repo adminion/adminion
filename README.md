@@ -3,21 +3,17 @@ Adminion
 
 Administrate your deck
 
-## Getting Adminion
+## Get Adminion
 The easiest way to get (and later update) adminion is using git:
 
-	$ cd /where/you/want/it
+	$ cd /where/you/want/it/
 	$ git clone git://github.com/adminion/adminion.git
 
 ## Dependencies
 Adminion depends on [node](http://nodejs.org) and [mongodb](http://www.mongodb.org).  To install on debian/ubuntu:
 
 	# apt-get update && apt-get install node mongodb
-
-## Installation is easy
-Once you have adminion, get in there and install all module-based dependancies:
-	
-	$ cd adminion && sudo npm install
+	$ cd adminion/ && sudo npm install
 	
 ## Start the game server
 You can either run `app.js` directly using node:

@@ -3,7 +3,7 @@
 * replacing hard-coded settings with configuration values
 * MongoStore now uses the existing mongoose_connection rather than hard-coded 'adminion'
 * created a bunch of /games portals 
-* 
+* debug is now a module with vars() and msg() to be used as event handlers to optionally ouput debug information to STDOUT
 
 # v0.3.0
 * adminion is now an EventEmitter.
@@ -12,7 +12,7 @@
 * user registration, logon, logoff all work
 * routes shall now be referred to as "Portals" because IT magic is cool
 * one gameServer will host a variable nubmer games created by users
-* created function logWrapper() which is optionally set as event handler for adminion's "log" event if debug is enabled in the configuration
+* created function logWrapper() which is optionally set as event handler for adminion "log" event if debug is enabled in the configuration
 
 ### Todo
 * create GameSchema
