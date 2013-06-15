@@ -4,6 +4,13 @@
 * MongoStore now uses the existing mongoose_connection rather than hard-coded 'adminion'
 * created a bunch of /games portals 
 * debug is now a module with vars() and msg() to be used as event handlers to optionally ouput debug information to STDOUT
+* fixed problem with really short sessions: session.cookie.maxAge takes milliseconds not seconds
+* ready to start developing UI / migrating public/scripts/adminion.js into lib/realtime.js
+
+# TODO: 
+* realtime library will consist of two main properties: 1) game, and 2) chat
+* develop API/SOP for Zane to work on Portals and tinker with the vars fed to them 
+* have zane play with the game server to find and report bugs while developing
 
 # v0.3.0
 * adminion is now an EventEmitter.

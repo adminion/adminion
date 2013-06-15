@@ -8,7 +8,6 @@ var passportLocalMongoose = require('passport-local-mongoose');
 
 // export the Player constructor
 module.exports = function(mongoose) {
-	var self = this;
 	
 	// define the PlayerSchema
 	var PlayerSchema = new mongoose.Schema({
@@ -26,9 +25,7 @@ module.exports = function(mongoose) {
 	});
 	
 	// now plugin the passportLocalMongoose functionality
-	PlayerSchema.plugin(passportLocalMongoose
-		, { usernameField : 'email' }
-	);
+	PlayerSchema.plugin(passportLocalMongoose, { usernameField : 'email' });
 
 	// and finally return a model created from PlayerSchema
 	return mongoose.model('Player', PlayerSchema);
