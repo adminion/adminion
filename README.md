@@ -29,6 +29,7 @@ All server configuration options are defined within `config.json`.  If an option
 
 ### Configuration options
 
+* `debug`: toggles debug output. default: `false`
 * `serverName`: name of the server. default: `Adminion`
 * `host`: network address to be used. default: `localhost`
 * `port`: port number to be used. default: `1337`
