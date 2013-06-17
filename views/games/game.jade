@@ -2,7 +2,6 @@ extends layout
 
 block content
 	#content
-		- var ID = request.params.game
-		h2 Game #{ID}
+		h2 #{game.name}
 		p 
-			a(href='/games/' + ID + '/join') Join Game
+			a(href='/Games/' + game['_id'] + '/Join') Join Game

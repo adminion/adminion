@@ -3,3 +3,10 @@ extends layout
 block content
 	#content
 		h2 Players:
+			&nbsp;[&nbsp;
+			a(href="/Players/Create") Create Player
+			&nbsp;]&nbsp;
+		ul
+			each player in players
+				li 
+					a(href='/Players/' + player.email) #{player.email}

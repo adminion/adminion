@@ -1,13 +1,25 @@
 
+## v0.3.2
+* added breadcrumb support to `view/layout.jade`
+* updated `POST /games/create` to create a game and redirect request to `/games/:gameId`
+* updated `GET /games/:gameId` to lookup and pass the requested game to `games/game.jade`
+* updated `GET /games` to properly display all games by their unique name
+* updated `GET/POST /register` to GET and POST `/players/create`
+* GET and `POST /players/create` now requrires authorization
+* created `GET /players/:email/update` to display update user info form
+* created `POST /players/:email/update` to update the player
+* Created `GameSchema` probably in v0.3.1, but i'll just say now
+* updated `POST /games/:gameId/join` to allow users to join a game
+
 ## v0.3.1
 * replacing hard-coded settings with configuration values
-* MongoStore now uses the existing mongoose_connection rather than hard-coded 'adminion'
-* created a bunch of /games portals 
-* debug is now a module with vars() and msg() to be used as event handlers to optionally ouput debug information to STDOUT
-* fixed problem with really short sessions: session.cookie.maxAge takes milliseconds not seconds
-* ready to start developing UI / migrating public/scripts/adminion.js into lib/realtime.js
-* added verifyPassword field to views/register.jade
-* added debug configuration option to README.md
+ `MongoStore` now uses the existing `mongoose_connection` rather than hard-coded `'adminion'`
+* created a bunch of `/games` portals 
+* `debug` is now a module with `vars()` and `msg()` to be used as event handlers to optionally ouput debug information to STDOUT
+* fixed problem with really short sessions: `session.cookie.maxAge` takes milliseconds not seconds
+* ready to start developing UI / migrating `public/scripts/adminion.js` into `lib/realtime.js`
+* added `verifyPassword` field to `views/register.jade`
+* added `debug` configuration option to `README.md`
 
 ### TODO: 
 * realtime library will consist of two main properties: 1) game, and 2) chat
@@ -16,41 +28,41 @@
 * create script to ensure passwords match when registering
 
 # v0.3.0
-* adminion is now an EventEmitter.
-* db library is now an EventEmitter
+* adminion is now an `EventEmitter`.
+* db library is now an `EventEmitter`
 * sessions work!
 * user registration, logon, logoff all work
 * routes shall now be referred to as "Portals" because IT magic is cool
 * one gameServer will host a variable nubmer games created by users
-* created function logWrapper() which is optionally set as event handler for adminion "log" event if debug is enabled in the configuration
+* created function `logWrapper()` which is optionally set as event handler for adminion "log" event if debug is enabled in the configuration
 
 ### Todo
-* create GameSchema
+* create `GameSchema`
 * define game portals: 
-  * /games
-  * /games/create
-  * /games/:game
-  * /games/:game/join
-  * /games/:game/lobby
-  * /games/:game/play
-  * /games/:game/spectate
+  * `/games`
+  * `/games/create`
+  * `/games/:game`
+  * `/games/:game/join`
+  * `/games/:game/lobby`
+  * `/games/:game/play`
+  * `/games/:game/spectate`
 * develop layouts and views
 * build library to support user-interface
-* port game library to GameSchema
-* create CardSchema
+* port game library to `GameSchema`
+* create `CardSchema`
 * define card portals:
-  * /cards
-  * /cards/create
-  * /cards/import
-  * /cards/export
-  * /cards/:card
-  * /cards/:card/update
-  * /cards/:card/delete
+  * `/cards`
+  * `/cards/create`
+  * `/cards/import`
+  * `/cards/export`
+  * `/cards/:card`
+  * `/cards/:card/update`
+  * `/cards/:card/delete`
   
 
 
 ## v0.2.4
-* overhauled README.md, now its actually a nice readme 
+* overhauled `README.md`, now its actually a nice readme 
 * zane uploaded graphical card selector
 * renamed `https` configuration option to `ssl` is in `config.json` for consistency
 * created `CHANGES.md` (see this file)

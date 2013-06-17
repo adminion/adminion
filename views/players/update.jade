@@ -1,0 +1,35 @@
+extends layout
+
+block content
+	#content
+		h2 Update Player
+		
+		if (err)
+			p.err=err
+
+		form(action='/Players/'+player.email + '/Update', method='POST')
+			table
+				tbody
+					tr
+						td: label(for='FirstName') First Name: 
+						td: input(type='text', name='firstName', id='firstName', value=player.firstName)
+					tr
+						td: label(for='LastName') Last Name: 
+						td: input(type='text', name='lastName', id='lastName', value=player.lastName)
+					tr
+						td: label(for='email') Email:
+						td: input(type='text', name='email', id='email', value=player.email, disabled='disabled')
+					tr
+						td: label(for='password') Password: 
+						td: input(type='password', name='password', id='password')
+					// need to implement form validator to verify their passwords match
+					tr
+						td: label(for='verifyPassword') Verify Password: 
+						td: input(type='password', name='verifyPassword', id='verifyPassword')
+					tr
+						td: label(for='handle') Handle: 
+						td: input(type='text', name='handle', id='handle', value=player.handle)		
+			p
+				input(type='submit', value='Update')
+			p
+				a(href="/Logon") Logon

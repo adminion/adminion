@@ -2,12 +2,15 @@ extends layout
 
 block content
 	#content
-		h2 Games: 
+		h2 Games:
+			&nbsp;[&nbsp;
+			a(href="/Games/Create") Create Game
+			&nbsp;]&nbsp;
 			ol
-				each id, name in games
+				each game in games
 					li 
-						a(href='/games/' + id) #{name}
+						a(href='/Games/' + game['_id']) #{game.name}
 						&nbsp;[&nbsp;
-						a(href='/games/' + id + '/join') Join
+						a(href='/Games/' + game['_id'] + '/Join') Join
 						&nbsp;][&nbsp;
-						a(href='/games/' + id + '/spectate') Spectate]
+						a(href='/Games/' + game['_id'] + '/Spectate') Spectate]

@@ -10,23 +10,25 @@ var passportLocalMongoose = require('passport-local-mongoose');
 module.exports = function(mongoose) {
 	
 	// define the PlayerSchema
+	// username, password, etc are added by passportLocalMongoose plugin
 	var PlayerSchema = new mongoose.Schema({
-		firstName: String,
-		lastName: String,
-		handle: {type: String, unique : true},
-		stats: {
-			created : Date,
-			gamesPlayed: Number,
-			gamesWon: Number,
-			mostPoints: Number,
-			totalPoints: Number,
-			totalPlayTime: Number
+		admin: { type: Boolean, default: false }
+		, firstName: 	{ type: String, required: true }
+		, lastName: { type: String, required: true }
+		, handle: 	{ type: String, required: true, unique : true}
+		, stats: {
+			created : 				{ type: Date, 	default: new Date() }
+			, gamesPlayed: 		{ type: Number, default: 0 }
+			, gamesWon: 			{ type: Number, default: 0 }
+			, mostPoints: 		{ type: Number, default: 0 }
+			, totalPoints: 		{ type: Number, default: 0 }
+			, totalPlayTime: 	{ type: Number, default: 0 }
 		}
 	});
 	
 	// now plugin the passportLocalMongoose functionality
 	PlayerSchema.plugin(passportLocalMongoose, { usernameField : 'email' });
-
+	
 	// and finally return a model created from PlayerSchema
 	return mongoose.model('Player', PlayerSchema);
 };

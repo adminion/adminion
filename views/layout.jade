@@ -13,25 +13,37 @@ html
 						block banner
 							#banner
 								h1
-									a(href='/') #{env.serverName}
+									#breadcrumbs
+										- var breadcrumbs = request.url.replace(/\?.*$/, '')
+										- breadcrumbs = breadcrumbs.split('/')
+										- each crumb, id in breadcrumbs
+											- if (!id)
+												a(href='/') #{env.serverName}
+											- else
+												- if (!!crumb)
+													- var url = ''
+													&nbsp;/&nbsp;
+													- for (var i=1; i<=id	; i++)
+														- url += '/' + breadcrumbs[i]
+													a(href=url) #{crumb}
 						block session
 							#session
 								if (request.session.passport.user)
 									span Logged on as 
-										a(href='/players/' + request.session.passport.user) #{request.session.passport.user} 
-										[&nbsp;
-										a(href='/logoff') Logoff
-										&nbsp;]
+										a(href='/Players/' + request.session.passport.user) #{request.session.passport.user}
+										&nbsp;[&nbsp;
+										a(href='/Logoff') Logoff
+										&nbsp;]&nbsp;
 								else
 									span Not logged on. 
 										[&nbsp; 
-										a(href='/logon?redir=' + request.url) Logon
+										a(href='/Logon?redir=' + request.url) Logon
 										&nbsp;]
 				#body
 					block body
 						block menu
 							#menu
-								if (links)
+								if (links && request.session.passport.user)
 									ul
 										each url, title in links
 											li: a(href=url) #{title}
