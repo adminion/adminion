@@ -2,11 +2,13 @@ extends layout
 block content
 	#content
 		h2=player.handle
-			- if (request.user.admin || player.email === request.user.email)
+			if (request.user.admin || player.email === request.user.email)
 				&nbsp;[&nbsp;
-				a(href='/Players/'+player.email+'/Update') Update Info
+				a(href='/players/'+player.email+'/update') Update Info
 				&nbsp]&nbsp;
-		ul
-			li First Name: #{player.firstName}
-			li Last Name: #{player.lastName}
-			li Email Address: #{player.email}
+		table
+				tbody
+					- each stat, name in player.playerStats
+						tr
+							td=name
+							td=stat

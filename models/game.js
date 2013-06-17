@@ -17,6 +17,7 @@ module.exports = function(mongoose) {
 			, toWin: 			{ type: Number, default: 3 }
 			, timeLimit: 	{ type: Number, default: 0 }
 		}
+		, status: { type: String, default: 'lobby' }
 		, log: {
 			chat: 		{ type: Array, default: new Array() }
 			, game: 	{ type: Array, default: new Array() }

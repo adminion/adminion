@@ -3,7 +3,7 @@ extends layout
 block content
 	#content
 		h2 Create Game
-		form(action='/Games/Create', method='POST')
+		form(action='/games', method='POST')
 			p
 				label(for='name') Name: 
 				input(type='text', name='name', id='name')

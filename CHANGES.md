@@ -1,15 +1,16 @@
 
 ## v0.3.2
 * added breadcrumb support to `view/layout.jade`
-* updated `POST /games/create` to create a game and redirect request to `/games/:gameId`
-* updated `GET /games/:gameId` to lookup and pass the requested game to `games/game.jade`
 * updated `GET /games` to properly display all games by their unique name
-* updated `GET/POST /register` to GET and POST `/players/create`
-* GET and `POST /players/create` now requrires authorization
+* updated `GET /games/create` require entering the player's password twice
+* updated `POST /games` to create a game and redirect request to `/games/:gameId`
+* updated `GET /games/:gameId` to lookup and pass the requested game to `games/game.jade`
+* updated `GET /games/:gameId/join` to allow users to join a game
+* updated `GET/POST /register` to GET and POST `/players`
 * created `GET /players/:email/update` to display update user info form
 * created `POST /players/:email/update` to update the player
-* Created `GameSchema` probably in v0.3.1, but i'll just say now
-* updated `POST /games/:gameId/join` to allow users to join a game
+* created `GameSchema` probably in v0.3.1, but i'll just say now
+* now `GET` and `POST` requests for `/players/create` requrire authorization
 
 ## v0.3.1
 * replacing hard-coded settings with configuration values

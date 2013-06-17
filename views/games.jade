@@ -4,13 +4,12 @@ block content
 	#content
 		h2 Games:
 			&nbsp;[&nbsp;
-			a(href="/Games/Create") Create Game
+			a(href="/games/create") Create Game
 			&nbsp;]&nbsp;
 			ol
 				each game in games
 					li 
-						a(href='/Games/' + game['_id']) #{game.name}
+						a(href='/games/' + game['_id']) #{game.name}
 						&nbsp;[&nbsp;
-						a(href='/Games/' + game['_id'] + '/Join') Join
-						&nbsp;][&nbsp;
-						a(href='/Games/' + game['_id'] + '/Spectate') Spectate]
+						a(href='/games/' + game['_id'] + '/join') Join
+						&nbsp;]&nbsp;

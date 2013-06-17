@@ -2,8 +2,8 @@
 html
 	head
 		block head
-			link(rel='stylesheet', href='/stylesheets/styles.css')
-			script(type="text/javascript", src='/scripts/jquery-1.8.3.min.js')
+			// link(rel='stylesheet', href='/stylesheets/styles.css')
+			script(type="text/javascript", src='/scripts/jquery.js')
 			title= env.serverName
 	body
 		#wrapper
@@ -12,39 +12,43 @@ html
 					block header
 						block banner
 							#banner
+								// this would be a good place for a banner image
+						block breadcrumbs
+							#breadcrumbs
+								// breadcrumbs leave a trail as players navigate the server
 								h1
-									#breadcrumbs
-										- var breadcrumbs = request.url.replace(/\?.*$/, '')
-										- breadcrumbs = breadcrumbs.split('/')
-										- each crumb, id in breadcrumbs
-											- if (!id)
-												a(href='/') #{env.serverName}
-											- else
-												- if (!!crumb)
-													- var url = ''
-													&nbsp;/&nbsp;
-													- for (var i=1; i<=id	; i++)
-														- url += '/' + breadcrumbs[i]
-													a(href=url) #{crumb}
+									- var breadcrumbs = request.url.replace(/\?.*$/, '')
+									- breadcrumbs = breadcrumbs.split('/')
+									- each crumb, id in breadcrumbs
+										if (!id)
+											a(href='/') #{env.serverName}
+										else
+											if (!!crumb)
+												- var url = ''
+												&nbsp;/&nbsp;
+												- for (var i=1; i<=id	; i++)
+													- url += '/' + breadcrumbs[i]
+													- crumb = crumb.charAt(0).toUpperCase() + crumb.slice(1)
+												a(href=url) #{crumb}
 						block session
 							#session
 								if (request.session.passport.user)
 									span Logged on as 
-										a(href='/Players/' + request.session.passport.user) #{request.session.passport.user}
+										a(href='/players/' + request.session.passport.user) #{request.session.passport.user}
 										&nbsp;[&nbsp;
-										a(href='/Logoff') Logoff
+										a(href='/logoff') Logoff
 										&nbsp;]&nbsp;
 								else
 									span Not logged on. 
 										[&nbsp; 
-										a(href='/Logon?redir=' + request.url) Logon
+										a(href='/logon?redir=' + request.url) Logon
 										&nbsp;]
 				#body
 					block body
 						block menu
 							#menu
 								if (links && request.session.passport.user)
-									ul
+									ul#links
 										each url, title in links
 											li: a(href=url) #{title}
 						block main

@@ -3,5 +3,7 @@ extends layout
 block content
 	#content
 		h2 #{game.name}
-		p 
-			a(href='/Games/' + game['_id'] + '/Join') Join Game
+		h3 Status: #{game.status}
+			if game.players.length < game.config.numPlayers
+				p
+					a(href='/games/' + game['_id'] + '/join') Join Game
