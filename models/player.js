@@ -16,6 +16,7 @@ module.exports = function(mongoose) {
 		, firstName: 	{ type: String, required: true }
 		, lastName: { type: String, required: true }
 		, handle: 	{ type: String, required: true, unique : true}
+		, cards: { type: Array, default: new Array() }
 		, playerStats: {
 			created : 				{ type: Date, 	default: new Date() }
 			, gamesPlayed: 		{ type: Number, default: 0 }

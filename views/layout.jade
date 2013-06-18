@@ -24,8 +24,8 @@ html
 											a(href='/') #{env.serverName}
 										else
 											if (!!crumb)
-												- var url = ''
 												&nbsp;/&nbsp;
+												- var url = ''
 												- for (var i=1; i<=id	; i++)
 													- url += '/' + breadcrumbs[i]
 													- crumb = crumb.charAt(0).toUpperCase() + crumb.slice(1)

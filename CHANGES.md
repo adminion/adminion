@@ -11,6 +11,7 @@
 * created `POST /players/:email/update` to update the player
 * created `GameSchema` probably in v0.3.1, but i'll just say now
 * now `GET` and `POST` requests for `/players/create` requrire authorization
+* make stats work on `views/players/player.jade`
 
 ## v0.3.1
 * replacing hard-coded settings with configuration values
