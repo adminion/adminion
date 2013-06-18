@@ -1,6 +1,6 @@
 extends layout
 block content
-	#content
+	#contents
 		h2=player.handle
 			if (request.user.admin || player.email === request.user.email)
 				&nbsp;[&nbsp;
@@ -8,7 +8,13 @@ block content
 				&nbsp]&nbsp;
 		table
 				tbody
-					- each stat, name in player.playerStats
+					- var hideKeys = ['salt', 'hash', '_id', '__v', 'playerStats', 'admin']
+					each value, key in player.toObject()
+						if 0 > hideKeys.indexOf(key)
+							tr
+								td=key
+								td=value
+					each value, key in player.playerStats.toObject()
 						tr
-							td=name
-							td=stat
+							td=key
+							td=value
