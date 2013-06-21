@@ -3,151 +3,262 @@
 <head>
 </head>
 <body>
-<script src="cards.js">
-</script>
-<script src="cardDisplay.js">
-</script> 
+<script src="cards.js"></script>
+<script src="cardDisplay.js"></script> 
 <link rel='stylesheet' type='text/css' href='stylesheet.css'/>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
 <script type="text/javascript" src="jqueryness.js"></script>
-<script type="text/javascript" src="main.js"></script>
 
 <div id="form">
 
-<div id="chosenCards"></div>
-<h1>Card Selecting!</h1>
-Card Sets to Choose From:<BR>
+	<div id="chosenCards"></div>
+	<h1>Card Selecting!</h1>
+	<ul>
+		<li>
+			Card Sets to Choose From:
 
-<form name="selectedSets">
-<input type="checkbox" name="set" value="Dominion"checked>Dominion<br>
-<input type="checkbox" name="set" value="Intrigue">Intrigue<br>
-<input type="checkbox" name="set" value="Seaside">Seaside<br>
-<input type="checkbox" name="set" value="Alchemy">Alchemy<br>
-<input type="checkbox" name="set" value="Prosperity">Prosperity<br>
-<input type="checkbox" name="set" value="Cornucopia">Cornucopia<br>
-<input type="checkbox" name="set" value="Hinterlands">Hinterlands<br>
-<input type="checkbox" name="set" value="darkAges">Dark Ages<br>
-</form>
+			<BR>
+			<form name="selectedSets">
+				<ul>
+					<li>
+						<input type="checkbox" name="set" value="Dominion">
+							Dominion
+						</input>
+						<br>
+					<li>
+						<input type="checkbox" name="set" value="Intrigue">
+							Intrigue
+						</input>
+						<br>
+					<li>
+						<input type="checkbox" name="set" value="Seaside">
+							Seaside
+						</input>
+						<br>
+					<li>
+						<input type="checkbox" name="set" value="Alchemy">
+							Alchemy
+						</input>
+						<br>
+					<li>
+						<input type="checkbox" name="set" value="Prosperity"checked>
+							Prosperity
+						</input>
+						<br>
+						<ul>
+							<li>
+								<input type="checkbox" name="prosp$" id="prosp$">
+									Max Treasure Cards
+								</input>
+						</ul>
+					<li>
+						<input type="checkbox" name="set" value="Cornucopia">
+							Cornucopia
+						</input>
+						<br>
+					<li>
+						<input type="checkbox" name="set" value="Hinterlands">
+							Hinterlands
+						</input>
+						<br>
+					<li>
+						<input type="checkbox" name="set" value="darkAges">
+							Dark Ages
+						</input>
+						<br>
+				</ul>
+			</form>
+		<li>
+			<br>
+			# of Kingdom Cards in Supply:
+			<ul>
+				<li>
+					<form name="cardNum">
+						<input id="number"type="number" name="number" value=10>
+						</input>
+					</form>
+			</ul>
+			<br>
+		<li>
+			<ul>
+				<li>
+					<form name="costSelect">
+						<input id="toggle"type="checkbox" name="used" >
+							# of cards/cost
+						</input>
+					</form>
+					<ul>
+						<li>
+							<div id="costBox">
+								<div id="cost">
+									2
+									<img src="coin.jpg" id="coin">
+									<form 		name=		"price2" 	>
+										<input 	id=			"costs" 
+														type=		"number" 
+														min=		'0' 
+														max=		cardNum 
+														value=	'2' 
+														name=		'num2'		>
+										</input>
+									</form>
+								</div>
+								<div id="cost">
+									3
+									<img src="coin.jpg" id="coin">
+									<form 		name=		"price3" 	>
+										<input 	id=			"costs" 
+														type=		"number" 
+														min=		'0' 
+														max=		cardNum 
+														value=	'3' 
+														name=		'num3'		>
+										</input>
+									</form>
+								</div>
+								<div id="cost">
+									4
+									<img src="coin.jpg" id="coin">
+									<form 		name=		"price4" 	>
+										<input 	id=			"costs" 
+														type=		"number" 
+														min=		'0' 
+														max=		cardNum 
+														value=	'2' 
+														name=		'num4'		>
+										</input>
+									</form>
+								</div>
+								<div id="cost">
+									5
+									<img src="coin.jpg" id="coin">
+									<form 		name=		"price5" 	>
+										<input 	id=			"costs" 
+														type=		"number" 
+														min=		'0' 
+														max=		cardNum 
+														value=	'2' 
+														name=		'num5'		>
+										</input>
+									</form>
+								</div>
+								<div id="cost">
+									6
+									<img src="coin.jpg" id="coin">
+									<form 		name=		"price6" 	>
+										<input 	id=			"costs" 
+														type=		"number" 
+														min=		'0'
+														max=		cardNum
+														value=	'1' 
+														name=		'num6'		>
+										</input>
+									</form>
+								</div>
+							</div>
+					</ul>
 
+				<li>
+					<form name="cardType">
+						<input type="checkbox" name="action" checked>
+							Ensure + Actions
+						</input>
+						<br>
+						<input type="checkbox" name="twoActions"checked>
+							Ensure +2 Actions
+						</input>
+						<br>
+						<input type="checkbox" name="buy"checked>
+							Ensure + Buys
+						</input>
+						<br>
+						<input type="checkbox" name="card" checked>
+							Ensure + Cards
+						</input>
+						<br>
+						<input type="checkbox" name="trash" checked>
+							Ensure Trashing
+						</input>
+					</form>
+				</ul> 
+					<BR>
+		<li>
+			Choice Type:
+			<ul>
+				<form name="choose">
+					<li>
+						<input 	type="radio" 
+										name="type" 
+										value="Random" 
+										checked>
+							Random 
+						</input>
+						<br>
+					<li>	
+						<input 	type="radio" 
+										name="type" 
+										value="Custom">
+							Custom
+						</input>
+			</form>
+			<button name="choose" 
+							onclick="chooseCards()">
+				choose!
+			</button>
+			
+			</ul>
+			<BR>
 
+		<li>
+			Treasure Cards:
+			<ul>	
+				<li>
+					<form name="treasure">
+						<input type="checkbox" name="type" value="Copper"checked>
+							Copper
+						</input>
+						<input type="checkbox" name="type" value="Silver"checked>
+							Silver
+						</input>
+						<br>
+						<input type="checkbox" name="type" value="Gold"checked>
+							Gold
+						</input>
+						<input type="checkbox" name="type" value="Platinum">
+							Platinum
+						</input>
 
-<BR>
-Treasure Cards:
-
-<form name="treasure">
-	<input type="checkbox" name="type" value="Copper"checked>Copper</input>
-	<input type="checkbox" name="type" value="Silver"checked>Silver</input>
-	<input type="checkbox" name="type" value="Gold"checked>Gold</input>
-	<input type="checkbox" name="type" value="Platinum">Platinum</input>
-	<input type="checkbox" name="type" value="Copper">Curse</input>
-</form>
-<br>
-Victory Cards:
-<form name="treasure">
-	<input type="checkbox" name="type" value="Estate"checked>Estate</input>
-	<input type="checkbox" name="type" value="Duchy"checked>Duchy</input>
-	<input type="checkbox" name="type" value="Province"checked>Province</input>
-	<input type="checkbox" name="type" value="Colony">Colony</input>
-</form>
-
-<br>
-# of Kingdom Cards in Supply:
-<form name="cardNum">
-	<input id="number"type="number" name="number" value=10>
-	</input>
-</form>
-<br>
-<form name="costSelect">
-	<input id="toggle"type="checkbox" name="used" >
-		# of cards/cost
-	</input>
-</form>
-
-<div id="costBox">
-	<div id="cost">
-2<img src="coin.jpg" id="coin">
-		<form 		name=		"price2" 	>
-			<input 	id=			"costs" 
-							type=		"number" 
-							min=		'0' 
-							max=		cardNum 
-							value=	'2' 
-							name=		'num2'		>
-			</input>
-		</form>
-	</div>
-	<div id="cost">
-3<img src="coin.jpg" id="coin">
-		<form 		name=		"price3" 	>
-			<input 	id=			"costs" 
-							type=		"number" 
-							min=		'0' 
-							max=		cardNum 
-							value=	'3' 
-							name=		'num3'		>
-			</input>
-		</form>
-	</div>
-	<div id="cost">
-4<img src="coin.jpg" id="coin">
-
-		<form 		name=		"price4" 	>
-			<input 	id=			"costs" 
-							type=		"number" 
-							min=		'0' 
-							max=		cardNum 
-							value=	'2' 
-							name=		'num4'		>
-			</input>
-		</form>
-	</div>
-
-	<div id="cost">
-5<img src="coin.jpg" id="coin">
-		<form 		name=		"price5" 	>
-			<input 	id=			"costs" 
-							type=		"number" 
-							min=		'0' 
-							max=		cardNum 
-							value=	'2' 
-							name=		'num5'		>
-			</input>
-		</form>
-	</div>
-
-	<div id="cost">
-6<img src="coin.jpg" id="coin">
-		<form 		name=		"price6" 	>
-			<input 	id=			"costs" 
-							type=		"number" 
-							min=		'0'
-							max=		cardNum
-							value=	'1' 
-							name=		'num6'		>
-			</input>
-		</form>
-	</div>
+					</form>
+			</ul>
+			<br>
+		<li>
+			Victory Cards:
+			<ul>
+				<li>
+					<form name="victory">
+						<input type="checkbox" name="type" value="Estate"checked>
+							Estate
+						</input>
+						<input type="checkbox" name="type" value="Duchy"checked>
+							Duchy
+						</input>
+						<br>
+						<input type="checkbox" name="type" value="Province"checked>
+							Province
+						</input>
+						<input type="checkbox" name="type" value="Colony">
+							Colony
+						</input>
+						<input type="checkbox" name="type" value="Curse">
+							Curse
+						</input>
+					</form>
+			</ul>
+		<br>
+		<li>
+			<a href="../gamedisplay.html"><button onclick='startGame()'>START GAME</button></a>
 </div>
 
-
-</form> 
-<BR>
-
-<form name="choose">
-<input type="radio" 
-name="type" 
-value="Random" 
-checked>Random <br>
-<input type="radio" 
-name="type" 
-value="Custom">Custom
-</form>
-
-<button name="choose" 
-onclick="chooseCards()">
-choose!
-</button>
-</div>
 
 <div id="cardDisplay"></div>
 

@@ -34,6 +34,9 @@
 	width:35px;
 
 }
+ul	{
+    list-style-type: none;
+}
 #form {
 	margin:30px;
 }
