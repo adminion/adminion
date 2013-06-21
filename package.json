@@ -7,7 +7,7 @@
 		"url": "git://github.com/adminion/adminion.git"
 	},
 	"authors": [
-		"Jeff Harris <techjeffharris@gmail.com> (http://intangiblehost.net)"
+		"Jeff Harris <techjeffharris@gmail.com> (http://intangiblehost.net)",
 		"Zane DeSantis <linkinlogs4life@gmail.com>"
 	],
 	"main": "lib/",
@@ -22,7 +22,6 @@
 		"passport-local-mongoose":"*"
 	},
   "scripts": {
-  	"bootstrap": "./bootstrap.sh", 
     "start": "./adminion.sh"    
   }
 }
