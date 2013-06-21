@@ -1,0 +1,58 @@
+#cardDisplay {
+
+	color:red;
+	width:200px;
+
+	margin:50px;
+	}
+
+.card 	{
+	color:black;
+	background-color:red;
+	width:120px;
+	height:30px;
+	display:inline;
+	margin:6px;
+
+	font-size:20px;
+
+	}
+#cost	{
+
+	border:2px solid black;
+	width:70px;
+	height:20px;
+	padding:3px;
+
+}
+#coin {
+	height:20px;
+
+}
+#number {
+
+	width:35px;
+
+}
+ul	{
+    list-style-type: none;
+}
+#form {
+	margin:30px;
+}
+#chosenCards
+	{
+	float:right;
+	clear:both;
+
+	width:750px;
+
+	display:inline-block;
+
+	}
+#costs 	{
+	width:30px;
+	float:right;
+	margin-top:-26px;
+	
+	}
