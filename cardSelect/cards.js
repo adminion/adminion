@@ -473,12 +473,6 @@ var Alchemy = [
 	instructions:	"+1 Buy; +$1. When you discard this from play, you may put one of your Treasures from play on top of your deck.",
 	image:		"http://dominion.diehrstraits.com/scans/alchemy/herbalist.jpg"  },
 
-	{name:		"Potion",
-	type:		"Treasure",	
-	cost:		4,
-	instructions:	"Worth 1?.",
-	image:		"http://dominion.diehrstraits.com/scans/alchemy/potion.jpg"   },
-
 	{name:		"Apprentice",
 	type:		"Action",
 	cost:		5,	
@@ -552,163 +546,181 @@ var Prosperity = [
 	type:		"Treasure",
 	cost:		3,
 	instructions:	"Worth $1. When you play this, reveal cards from your deck until you reveal a Treasure. Discard it or trash it. Discard the other cards.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/loan.jpg"  },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/loan.jpg"  },
 
 	{name:		"Trade Route",
 	type:		"Action",
 	cost:		3,
 	instructions:	"+1 Buy; +$1 per token on the Trade Route mat. Trash a card from your hand.Setup: Put a token on each Victory card Supply pile. When a card is gained from that pile, move the token to the Trade Route mat.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/traderoute.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/traderoute.jpg" },
 
 	{name:		"Watchtower",
 	type:		"Action-Reaction",
 	cost:		3,
 	instructions:	"Draw until you have 6 cards in hand. When you gain a card, you may reveal this from your hand. If you do, either trash that card, or put it on top of your deck.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/watchtower.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/watchtower.jpg" },
 
 	{name:		"Bishop",
 	type:		"Action",
 	cost:		4,
 	instructions:	"+$1; +1 VP token. Trash a card from your hand. +VP tokens equal to half its cost in coins, rounded down. Each other player may trash a card from his hand.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/bishop.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/bishop.jpg" },
 
 	{name:		"Monument",
 	type:		"Action",
 	cost:		4,
 	instructions:	"+$2; +1 VP token.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/monument.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/monument.jpg" },
 
 	{name:		"Quarry",
 	type:		"Treasure",
 	cost:		4,
 	instructions:	"Worth $1. While this is in play, Action cards cost $2 less, but not less than $0.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/quarry.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/quarry.jpg" },
 
 	{name:		"Talisman",
 	type:		"Treasure",
 	cost:		4,
 	instructions:	"Worth $1. While this is in play, when you buy a card costing $4 or less that is not a Victory card, gain a copy of it.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/talisman.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/talisman.jpg" },
 
 	{name:		"Worker's Village",
 	type:		"Action",
 	cost:		4,
 	instructions:	"+1 Card; +2 Actions, +1 Buy.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/workersvillage.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/workersvillage.jpg" },
 
 	{name:		"City",
 	type:		"Action",
 	cost:		5,
 	instructions:	"+1 Card; +2 Actions. If there are one or more empty Supply piles, +1 Card. If there are two or more, +$1 and +1 Buy.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/city.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/city.jpg" },
 
 	{name:		"Contraband",
 	type:		"Treasure",
 	cost:		5,
 	instructions:	"Worth $3. +1 Buy. When you play this, the player to your left names a card. You can't buy that card this turn.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/contraband.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/contraband.jpg" },
 
 	{name:		"Counting House",
 	type:		"Action",
 	cost:		5,
 	instructions:	"Look through your discard pile, reveal any number of Copper cards from it, and put them into your hand.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/countinghouse.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/countinghouse.jpg" },
 
 	{name:		"Mint",
 	type:		"Action",
 	cost:		5,
 	instructions:	"You may reveal a Treasure card from your hand. Gain a copy of it. When you buy this, trash all Treasures you have in play.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/mint.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/mint.jpg" },
 
 	{name:		"Mountebank",
 	type:		"Action-Attack",
 	cost:		5,
 	instructions:	"+$2. Each other player may discard a Curse. If he doesn't, he gains a Curse and a Copper.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/mountebank.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/mountebank.jpg" },
 
 	{name:		"Rabble",
 	type:		"Action-Attack",
 	cost:		5,
 	instructions:	"+3 Cards. Each other player reveals the top 3 cards of his deck, discards the revealed Actions and Treasures, and puts the rest back on top in any order he chooses.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/rabble.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/rabble.jpg" },
 
 	{name:		"Royal Seal",
 	type:		"Treasure",
 	cost:		5,
 	instructions:	"Worth $2. While this is in play, when you gain a card, you may put that card on top of your deck.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/royalseal.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/royalseal.jpg" },
 
 	{name:		"Vault",
 	type:		"Action",
 	cost:		5,
 	instructions:	"+2 Cards. Discard any number of cards. +$1 per card discarded. Each other player may discard 2 cards. If he does, he draws a card.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/vault.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/vault.jpg" },
 
 	{name:		"Venture",
 	type:		"Treasure",
 	cost:		5,
 	instructions:	"Worth $1. When you play this, reveal cards from your deck until you reveal a Treasure. Discard the other cards. Play that Treasure.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/venture.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/venture.jpg" },
 
 	{name:		"Goons",
 	type:		"Action-Attack",
 	cost:		6,
 	instructions:	"+1 Buy; +$2. Each other player discards down to 3 cards in hand. While this is in play, when you buy a card, +1 VP token.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/goons.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/goons.jpg" },
 
 	{name:		"Grand Market",
 	type:		"Action",
 	cost:		6,
 	instructions:	"+1 Card; +1 Action; +1 Buy; +$2. You can't buy this if you have any Copper in play.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/grandmarket.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/grandmarket.jpg" },
 
 	{name:		"Hoard",
 	type:		"Treasure",
 	cost:		6,
 	instructions:	"Worth $2. While this is in play, when you buy a Victory card, gain a Gold.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/hoard.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/hoard.jpg" },
 
 	{name:		"Bank",
 	type:		"Treasure",
 	cost:		7,
 	instructions:	"Worth $?. When you play this, it's worth $1 per Treasure card you have in play (counting this).",
-	image:		"http://dominion.diehrstraits.com/scans/properity/bank.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/bank.jpg" },
 
 	{name:		"Expand",
 	type:		"Action",
 	cost:		7,
 	instructions:	"Trash a card from your hand. Gain a card costing up to $3 more than the trashed card.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/expand.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/expand.jpg" },
 
 	{name:		"Forge",
 	type:		"Action",
 	cost:		7,
 	instructions:	"Trash any number of cards from your hand. Gain a card with cost exactly equal to the total cost in coins of the trashed cards.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/forge.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/forge.jpg" },
 
 	{name:		"King's Court",
 	type:		"Action",
 	cost:		7,
 	instructions:	"You may choose an Action card in your hand. Play it three times.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/kingscourt.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/kingscourt.jpg" },
 
 	{name:		"Peddler",
 	type:		"Action",
-	cost:		"8*",
+	cost:		8,
 	instructions:	"+1 Card; +1 Action; +$1. During your Buy phase, this costs $2 less per Action card you have in play, but not less than $0.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/peddler.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/peddler.jpg" }
 
+
+
+]
+var Treasure = [
+	{name:		"Copper",
+	type:		"Treasure",
+	cost:		0,
+	value:		1,
+	image:		"http://dominion.diehrstraits.com/scans/basecards/copper.jpg" },
+	{name:		"Silver",
+	type:		"Treasure",
+	cost:		3,
+	value:		2,
+	image:		"http://dominion.diehrstraits.com/scans/basecards/silver.jpg" },
+	{name:		"Gold",
+	type:		"Treasure",
+	cost:		6,
+	value:		3,
+	image:		"http://dominion.diehrstraits.com/scans/basecards/gold.jpg" },
 	{name:		"Platinum",
 	type:		"Treasure",
 	cost:		9,
-	instructions:	"Worth $5.",
-	image:		"http://dominion.diehrstraits.com/scans/properity/platinum.jpg" },
-
-	{name:		"Colony",
-	type:		"Victory",
-	cost:		11,
-	instructions:	"10 Victory Points",
-	image:		"http://dominion.diehrstraits.com/scans/properity/colony.jpg" },
+	value:		5,
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/platinum.jpg" },
+	{name:		"Potion",
+	type:		"Treasure",	
+	cost:		4,
+	instructions:	"Worth 1?.",
+	image:		"http://dominion.diehrstraits.com/scans/alchemy/potion.jpg"   }
 ]
 
 var Cornucopia = [
@@ -1213,7 +1225,7 @@ var darkAges = [
 
 	]
 
-ruins = [			
+var ruins = [			
 //50 total, 10 of each type, shuffled into a pile of ten per opponent, like Curses
 
 
@@ -1337,7 +1349,29 @@ var shelters = [
 ]
 
 
+var Victory = 	[	
+	{name:		"Estate",
+	type:		"Victory",
+	cost:		2,
+	value:		1,
+	image:		"http://dominion.diehrstraits.com/scans/basecards/estate.jpg" },
+	{name:		"Duchy",
+	type:		"Victory",
+	cost:		5,
+	value:		3,
+	image:		"http://dominion.diehrstraits.com/scans/basecards/duchy.jpg" },
+	{name:		"Province",
+	type:		"Victory",
+	cost:		8,
+	value:		6,
+	image:		"http://dominion.diehrstraits.com/scans/basecards/province.jpg" },
+	{name:		"Colony",
+	type:		"Victory",
+	cost:		11,
+	value:		10,
+	image:		"http://dominion.diehrstraits.com/scans/basecards/colony.jpg" },
 
+]
 var promoCards = [
 
 	{name:		"Black Market",
