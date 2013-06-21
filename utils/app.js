@@ -1,8 +1,8 @@
 
-global.debug = require('./lib/debug');
+global.debug = require('../lib/debug');
 
 // load main library and controllers
-global.Adminion = require('./lib/');
+global.Adminion = require('../lib/');
 
 if (Adminion.config.debug) {
 	Adminion.on('listening', function() {
