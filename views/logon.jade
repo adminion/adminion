@@ -4,19 +4,24 @@ block nav
 block menu
 block content
 	#content
-		center
-			h1 Logon
-	
-			if (err)
-				p.err=err
-	
-			form(action='/auth', method='POST')
-				input(type='hidden', name='redir', value=redir)
-				p 
-					label(for='username') Username:
-					input(type='text', name='username', id='username')
-				p
-					label(for='password') Password: 
-					input(type='password', name='password', id='password')
-				p
-					input(type='submit')
+		h2 Logon
+			&nbsp;[&nbsp;
+			a(href='/Players/Create') Create Player
+			&nbsp;]&nbsp;
+		if (err)
+			p.err=err
+		if (request.query.err) 
+			strong.err=request.query.err
+
+		form(action='/Logon', method='POST')
+			input(type='hidden', name='redir', value=redir)
+			table
+				tbody
+					tr			
+						td: label(for='email') Email:
+						td: input(type='text', name='email', id='email')
+					tr
+						td: label(for='password') Password: 
+						td: input(type='password', name='password', id='password')
+			p
+				input(type='submit', value='Logon')

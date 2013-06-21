@@ -1,6 +1,7 @@
 {
-	"serverName" : 	"Adminion"
+	"debug" : 		true
+	, "serverName" : 	"Adminion"
 	, "host" : 		"localhost"
 	, "port" : 		"1337"
-	, "https" :		"true"
+	, "https" :		true
 }

@@ -1,4 +1,7 @@
+# we don't want git to track what modules we use.  we do that in package.json
+node_modules/*
 # stop git from considering whether or not i want to commit those darn gedit swap files
 *~
 # we don't want git keeping track of ssl keys and certs!
 .ssl/
+*.swp

@@ -1,14 +1,22 @@
 {
   "name": "adminion",
-  "version": "0.2.3",
+  "description": "Administrate your deck.", 
+  "version": "0.3.1",
+	"repository": "git://github.com/adminion/adminion.git",
+	"authors": [
+		"Jeff Harris <techjeffharris@gmail.com>"
+	],
+	"license": "BSD",
+	"dependencies": {
+		"connect-mongo": "*",
+		"express": "*",
+		"jade": "*",
+		"mongoose":"*",
+		"passport":"*",
+		"passport-local":"*",
+		"passport-local-mongoose":"*"
+	},
   "scripts": {
     "start": "./adminion.sh"
-  },
-  "dependencies": {
-    "express": "*",
-    "jade": "*",
-    "mongoose":"*",
-    "passport":"*",
-    "passport-local":"*"
   }
 }

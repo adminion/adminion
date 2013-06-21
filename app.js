@@ -1,45 +1,15 @@
 
-// load core node modules
-var http = require('http')
-	, https = require('https');
+global.debug = require('./lib/debug');
 
 // load main library and controllers
-var adminion = require('./lib/')
-	, game = require('./controllers/');
+global.Adminion = require('./lib/');
 
-// breaking main library into peices for easier, simpler, and smoother code
-var app = adminion.app
-	, auth = adminion.auth
-	, config = adminion.config
-	, env = adminion.env;
-
-// make the properties this object available as variables in all views
-app.locals = {env: env};
-
-// define all application routes
-app.get('/', game.get.root);
-app.get('/logon', game.get.logon);
-
-// note that this is a POST request...
-app.post('/auth', game.post.auth);
-
-app.get('/logoff', game.get.logoff);
-app.get('/join', auth.verify, game.get.joinGame);
-app.get('/lobby', auth.verify, game.get.lobby);
-app.get('/play', auth.verify, game.get.play);
-app.get('/spectate', auth.verify, game.get.spectate);
-
-// optionally we display our configuration settings for debugging purposes
-//console.log('app.js 62 - config', config);
-
-// if https was enabled in the config
-if (config.https) {
-	// create https server instance, then listen!
-	https.createServer(config.https, app).listen(config.port, app.listening);
-} else {
-	// create http server instance, then listen!
-	http.createServer(app).listen(config.port, app.listening);
+if (Adminion.config.debug) {
+	Adminion.on('listening', function() {
+//		debug.emit('msg', 'doing something after server has started listening...', 'app.js', 11);
+	});
 }
 
-// now we sit back and wait for requests!
+// now sit back and wait for requests
+Adminion.Start();
 
