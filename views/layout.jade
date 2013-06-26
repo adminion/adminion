@@ -3,8 +3,9 @@ html
 	head
 		block head
 			// link(rel='stylesheet', href='/stylesheets/styles.css')
-			script(type="text/javascript", src='/scripts/jquery.js')
-			title= env.serverName
+			title= adminion.env.serverName
+			script(type='appliation/ecmascript', src='/scripts/jquery.js')
+			block socketio
 	body
 		#wrapper
 			block wrapper
@@ -21,7 +22,7 @@ html
 									- breadcrumbs = breadcrumbs.split('/')
 									- each crumb, id in breadcrumbs
 										if (!id)
-											a(href='/') #{env.serverName}
+											a(href='/') #{adminion.env.serverName}
 										else
 											if (!!crumb)
 												&nbsp;/&nbsp;
@@ -47,9 +48,9 @@ html
 					block body
 						block menu
 							#menu
-								if (links && request.session.passport.user)
+								if (config.links && request.session.passport.user)
 									ul#links
-										each url, title in links
+										each url, title in config.links
 											li: a(href=url) #{title}
 						block main
 							#main

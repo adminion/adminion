@@ -1,4 +1,7 @@
 
+## v0.3.3
+* 
+
 ## v0.3.2
 * added breadcrumb support to `view/layout.jade`
 * updated `GET /games` to properly display all games by their unique name

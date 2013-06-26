@@ -1,22 +1,11 @@
-/** 
- * 	models/player.js - define the adminion Game Schema
- * 
- */
 
 // export the Game constructor
 module.exports = function(mongoose) {
 
-	// define the GameSchema
-	var GameSchema = new mongoose.Schema({
+	// define the SessionSchema
+	var SessionSchema = new mongoose.Schema({
 		name : { type: String, required: true, unique: true }
-		, players: { 
-			type: Array, default: [{
-				unique: true, default: {
-					email: { type: String, required: true}
-					, sid : { type: String, required: true}				
-				}
-			}]
-		}
+		, players: 	{ type: Array, default: new Array() }
 		, cards: 		{ type: Array, default: new Array() }
 		, trash: 		{ type: Array, default: new Array() }
 		, config: { 
@@ -34,6 +23,6 @@ module.exports = function(mongoose) {
 		}
 	});
 	
-	// and finally return a model created from GameSchema
-	return mongoose.model('Game', GameSchema);
+	// and finally return a model created from SessionSchema
+	return mongoose.model('Session', SessionSchema);
 };

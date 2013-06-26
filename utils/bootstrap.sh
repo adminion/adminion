@@ -1,6 +1,6 @@
 #!/bin/bash
 
-gen=./utils/gen-key-signed-cert.sh
+gen=../gen-key-signed-cert.sh
 
 # require root
 if [ $USER != "root" ]
@@ -32,4 +32,4 @@ case $1 in
 		echo "$0: error: unrecognized argument '$1'"
 esac
 
-nodejs utils/admin.js
+nodejs admin.js
