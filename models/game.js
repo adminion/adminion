@@ -9,6 +9,16 @@ module.exports = function(mongoose) {
 	// define the GameSchema
 	var GameSchema = new mongoose.Schema({
 		name : { type: String, required: true, unique: true }
+		, playerOne : { 
+			type: Object, 
+			required: true, 
+			unique: true, 
+			default : {
+				playerID : { type: String, required: true, unique: true},
+				remoteIP : { type: String, required: true, unique: true},
+				sessionID : { type: String, required: false, unique: true}
+			}
+		}
 		, players: { 
 			type: Array, default: [{
 				unique: true, default: {
@@ -20,8 +30,8 @@ module.exports = function(mongoose) {
 		, cards: 		{ type: Array, default: new Array() }
 		, trash: 		{ type: Array, default: new Array() }
 		, config: { 
-			numPlayers: 	{ type: Number, default: 4 }
-			, toWin: 			{ type: Number, default: 3 }
+			maxFriends: 	{ type: Number, default: 4 }
+			, toWin: 		{ type: Number, default: 3 }
 			, timeLimit: 	{ type: Number, default: 0 }
 		}
 		, status: { type: String, default: 'lobby' }

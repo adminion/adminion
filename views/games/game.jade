@@ -6,9 +6,5 @@ block content
 		h3 Status: #{game.status}
 		label(for="PlayersList") Players:
 		ul#PlayersList
-			- for (var i=0; i < game.players.length; i+=1) 
-				- console.log(game.players[i])
-				li #{game.players[i].email}, sid: #{game.players[i].sid}
-		if game.players.length < game.config.numPlayers
-			p
-				a(href='/games/' + game['_id'] + '/lobby') Enter Lobby
+		p
+			a(href='/games/' + game['_id'] + '/lobby') Enter Lobby

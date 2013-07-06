@@ -2,4 +2,5 @@ extends ../layout
 block socketio
 	script(src='/socket.io/socket.io.js')
 	script(src='/scripts/socket.js')
-	#gameID=game['_id']
+	if (!!game)
+		#gameID=game['_id']

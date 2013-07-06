@@ -17,7 +17,7 @@ html
 						block breadcrumbs
 							#breadcrumbs
 								// breadcrumbs leave a trail as players navigate the server
-								h1
+								h3
 									- var breadcrumbs = request.url.replace(/\?.*$/, '')
 									- breadcrumbs = breadcrumbs.split('/')
 									- each crumb, id in breadcrumbs
@@ -49,6 +49,8 @@ html
 						block menu
 							#menu
 								if (config.links && request.session.passport.user)
+									label(for='links') 
+										h3 Player's Menu:
 									ul#links
 										each url, title in config.links
 											li: a(href=url) #{title}
