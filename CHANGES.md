@@ -1,5 +1,4 @@
-
-## v0.4.0
+# v0.4.0
 * `lib/adminion.js` is now `lib/gameServer.js` and has had a MAJOR organizational overhaul.
 * integrated socket.io
 * when client connects to the lobby, they join the room whose name is the gameId
