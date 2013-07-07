@@ -20,11 +20,9 @@ module.exports = function(mongoose) {
 			}
 		}
 		, players: { 
-			type: Array, default: [{
-				unique: true, default: {
-					email: { type: String, required: true}
-					, sid : { type: String, required: true}				
-				}
+			type: Array, default: [{ 
+				email: { type: String, required: true}
+				, sid : { type: String, required: true}				
 			}]
 		}
 		, cards: 		{ type: Array, default: new Array() }
