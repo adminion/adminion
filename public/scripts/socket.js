@@ -26,6 +26,6 @@ socket.on('msg', function(msg) {
 	console.log(msg);
 });
 
-socket.emit('msg', "I'm in, let's play!");
-
 socket.emit('join', gameId);
+
+socket.emit('msg', "I'm in, let's play!");
