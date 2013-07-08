@@ -22,7 +22,7 @@ module.exports = function(mongoose) {
 		, cards: 		{ type: Array, default: new Array() }
 		, trash: 		{ type: Array, default: new Array() }
 		, config: { 
-			maxFriends: 	{ type: Number, default: 4 }
+			maxPlayers: 	{ type: Number, default: 4 }
 			, toWin: 		{ type: Number, default: 3 }
 			, timeLimit: 	{ type: Number, default: 0 }
 		}
