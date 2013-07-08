@@ -15,16 +15,10 @@ module.exports = function(mongoose) {
 			unique: true, 
 			default : {
 				playerID : { type: String, required: true, unique: true},
-				remoteIP : { type: String, required: true, unique: true},
 				sessionID : { type: String, required: false, unique: true}
 			}
 		}
-		, players: { 
-			type: Array, default: [{ 
-				email: { type: String, required: true}
-				, sid : { type: String, required: true}				
-			}]
-		}
+		, players : Array
 		, cards: 		{ type: Array, default: new Array() }
 		, trash: 		{ type: Array, default: new Array() }
 		, config: { 
