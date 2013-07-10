@@ -13,9 +13,21 @@ var socket = io.connect();
 socket.on('joined', function (newPlayer, players) {
 	$("#PlayersList").replaceWith(function() {
 		var newPlayersList = '<ul id="PlayersList">';
-		players.forEach(function(player, index) {
-			newPlayersList += '<li>' + player + '</li>\n';
-		});
+		for (player in players) {
+			newPlayersList += '<li>' + players[player].handle + '</li>\n';
+		};
+		newPlayersList += '</ul>';
+		return newPlayersList;
+	});
+
+});
+
+socket.on('roster', function (players) {
+	$("#PlayersList").replaceWith(function() {
+		var newPlayersList = '<ul id="PlayersList">';
+		for (player in players) {
+			newPlayersList += '<li>' + players[player].handle + '</li>\n';
+		};
 		newPlayersList += '</ul>';
 		return newPlayersList;
 	});
@@ -28,4 +40,6 @@ socket.on('msg', function(msg) {
 
 socket.emit('join', gameId);
 
-socket.emit('msg', "I'm in, let's play!");
+$('#chat_submit').on('click', function(event) {
+
+};
