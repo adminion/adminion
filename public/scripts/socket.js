@@ -10,27 +10,39 @@ var gameId = url[4];
 
 var socket = io.connect();
 
+var connectedPlayers = {};
+
 socket.on('joined', function (newPlayer, players) {
-	$("#PlayersList").replaceWith(function() {
-		var newPlayersList = '<ul id="PlayersList">';
-		for (player in players) {
-			newPlayersList += '<li>' + players[player].handle + '</li>\n';
-		};
-		newPlayersList += '</ul>';
-		return newPlayersList;
-	});
+	
+	console.log(newPlayer + ' joined the game.');
+
+});
+
+socket.on('disjoined', function (oldPlayer, players) {
+	
+	console.log(oldPlayer + ' left the game.');
 
 });
 
 socket.on('roster', function (players) {
+	connectedPlayers = players;
+	console.log(connectedPlayers);
+
 	$("#PlayersList").replaceWith(function() {
-		var newPlayersList = '<ul id="PlayersList">';
+		var newPlayersList = '<div id="PlayersList"><blockquote><table>';
+		newPlayersList += '<tr><th>Player No.</th><th>Handle</th></tr>';
+
 		for (player in players) {
-			newPlayersList += '<li>' + players[player].handle + '</li>\n';
+			newPlayersList += '<tr><td>' + player + '</td><td>' + players[player].handle + '</td></tr>\n';
 		};
-		newPlayersList += '</ul>';
+
+		newPlayersList += '</table></blockquote></div>';
 		return newPlayersList;
 	});
+});
+
+socket.on('denied', function(reason) {
+	console.log('denied: ' + reason);
 
 });
 
@@ -42,4 +54,4 @@ socket.emit('join', gameId);
 
 $('#chat_submit').on('click', function(event) {
 
-};
+});
