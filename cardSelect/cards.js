@@ -466,7 +466,12 @@ var Seaside = [
 ]
 
 var Alchemy = [
-
+	{name:		"Potion",
+	type:		"Treasure",	
+	cost:		4,
+	instructions:	"Worth 1?.",
+	image:		"http://dominion.diehrstraits.com/scans/alchemy/potion.jpg"   },
+	
 	{name:		"Herbalist",
 	type:		"Action",
 	cost:		2,
@@ -700,27 +705,22 @@ var Treasure = [
 	type:		"Treasure",
 	cost:		0,
 	value:		1,
-	image:		"http://dominion.diehrstraits.com/scans/basecards/copper.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/common/copper.jpg" },
 	{name:		"Silver",
 	type:		"Treasure",
 	cost:		3,
 	value:		2,
-	image:		"http://dominion.diehrstraits.com/scans/basecards/silver.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/common/silver.jpg" },
 	{name:		"Gold",
 	type:		"Treasure",
 	cost:		6,
 	value:		3,
-	image:		"http://dominion.diehrstraits.com/scans/basecards/gold.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/common/gold.jpg" },
 	{name:		"Platinum",
 	type:		"Treasure",
 	cost:		9,
 	value:		5,
-	image:		"http://dominion.diehrstraits.com/scans/prosperity/platinum.jpg" },
-	{name:		"Potion",
-	type:		"Treasure",	
-	cost:		4,
-	instructions:	"Worth 1?.",
-	image:		"http://dominion.diehrstraits.com/scans/alchemy/potion.jpg"   }
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/platinum.jpg" }
 ]
 
 var Cornucopia = [
