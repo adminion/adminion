@@ -5,6 +5,10 @@ html
 			// link(rel='stylesheet', href='/stylesheets/styles.css')
 			title= adminion.env.serverName
 			script(src='/scripts/jquery.js')
+			script.
+				$(document).ready(function() {
+					$('#name').focus();
+				});
 			block socketio
 	body
 		#wrapper
