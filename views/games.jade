@@ -10,6 +10,7 @@ block content
 				each game in games
 					li 
 						a(href='/games/' + game['_id']) #{game.name}
-						&nbsp;[&nbsp;
-						a(href='/games/' + game['_id'] + '/join') Join
-						&nbsp;]&nbsp;
+						if (game.status === 'lobby')
+							&nbsp;[&nbsp;
+							a(href='/games/' + game['_id'] + '/lobby') Join
+							&nbsp;]&nbsp;

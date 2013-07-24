@@ -1,3 +1,3 @@
 
-* update `GET /games/:gameId/lobby`: needs "leave game", etc.
-* 
+* fix all the errors!
+* update the TODO

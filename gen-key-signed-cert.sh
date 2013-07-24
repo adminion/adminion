@@ -19,6 +19,8 @@ fi
 # ouput the server name to be used
 #echo "server name: $serverName"
 
+mkdir .ssl
+
 key=".ssl/$serverName-key.pem"
 csr=".ssl/$serverName-csr.pem"
 cert=".ssl/$serverName-cert.pem"

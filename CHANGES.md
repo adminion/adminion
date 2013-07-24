@@ -1,3 +1,10 @@
+# v0.4.0
+* `lib/adminion.js` is now `lib/gameServer.js` and has had a MAJOR organizational overhaul.
+* integrated socket.io
+* when client connects to the lobby, they join the room whose name is the gameId
+* created `Roster` constructor in `lib/roster.js` to simplfy coding socket stuff.
+* when player enters the game lobby, we pass the socket to roster who checks for funny business and adds them if they're legit.
+* working to get a standard error/500 procedure
 
 ## v0.3.2
 * added breadcrumb support to `view/layout.jade`

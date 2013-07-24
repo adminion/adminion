@@ -1,7 +1,21 @@
 extends layout
-
+block socketio
+	script(src='/socket.io/socket.io.js')
+	script(src='/scripts/socket.js')
+	if (!!game)
+		#gameID=game['_id']
+block menu
 block content
 	#content
-		h2 Game Lobby
+		h2 Game: #{game.name}
+		label(for="PlayersList") Players:
+		ol#PlayersList
+		br
+		label(for="chat") Chat:
+		#chat
+		br
+		input(id='chat_input')
+		button(id='chat_submit') [ Send Message ]
+		br
 		p
-			a(href='/games/' + game['_id'] + '/leave') Leave the Game	
+			a(href='/games/' + game['_id'] + '/leave') Leave Lobby

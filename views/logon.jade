@@ -6,14 +6,14 @@ block content
 	#content
 		h2 Logon
 			&nbsp;[&nbsp;
-			a(href='/Players/Create') Create Player
+			a(href='/players/create') Create Player
 			&nbsp;]&nbsp;
 		if (err)
 			p.err=err
-		if (request.query.err) 
-			strong.err=request.query.err
-
-		form(action='/Logon', method='POST')
+		- var action = '/logon'
+		if (redir)
+			- action += '?redir=' + redir;
+		form(action=action, method='POST')
 			input(type='hidden', name='redir', value=redir)
 			table
 				tbody

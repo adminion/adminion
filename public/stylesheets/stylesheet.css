@@ -1,0 +1,44 @@
+#playerCards {
+
+	text-align:center;
+	background-color:yellow;
+	width:900px;
+
+}
+
+#phases {
+	float:right;
+	position:relative;
+	background-color:blue;
+	height:245px;
+
+}
+#Player {
+	background-color:red;
+	height:245px;
+	float:left;
+
+}
+
+#stats {
+	float:left;
+	
+}
+
+#kingdom {
+	text-align:center;
+	margin-bottom:5px;
+}
+
+.kingdomCards {
+
+}
+
+#buyable {
+	
+}
+
+#unbuyable {
+	opacity: 0.4;
+	filter: alpha(opacity=40);
+}

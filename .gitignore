@@ -5,3 +5,4 @@ node_modules/*
 # we don't want git keeping track of ssl keys and certs!
 .ssl/
 *.swp
+*.log

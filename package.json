@@ -1,11 +1,16 @@
 {
   "name": "adminion",
   "description": "Administrate your deck.", 
-  "version": "0.3.1",
-	"repository": "git://github.com/adminion/adminion.git",
+  "version": "0.4.0",
+	"repository": {
+		"type": "git", 
+		"url": "git://github.com/adminion/adminion.git"
+	},
 	"authors": [
-		"Jeff Harris <techjeffharris@gmail.com>"
+		"Jeff Harris <techjeffharris@gmail.com> (http://intangiblehost.net)",
+		"Zane DeSantis <linkinlogs4life@gmail.com>"
 	],
+	"main": "lib/",
 	"license": "BSD",
 	"dependencies": {
 		"connect-mongo": "*",
@@ -17,6 +22,6 @@
 		"passport-local-mongoose":"*"
 	},
   "scripts": {
-    "start": "./adminion.sh"
+    "start": "./adminion.sh"    
   }
 }
