@@ -1,6 +1,8 @@
 
 global.debug = require('./lib/debug');
 
+console.log('\nStarting Adminion Game Server...\n');
+
 // load main library and controllers
 var Adminion = require('./lib/');
 

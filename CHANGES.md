@@ -1,3 +1,11 @@
+
+# v0.4.1
+* the core logic behind `lib/roster.js` has been incorporated into `models/game.js`
+* now when a player enters the lobby, they are added to game.players and the document is saved
+* the socket is also added to and removed from `sockets[gameID][playerID]` when entering and exiting lobby
+* `Player` model is now `Person` and creates `person` instead of `player`
+* routes to `/player*` should now be accessed using `/people*`
+
 # v0.4.0
 * `lib/adminion.js` is now `lib/gameServer.js` and has had a MAJOR organizational overhaul.
 * integrated socket.io
