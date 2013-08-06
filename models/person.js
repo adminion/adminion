@@ -7,7 +7,7 @@
 var passportLocalMongoose = require('passport-local-mongoose');
 
 // export the Person constructor
-module.exports = function(mongoose) {
+module.exports = function (mongoose) {
 	
 	// define the PersonSchema
 	// username, password, etc are added by passportLocalMongoose plugin

@@ -45,23 +45,15 @@ socket.on('roster', function (players) {
 	debug.val('connectedPlayers', connectedPlayers, '/scripts/socket.js', 64);
 
 	$("#PlayersList").replaceWith(function() {
-		var newPlayers ={};
-		var newPlayersList = '<div id="PlayersList"><blockquote><table>';
-		newPlayersList += '<tr><th>Player No.</th><th>Handle</th></tr>';
+		var updatedPlayersList = '<div id="PlayersList"><blockquote><table>';
+		updatedPlayersList += '<tr><th>Player No.</th><th>Handle</th></tr>';
 
-		// create an array of players who's keys are their seat numbers
-		players.forEach(function(player) {
-			newPlayers[''+player.seat] = player.handle;
+		players.forEach(function(player, seat) {
+			updatedPlayersList += '<tr><td>' + (seat + 1) + '</td><td>' + player + '</td></tr>\n';
 		});
 
-		debug.val('newPlayers', newPlayers, '/scripts/socket.js', 64);
-
-		for (var seat in newPlayers) {
-			newPlayersList += '<tr><td>' + seat + '</td><td>' + newPlayers[seat] + '</td></tr>\n';
-		};
-
-		newPlayersList += '</table></blockquote></div>';
-		return newPlayersList;
+		updatedPlayersList += '</table></blockquote></div>';
+		return updatedPlayersList;
 	});
 });
 
