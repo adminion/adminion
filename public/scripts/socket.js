@@ -17,7 +17,7 @@ debug = new Debug();
 
 var url = window.location.href.split('/');
 
-var protocol = 'https:'; //url[0];
+var protocol = url[0];
 var address = url[2];
 var host = url[2].split(':')[0];
 var port = url[2].split(':')[1];

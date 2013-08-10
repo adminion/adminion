@@ -45,14 +45,6 @@ module.exports = function (mongoose) {
 	var Schema = mongoose.Schema
 		, ObjectId = Schema.ObjectId;
 
-	var PlayerSchema = new Schema({
-		seat: 			{ type: Number, 	required: 	false, 	unique: true	}
-		, handle: 		{ type: String, 	required: 	true, 	unique: true 	}
-		, playerID: 	{ type: ObjectId, 	required: 	true, 	unique: true 	}
-		, sessionID: 	{ type: String, 	required: 	true, 	unique: true 	}
-		, ready: 		{ type: Boolean, 	default: 	false 					}
-	});
-
 	var ChatLogSchema = new mongoose.Schema({
 		handle: 		{ type: String, 	required: true, unique: true 	}
 		, playerID: 	{ type: ObjectId, 	required: true, unique: true 	}
@@ -72,20 +64,9 @@ module.exports = function (mongoose) {
 
 	// define the GameSchema
 	var GameSchema = new mongoose.Schema({
-		name: 			{ type: String, required: true, unique: true }
-		, playerOne: 	{ type: Object, default: PlayerSchema }
-		, seats: 		{ type: Object, default: function() {
-			var seats = {};
-			for (var i = 0; i < this.config.maxPlayers; i+=1) {
-				seats[String(i)] = { type: Object, default: PlayerSchema };
-
-				// player one needs a validator to make sure they're player one
-				if (i === 0) {
-					seats[String(i)].set = isPlayerOne;
-				}
-			}
-			return seats;
-		}}
+		name: 			{ type: String, 	required: true }
+		, playerOne: 	{ type: ObjectId, 	required: true }
+		, seats: 		[ ObjectId ]
 			
 		// , cards: 		{ type: Array, 	default: new Array() 	}
 		// , trash: 		{ type: Array, 	default: new Array() 	}
@@ -114,28 +95,28 @@ module.exports = function (mongoose) {
 		 * by default player one is not counted
 		 */
 		occupiedSeats: function(countPlayerOne) {
-			var seats = 0; 
+			var count = 0; 
 
 			// debug.val('this.players', this.players, 'models/game.js', 84);
 			// debug.val('this.players.length', this.players.length, 'models/game.js', 85);
 
 			// go through all enabled seats
-			for (var p = (!!countPlayerOne) ? 0 : 1; p < this.config.maxPlayers; p +=1) {
-				if (!!this.players[p]) {
+			for (var s = (countPlayerOne) ? 0 : 1; s < this.config.maxPlayers; s +=1) {
+				if (this.seats[s]) {
 					// increment total
-					seats += 1;
+					count += 1;
 				}
 			};
 
-			// debug.val('seats', seats, 'models/game.js', 95);
-			return seats;
+			// debug.val('count', count, 'models/game.js', 95);
+			return count;
 		},
 
 		roster: function () {
 			var players =[];
 
 			// create an array of players who's keys are their seat numbers
-			this.players.forEach(function (player, seat) {
+			this.seats.forEach(function (player, seat) {
 				players[ seat ] = player.handle;
 			});
 
@@ -147,7 +128,7 @@ module.exports = function (mongoose) {
 
 		numSeats: function () {
 			// max players includes player one, but player one always has a seat
-			// so player one isn't relevant when calculating the number of "seats"
+			// so we don't count player one's seat
 			return this.config.maxPlayers -1;
 		}, 
 
