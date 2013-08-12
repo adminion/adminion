@@ -1,23 +1,23 @@
 /** 
- * 	models/person.js - define the adminion Person Schema
+ * 	models/account.js - define the adminion Account Schema
  * 
  * @see https://github.com/saintedlama/passport-local-mongoose
  */
 
 var passportLocalMongoose = require('passport-local-mongoose');
 
-// export the Person constructor
+// export the Account constructor
 module.exports = function (mongoose) {
 	
-	// define the PersonSchema
+	// define the AccountSchema
 	// username, password, etc are added by passportLocalMongoose plugin
-	var PersonSchema = new mongoose.Schema({
+	var AccountSchema = new mongoose.Schema({
 		admin: 			{ type: Boolean, 	default: 	false 						}
 		, firstName: 	{ type: String, 	required: 	true 						}
 		, lastName: 	{ type: String, 	required: 	true 						}
 		, handle: 		{ type: String, 	required: 	true, 		unique : true	}
 		, cards: 		{ type: Array, 		default: 	new Array() 				}
-		, playerStats: {
+		, accountStats: {
 			created : 			{ type: Date, 	default: new Date() }
 			, gamesPlayed: 		{ type: Number, default: 0 }
 			, gamesWon: 		{ type: Number, default: 0 }
@@ -28,8 +28,8 @@ module.exports = function (mongoose) {
 	});
 	
 	// now plugin the passportLocalMongoose functionality
-	PersonSchema.plugin(passportLocalMongoose, { usernameField : 'email' });
+	AccountSchema.plugin(passportLocalMongoose, { usernameField : 'email' });
 	
-	// and finally return a model created from PersonSchema
-	return mongoose.model('Person', PersonSchema);
+	// and finally return a model created from AccountSchema
+	return mongoose.model('Account', AccountSchema);
 };
