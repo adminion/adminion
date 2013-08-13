@@ -18,11 +18,11 @@ var ERR_PARTIAL_MATCH		= 'the connetion partially matches another connection.'
 	, MSG_UNIQUE			= 'the connection is unique.';
 
 // returns that to which an XOR expression would evaluate
-function XOR(a,b) {
+function XOR (a,b) {
   return ( a || b ) && !( a && b );
 };
 
-function isPlayerOne(playerID, sessionID) {
+function isPlayerOne (playerID, sessionID) {
 	debug.val('player vs playerOne', [playerID
 		, ''+this.playerOne.playerID
 		, sessionID
