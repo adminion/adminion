@@ -13,13 +13,16 @@
 	"main": "lib/",
 	"license": "BSD",
 	"dependencies": {
-		"connect-mongo": "*",
-		"express": "*",
-		"jade": "*",
-		"mongoose":"*",
-		"passport":"*",
-		"passport-local":"*",
-		"passport-local-mongoose":"*"
+		"connect-flash": 			"*",
+		"connect-mongo": 			"*",
+		"express": 					"*",
+		"jade": 					"*",
+		"mongoose":					"*",
+		"passport":					"*",
+		"passport-local":			"*",
+		"passport-local-mongoose":	"*",
+		"passport.socketio": 		"*",
+		"socket.io": 				"*"
 	},
   "scripts": {
     "start": "./adminion.sh"    

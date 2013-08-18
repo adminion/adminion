@@ -2,23 +2,23 @@ extends layout
 
 block content
 	#content
-		h2 Update Player
+		h2 Update Account
 		
 		if (err)
 			p.err=err
 
-		form(action='/players/'+player.email + '/update', method='POST')
+		form(action='/accounts/'+account.email + '/update', method='POST')
 			table
 				tbody
 					tr
 						td: label(for='FirstName') First Name: 
-						td: input(type='text', name='firstName', id='firstName', value=player.firstName)
+						td: input(type='text', name='firstName', id='firstName', value=account.firstName)
 					tr
 						td: label(for='LastName') Last Name: 
-						td: input(type='text', name='lastName', id='lastName', value=player.lastName)
+						td: input(type='text', name='lastName', id='lastName', value=account.lastName)
 					tr
 						td: label(for='email') Email:
-						td: input(type='text', name='email', id='email', value=player.email, disabled='disabled')
+						td: input(type='text', name='email', id='email', value=account.email, disabled='disabled')
 					tr
 						td: label(for='password') Password: 
 						td: input(type='password', name='password', id='password')
@@ -28,7 +28,7 @@ block content
 						td: input(type='password', name='verifyPassword', id='verifyPassword')
 					tr
 						td: label(for='handle') Handle: 
-						td: input(type='text', name='handle', id='handle', value=player.handle)		
+						td: input(type='text', name='handle', id='handle', value=account.handle)		
 			p
 				input(type='submit', value='Update')
 			p

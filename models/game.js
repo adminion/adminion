@@ -18,11 +18,11 @@ var ERR_PARTIAL_MATCH		= 'the connetion partially matches another connection.'
 	, MSG_UNIQUE			= 'the connection is unique.';
 
 // returns that to which an XOR expression would evaluate
-function XOR(a,b) {
+function XOR (a,b) {
   return ( a || b ) && !( a && b );
 };
 
-function isPlayerOne(playerID, sessionID) {
+function isPlayerOne (playerID, sessionID) {
 	debug.val('player vs playerOne', [playerID
 		, ''+this.playerOne.playerID
 		, sessionID
@@ -42,31 +42,18 @@ function isPlayerOne(playerID, sessionID) {
 // export the Game constructor
 module.exports = function (mongoose) {
 
+	// get the required schemas
+	var PlayerSchema = require('./player')(mongoose)
+		, ChatLogSchema = require('./chatLog')(mongoose)
+		, EventLogSchema = require('./eventLog')(mongoose);
+
 	var Schema = mongoose.Schema
 		, ObjectId = Schema.ObjectId;
 
-	var ChatLogSchema = new mongoose.Schema({
-		handle: 		{ type: String, 	required: true, unique: true 	}
-		, playerID: 	{ type: ObjectId, 	required: true, unique: true 	}
-		, message: 		{ type: String, 	required: true, unique: false	}
-		, time: 		{ type: Date, 		default: new Date() 			}
-	});
-
-	var EventLogSchema = new mongoose.Schema({
-		handle: 		{ type: String, 	required: true, unique: true 	}
-		, playerID: 	{ type: ObjectId, 	required: true, unique: true 	}
-		, time: 		{ type: Date, 		default: new Date() 			}
-		, event: 		{ 
-			name: 			{ type: String, required: true }
-			, arguments: 	{ type: Array, 	required: true }
-		}
-	});
-
 	// define the GameSchema
 	var GameSchema = new mongoose.Schema({
-		name: 			{ type: String, 	required: true }
-		, playerOne: 	{ type: ObjectId, 	required: true }
-		, seats: 		[ ObjectId ]
+		playerOne: 	{ type: ObjectId, 	required: true }
+		, roster: 	[ PlayerSchema ]
 			
 		// , cards: 		{ type: Array, 	default: new Array() 	}
 		// , trash: 		{ type: Array, 	default: new Array() 	}

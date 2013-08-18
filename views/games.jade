@@ -9,7 +9,7 @@ block content
 			ol
 				each game in games
 					li 
-						a(href='/games/' + game['_id']) #{game.name}
+						a(href='/games/' + game['_id']) #{game.playerOne.handle}'s Game
 						if (game.status === 'lobby')
 							&nbsp;[&nbsp;
 							a(href='/games/' + game['_id'] + '/lobby') Join
