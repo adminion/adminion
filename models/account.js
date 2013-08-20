@@ -13,6 +13,7 @@ module.exports = function (mongoose) {
 	// username, password, etc are added by passportLocalMongoose plugin
 	var AccountSchema = new mongoose.Schema({
 		admin: 			{ type: Boolean, 	default: 	false 						}
+		, email:		{ type: String, 	lowercase: 	true, 		trim: true		}
 		, firstName: 	{ type: String, 	required: 	true 						}
 		, lastName: 	{ type: String, 	required: 	true 						}
 		, handle: 		{ type: String, 	required: 	true, 		unique : true	}
@@ -28,7 +29,10 @@ module.exports = function (mongoose) {
 	});
 	
 	// now plugin the passportLocalMongoose functionality
-	AccountSchema.plugin(passportLocalMongoose, { usernameField : 'email' });
+	AccountSchema.plugin(passportLocalMongoose, { 
+		usernameField : 'email' 
+		, usernameLowerCase: true
+	});
 	
 	// and finally return a model created from AccountSchema
 	return mongoose.model('Account', AccountSchema);

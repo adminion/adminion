@@ -22,23 +22,6 @@ function XOR (a,b) {
   return ( a || b ) && !( a && b );
 };
 
-function isPlayerOne (playerID, sessionID) {
-	debug.val('player vs playerOne', [playerID
-		, ''+this.playerOne.playerID
-		, sessionID
-		, this.playerOne.sessionID], 'models/game.js', 209);
-
-	if (playerID === ''+this.playerOne.playerID) {
-		if (sessionID === this.playerOne.sessionID) {
-			debug.msg(MSG_IS_PLAYER_ONE, 'models/game.js', 213);
-			return true;
-		} 
-	} 
-	
-	debug.msg(MSG_NOT_PLAYER_ONE, 'models/game.js', 218);
-	return false
-}
-
 // export the Game constructor
 module.exports = function (mongoose) {
 
@@ -47,12 +30,18 @@ module.exports = function (mongoose) {
 		, ChatLogSchema = require('./chatLog')(mongoose)
 		, EventLogSchema = require('./eventLog')(mongoose);
 
-	var Schema = mongoose.Schema
-		, ObjectId = Schema.ObjectId;
-
 	// define the GameSchema
 	var GameSchema = new mongoose.Schema({
-		playerOne: 	{ type: ObjectId, 	required: true }
+		playerOne: 	{ 
+			handle: {
+				type: String, 
+				required: true
+			},
+			accountID : { 
+				type: mongoose.Schema.Types.ObjectId, 
+				required: true 
+			} 
+		}
 		, roster: 	[ PlayerSchema ]
 			
 		// , cards: 		{ type: Array, 	default: new Array() 	}
@@ -81,15 +70,15 @@ module.exports = function (mongoose) {
 		 *
 		 * by default player one is not counted
 		 */
-		occupiedSeats: function(countPlayerOne) {
-			var count = 0; 
+		occupiedSeats: function (countPlayerOne) {
+			var count = 0;  
 
-			// debug.val('this.players', this.players, 'models/game.js', 84);
-			// debug.val('this.players.length', this.players.length, 'models/game.js', 85);
+			// debug.val('this.roster', this.roster, 'models/game.js', 84);
+			// debug.val('this.roster.length', this.roster.length, 'models/game.js', 85);
 
 			// go through all enabled seats
 			for (var s = (countPlayerOne) ? 0 : 1; s < this.config.maxPlayers; s +=1) {
-				if (this.seats[s]) {
+				if (this.roster[s]) {
 					// increment total
 					count += 1;
 				}
@@ -99,11 +88,11 @@ module.exports = function (mongoose) {
 			return count;
 		},
 
-		roster: function () {
+		whosConnected: function () {
 			var players =[];
 
 			// create an array of players who's keys are their seat numbers
-			this.seats.forEach(function (player, seat) {
+			this.roster.forEach(function (player, seat) {
 				players[ seat ] = player.handle;
 			});
 
@@ -134,16 +123,16 @@ module.exports = function (mongoose) {
 		 *
 		 * determines whether or not the given player has already entered the lobby
 		 */
-		playerExists: function(playerID, sessionID) {
+		playerExists: function (playerID, sessionID) {
 			
-			debug.val('this.players', this.players, 'models/game.js', 143);
+			debug.val('this.roster', this.roster, 'models/game.js', 143);
 			debug.val('playerID', playerID, 'models/game.js', 144);
 			debug.val('sessionID', sessionID, 'models/game.js', 145);
 
 			match = -1
 
 			eachPlayer:
-			this.players.forEach(function (player, seat) {
+			this.roster.forEach(function (player, seat) {
 				debug.msg('player ' + seat , 'models/game.js', 151);
 				debug.val('player', player, 'models/game.js', 152);	
 
@@ -182,8 +171,8 @@ module.exports = function (mongoose) {
 		 *
 		 * determines whether or not the given ID pairs is invalid
 		 */
-		invalid: function(playerID, sessionID) {
-			this.players.forEach(function (player, seat) {
+		invalid: function (playerID, sessionID) {
+			this.roster.forEach(function (player, seat) {
 				if (XOR(playerID === player.playerID, sessionID === player.sessionID)) {
 					return true;
 				}
@@ -193,12 +182,35 @@ module.exports = function (mongoose) {
 		},
 
 		/**
+		 *	GameSchema.isPlayerOne(us)
+		 *
+		 * determines whether or not the given socket is playerOne
+		 */
+
+		isPlayerOne: function (playerID, sessionID) {
+			debug.val('player vs playerOne', [playerID
+				, ''+this.playerOne.playerID
+				, sessionID
+				, this.playerOne.sessionID], 'models/game.js', 209);
+
+			if (playerID === ''+this.playerOne.playerID) {
+				if (sessionID === this.playerOne.sessionID) {
+					debug.msg(MSG_IS_PLAYER_ONE, 'models/game.js', 213);
+					return true;
+				} 
+			} 
+			
+			debug.msg(MSG_NOT_PLAYER_ONE, 'models/game.js', 218);
+			return false;
+		},
+
+		/**
 		 *	GameSchema.isplayerOneConnected()
 		 *
 		 * determines whether or not player one is connected
 		 */
 		isplayerOneConnected: function () {
-			this.players.forEach(function (player) {
+			this.roster.forEach(function (player) {
 				if (player.seat === 0) {
 					return true;
 				}
@@ -217,7 +229,7 @@ module.exports = function (mongoose) {
 				, seats = this.occupiedSeats(true);
 
 			// count the players that are ready
-			this.players.forEach(function (player) { 
+			this.roster.forEach(function (player) { 
 				// if this player is ready
 				if (player.ready) {
 					// add 1 to the count
@@ -240,7 +252,7 @@ module.exports = function (mongoose) {
 		 */
 		nextSeat: function () {
 			for (var seat = 1; seat < this.config.maxPlayers; seat += 1) {
-				if (!this.players[seat]) {
+				if (!this.roster[seat]) {
 					return seat;
 				}
 			}
@@ -265,7 +277,7 @@ module.exports = function (mongoose) {
 			debug.val('playerID', playerID, 'models/game.js', 292);
 			debug.val('sessionID', sessionID, 'models/game.js', 293);
 			debug.val('this.playerOne', this.playerOne, 'models/game.js', 294);
-			debug.val('this.players', this.players, 'models/game.js', 295);
+			debug.val('this.roster', this.roster, 'models/game.js', 295);
 			debug.val('seats', seats, 'models/game.js', 296);
 
 			////////////////////////////////////////////////////////////////////
@@ -280,7 +292,7 @@ module.exports = function (mongoose) {
 				if (!this.isplayerOneConnected()) {
 					// add player one to the list of connected players
 
-					this.players.push({ 
+					this.roster.push({ 
 						seat: 0
 						, handle: handle
 						, playerID: playerID
@@ -354,7 +366,7 @@ module.exports = function (mongoose) {
 			debug.val('seat', seat, 'models/game.js', 381);
 
 			// define the new player
-			this.players.push({
+			this.roster.push({
 				seat: seat,
 				handle: handle,
 				playerID: playerID,
@@ -381,14 +393,14 @@ module.exports = function (mongoose) {
 			if ( seat !== -1) {
 				// we have a valid user, delete them!
 				if (seat === 0) {
-					this.players[0] = {};
+					this.roster[0] = {};
 				} else {
-					this.players[seat].remove();
+					this.roster[seat].remove();
 					
 				}
 
 
-				debug.val('this.players', this.players, 'models/game.js', 418);
+				debug.val('this.roster', this.roster, 'models/game.js', 418);
 
 				debug.msg(handle + ' has left seat ' + seat + '.', 'models/game.js', 420);
 				return true; 

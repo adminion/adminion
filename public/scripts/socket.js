@@ -28,6 +28,13 @@ var socket = io.connect();
 
 var connectedPlayers = {};
 
+socket.on('disconnect', function () {
+	console.log('disconnect from server - have we disconnected yet? i\'ll try to emit another event...');
+
+	socket.emit('test', {foo:'bar'});
+
+});
+
 socket.on('entered', function (newPlayer, players) {
 	
 	console.log(newPlayer + ' joined the game.');
@@ -44,11 +51,11 @@ socket.on('roster', function (players) {
 	connectedPlayers = players;
 	debug.val('connectedPlayers', connectedPlayers, '/scripts/socket.js', 64);
 
-	$("#PlayersList").replaceWith(function() {
+	$("#PlayersList").replaceWith(function () {
 		var updatedPlayersList = '<div id="PlayersList"><blockquote><table>';
 		updatedPlayersList += '<tr><th>Player No.</th><th>Handle</th></tr>';
 
-		players.forEach(function(player, seat) {
+		players.forEach(function (player, seat) {
 			updatedPlayersList += '<tr><td>' + (seat + 1) + '</td><td>' + player + '</td></tr>\n';
 		});
 
@@ -57,17 +64,17 @@ socket.on('roster', function (players) {
 	});
 });
 
-socket.on('denied', function(reason) {
+socket.on('denied', function (reason) {
 	console.log('denied: ' + reason);
 	window.location = '/games';
 });
 
-socket.on('msg', function(msg) {
+socket.on('msg', function (msg) {
 	console.log(msg);
 });
 
 socket.emit('enterLobby', gameId);
 
-$('#chat_submit').on('click', function(event) {
+$('#chat_submit').on('click', function (event) {
 
 });

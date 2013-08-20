@@ -2,9 +2,10 @@
 var util = require('../lib/util');
 
 function GameID (socket) {
+	// the two slashes create an empty index 
 	//    0     1         2	           3              4
 	// https: /   / localhost:1337 / games / abcdefghi12345678990
-	return socket.handshake.headers.url.split('/')[4];
+	return socket.handshake.headers.referer.split('/')[4];
 };
 
 function PlayerID (socket) {
@@ -22,6 +23,9 @@ module.exports = function SocketCache () {
 
 	// public method for caching a socket
 	this.add = function (socket) {
+
+		debug.msg('adding socket ' + socket.id, 'models/socket.js', 26);
+
 		// add the socket to the list and make note of its current index
 		var which = sockets.push(socket) -1;
 		var gameID = GameID(socket);
@@ -43,6 +47,11 @@ module.exports = function SocketCache () {
 		byGame[gameID].push(sockets[which]);
 		byPlayer[playerID].push(sockets[which]);
 
+		debug.val('sockets', sockets, 'models/socket.js', 49);
+		debug.val('byID', byID, 'models/socket.js', 50);
+		debug.val('byGame', byGame, 'models/socket.js', 51);
+		debug.val('byPlayer', byPlayer, 'models/socket.js', 52);
+
 		return sockets.length;
 
 	};
@@ -50,16 +59,21 @@ module.exports = function SocketCache () {
 	// public method for removing a socket from cache
 	this.remove = function (socketID) {
 
+		debug.msg('removing socket ' + socket.id, 'models/socket.js', 61);
+
 		var socket; 
 		var which;
 
 		// determine at which index this socket is hanging out
-		for (var i = 0; i < sockets.length; i+=1 {
+		for (var i = 0; i < sockets.length; i+=1) {
+			console.log(socket.length);
+			console.log(i)
 			// when we find it
 			if (sockets[i].id === socketID) {
 				// save the index and stop searching
 				which = i;
 				socket = sockets[i];
+				console.log('breaking at ' + i);
 				break;
 			}
 		}
@@ -73,7 +87,7 @@ module.exports = function SocketCache () {
 		delete byID[socketID];
 
 		// search for this socket in the byGame array
-		for (var i = 0; i < byGame[gameID].length; i+=1 {
+		for (var i = 0; i < byGame[gameID].length; i+=1) {
 			// when we find it
 			if (byGame[gameID][i].id === socketID) {
 				// remove the socket from the list and stop searching
@@ -88,7 +102,7 @@ module.exports = function SocketCache () {
 		}
 
 		// for this socket in the byPlayer array
-		for (var i = 0; i < byPlayer[playerID].length; i+=1 {
+		for (var i = 0; i < byPlayer[playerID].length; i+=1) {
 			// when we find it
 			if (byPlayer[playerID][i].id === socketID) {
 				// delete the index and stop searching
@@ -100,17 +114,22 @@ module.exports = function SocketCache () {
 		// now finally delete the socket itself
 		sockets.splice(which,1);
 
+		debug.val('sockets', sockets, 'models/socket.js', 116);
+		debug.val('byID', byID, 'models/socket.js', 117);
+		debug.val('byGame', byGame, 'models/socket.js', 118);
+		debug.val('byPlayer', byPlayer, 'models/socket.js', 119);
+
 		return sockets.length;
 	};
 
 
 	// public method for returning sockets indexed by their ID
-	this.byID = function(socketID) {
+	this.byID = function (socketID) {
 		return byID[socketID];
 	};
 
 	// public method for returning all sockets belonging to the specified Player
-	this.byPlayer = function(playerID) {
+	this.byPlayer = function (playerID) {
 		var player = {
 			// the raw list of sockets belonging to this player
 			sockets : byPlayer[playerID]
@@ -131,7 +150,7 @@ module.exports = function SocketCache () {
 					if (GameID(socket) === gameID) {
 						inGame.push(socket);
 					}
-				});
+				}
 
 				return inGame;
 			}
@@ -144,7 +163,7 @@ module.exports = function SocketCache () {
 	};
 
 	// public method for returning sockets connected to the Game with the given id
-	this.byGame = function(gameID) {
+	this.byGame = function (gameID) {
 		var game = {
 			// the raw list of sockets conencted to this game
 			sockets : byPlayer[playerID]
@@ -165,7 +184,7 @@ module.exports = function SocketCache () {
 					if (PlayerID(socket) === playerID) {
 						arePlayer.push(socket);
 					}
-				});
+				}
 
 				return inGame;
 			}
@@ -173,5 +192,10 @@ module.exports = function SocketCache () {
 
 		return game;
 	};
+
+	debug.val('sockets', sockets, 'models/socket.js', 195);
+	debug.val('byID', byID, 'models/socket.js', 196);
+	debug.val('byGame', byGame, 'models/socket.js', 197);
+	debug.val('byPlayer', byPlayer, 'models/socket.js', 198);
 
 };

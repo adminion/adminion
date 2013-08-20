@@ -1,7 +1,7 @@
 
 module.exports = function(mongoose) {
 	var Schema = mongoose.Schema
-		, ObjectId = Schema.ObjectId;
+		, ObjectId = Schema.Types.ObjectId;
 
 	var PlayerSchema = new mongoose.Schema({
 		accountID: 	{ type: ObjectId, 	required: true, unique: true 	}
