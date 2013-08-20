@@ -173,6 +173,7 @@ var Intrigue = [
 	{name:		"Great Hall",
 	type:		"Action-Victory",
 	cost:		3,
+	victory:	1,
 	instructions:	"1 Victory Point. +1 Card; +1 Action.",
 	image:		"http://dominion.diehrstraits.com/scans/intrigue/greathall.jpg" },
 
@@ -295,12 +296,15 @@ var Intrigue = [
 	{name:		"Harem",
 	type:		"Treasure-Victory",
 	cost:		6,
+	victory:	2,
+	treasure:	2,
 	instructions:	"Worth $2. 2 Victory Points.",
 	image:		"http://dominion.diehrstraits.com/scans/intrigue/harem.jpg" },
 
 	{name:		"Nobles",
 	type:		"Action-Victory",
 	cost:		6,
+	victory:	2,
 	instructions:	"2 Victory Points. Choose one: +3 Cards; or +2 Actions.",
 	image:		"http://dominion.diehrstraits.com/scans/intrigue/nobles.jpg" }
 ]	
@@ -383,6 +387,7 @@ var Seaside = [
 	{name:		"Island",
 	type:		"Action-Victory",
 	cost:		4,
+	victory:	2,
 	instructions:	"Set aside this and another card from your hand. Return them to your deck at the end of the game. Worth 2 Victory Points.",
 	image:		"http://dominion.diehrstraits.com/scans/seaside/island.jpg"  },
 
@@ -469,6 +474,7 @@ var Alchemy = [
 	{name:		"Potion",
 	type:		"Treasure",	
 	cost:		4,
+	treasure:	'?',
 	instructions:	"Worth 1?.",
 	image:		"http://dominion.diehrstraits.com/scans/alchemy/potion.jpg"   },
 	
@@ -550,6 +556,7 @@ var Prosperity = [
 	{name:		"Loan",
 	type:		"Treasure",
 	cost:		3,
+	treasure:	1,
 	instructions:	"Worth $1. When you play this, reveal cards from your deck until you reveal a Treasure. Discard it or trash it. Discard the other cards.",
 	image:		"http://dominion.diehrstraits.com/scans/prosperity/loan.jpg"  },
 
@@ -580,12 +587,14 @@ var Prosperity = [
 	{name:		"Quarry",
 	type:		"Treasure",
 	cost:		4,
+	treasure:	1,
 	instructions:	"Worth $1. While this is in play, Action cards cost $2 less, but not less than $0.",
 	image:		"http://dominion.diehrstraits.com/scans/prosperity/quarry.jpg" },
 
 	{name:		"Talisman",
 	type:		"Treasure",
 	cost:		4,
+	treasure:	1,
 	instructions:	"Worth $1. While this is in play, when you buy a card costing $4 or less that is not a Victory card, gain a copy of it.",
 	image:		"http://dominion.diehrstraits.com/scans/prosperity/talisman.jpg" },
 
@@ -604,6 +613,7 @@ var Prosperity = [
 	{name:		"Contraband",
 	type:		"Treasure",
 	cost:		5,
+	treasure:	3,
 	instructions:	"Worth $3. +1 Buy. When you play this, the player to your left names a card. You can't buy that card this turn.",
 	image:		"http://dominion.diehrstraits.com/scans/prosperity/contraband.jpg" },
 
@@ -634,6 +644,7 @@ var Prosperity = [
 	{name:		"Royal Seal",
 	type:		"Treasure",
 	cost:		5,
+	treasure:	2,
 	instructions:	"Worth $2. While this is in play, when you gain a card, you may put that card on top of your deck.",
 	image:		"http://dominion.diehrstraits.com/scans/prosperity/royalseal.jpg" },
 
@@ -646,6 +657,7 @@ var Prosperity = [
 	{name:		"Venture",
 	type:		"Treasure",
 	cost:		5,
+	treasure:	1,
 	instructions:	"Worth $1. When you play this, reveal cards from your deck until you reveal a Treasure. Discard the other cards. Play that Treasure.",
 	image:		"http://dominion.diehrstraits.com/scans/prosperity/venture.jpg" },
 
@@ -664,6 +676,7 @@ var Prosperity = [
 	{name:		"Hoard",
 	type:		"Treasure",
 	cost:		6,
+	treasure:	2,
 	instructions:	"Worth $2. While this is in play, when you buy a Victory card, gain a Gold.",
 	image:		"http://dominion.diehrstraits.com/scans/prosperity/hoard.jpg" },
 
@@ -704,22 +717,22 @@ var Treasure = [
 	{name:		"Copper",
 	type:		"Treasure",
 	cost:		0,
-	value:		1,
+	treasure:	1,
 	image:		"http://dominion.diehrstraits.com/scans/common/copper.jpg" },
 	{name:		"Silver",
 	type:		"Treasure",
 	cost:		3,
-	value:		2,
+	treasure:	2,
 	image:		"http://dominion.diehrstraits.com/scans/common/silver.jpg" },
 	{name:		"Gold",
 	type:		"Treasure",
 	cost:		6,
-	value:		3,
+	treasure:	3,
 	image:		"http://dominion.diehrstraits.com/scans/common/gold.jpg" },
 	{name:		"Platinum",
 	type:		"Treasure",
 	cost:		9,
-	value:		5,
+	treasure:	5,
 	image:		"http://dominion.diehrstraits.com/scans/prosperity/platinum.jpg" }
 ]
 
@@ -818,6 +831,7 @@ var prizes = [
 	{name:		"Diadem",
 	type:		"Treasure-Prize",
 	cost:		"0*",
+	treasure:	2,
 	instructions:	"Worth $2. When you play this, +$1 per unused Action you have ('Action', not Action card).",
 	image:		"http://dominion.diehrstraits.com/scans/cornucopia/diadem.jpg"  },
 
@@ -886,7 +900,8 @@ var Hinterlands = [
 
 	{name:		"Tunnel",
 	type:		"Victory-Reaction",
-	cost:		3,	
+	cost:		3,
+	victory:	2,	
 	instructions:	"2 Victory Points  When you discard this other than during a Clean-up phase, you may reveal it. If you do, gain a Gold.",
 	image:		"http://dominion.diehrstraits.com/scans/hinterlands/tunnel.jpg"  },
 
@@ -929,6 +944,7 @@ var Hinterlands = [
 	{name:		"Cache",
 	type:		"Treasure",
 	cost:		5,
+	treasure:	3,
 	instructions:	"Worth $3. When you gain this, gain two Coppers.",
 	image:		"http://dominion.diehrstraits.com/scans/hinterlands/cache.jpg"  },
 
@@ -959,6 +975,7 @@ var Hinterlands = [
 	{name:		"Ill-Gotten Gains",
 	type:		"Treasure",
 	cost:		5,
+	treasure:	1,
 	instructions:	"Worth $1. When you play this, you may gain a Copper, putting it into your hand. When you gain this, each other player gains a Curse.",
 	image:		"http://dominion.diehrstraits.com/scans/hinterlands/illgottengains.jpg"  },
 
@@ -995,6 +1012,7 @@ var Hinterlands = [
 	{name:		"Farmland",
 	type:		"Victory",
 	cost:		6,
+	victory:	2,
 	instructions:	"2 VP. When you buy this, trash a card from your hand. Gain a card costing exactly $2 more than the trashed card.",
 	image:		"http://dominion.diehrstraits.com/scans/hinterlands/farmland.jpg"  }
 ]
@@ -1016,6 +1034,7 @@ var darkAges = [
 	{name:		"Spoils",
 	type:		"Treasure",
 	cost:		"0*",
+	treasure:	3,
 	instructions:	"Worth $3. When you play this, return it to the pile.",
 	image:		"http://dominion.diehrstraits.com/scans/darkages/spoils.jpg" },
 
@@ -1273,6 +1292,7 @@ knights	= [
 	{name:		"Dame Josephine",
 	type:		"Action-Attack-Victory-Knight",
 	cost:		5,
+	victory:	2,
 	instructions:	"Worth 2 VP. Each other player reveals the top 2 cards of his deck, trashes one of them costing from $3 to $6, and discards the rest. If a Knight is trashed by this, trash this card." ,
 	image:		"http://dominion.diehrstraits.com/scans/darkages/damejosephine.jpg"},
 
@@ -1353,22 +1373,22 @@ var Victory = 	[
 	{name:		"Estate",
 	type:		"Victory",
 	cost:		2,
-	value:		1,
+	victory:	1,
 	image:		"http://dominion.diehrstraits.com/scans/basecards/estate.jpg" },
 	{name:		"Duchy",
 	type:		"Victory",
 	cost:		5,
-	value:		3,
+	victory:	3,
 	image:		"http://dominion.diehrstraits.com/scans/basecards/duchy.jpg" },
 	{name:		"Province",
 	type:		"Victory",
 	cost:		8,
-	value:		6,
+	victory:	6,
 	image:		"http://dominion.diehrstraits.com/scans/basecards/province.jpg" },
 	{name:		"Colony",
 	type:		"Victory",
 	cost:		11,
-	value:		10,
+	victory:	10,
 	image:		"http://dominion.diehrstraits.com/scans/basecards/colony.jpg" },
 
 ]
@@ -1401,6 +1421,7 @@ var promoCards = [
 	{name:		"Stash",
 	type:		"Treasure",
 	cost:		5,
+	treasure:	2,
 	instructions:	"Worth $2. When you shuffle, you may put this anywhere in your deck.",
 	image:		"http://dominion.diehrstraits.com/scans/promo/stash.jpg" } 
 

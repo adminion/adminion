@@ -4,6 +4,7 @@
 	background-color:yellow;
 	width:900px;
 
+
 }
 
 #phases {
@@ -13,8 +14,17 @@
 	height:245px;
 
 }
+
+#inPlay {
+	width:650px;
+	margin-left:248px;
+	height:200px;
+	border:1px solid black;
+
+}
+
 #Player {
-	background-color:red;
+	background-color:#B2D1FF;
 	height:245px;
 	float:left;
 
@@ -22,15 +32,44 @@
 
 #stats {
 	float:left;
-	
+	border:2px solid black;
+	margin:4px;
+	margin-top:10px;
+	margin-left:50px;
+	font-size: 25px;
+	padding-left:15px;
+	padding-top:5px;
+	padding-bottom:5px;
+	background-color:#CCFFCC;
+}
+
+#bigStats {
+	width:30px;
+	height:90px;
+	margin-left:50px;
+	margin-top:-90px;
+	float:right;
+
+}
+
+#bigStats ul {
+	margin:0px;
+	padding: 0px;
+}
+
+#stats span {
+	border:1px dotted black;
+
 }
 
 #kingdom {
 
 	margin-bottom:50px;
 	margin-left:20px;
-	border:1px solid black;
-	width:530px;
+	margin-right:20px;
+	border:2px solid red;
+	width:500px;
+	height:211px;
 	display: inline-block;
 	
 
@@ -38,9 +77,17 @@
 
 #treasures {
 	display:inline-block;
-	width:200px;
-	margin-right:-60px;
-	margin-top:-50px;
+	width:160px;
+	height:165px;
+	border: 2px solid black;
+	margin-right:0px;
+
+}
+
+#victories {
+	display:inline-block;
+
+
 }
 
 .kingdomTreasureWrap {
@@ -54,6 +101,15 @@
 }
 .kingdomTreasure {
 	margin: -40px 0px 0px -10px;
+}
+
+.buyableKingdomTreasure {
+	margin: -40px 0px 0px -10px;
+}
+.unbuyableKingdomTreasure {
+	margin: -40px 0px 0px -10px;
+	opacity: 0.4;
+	filter: alpha(opacity=40);
 }
 
 .kingdomCardWrap {
