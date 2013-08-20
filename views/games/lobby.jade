@@ -7,7 +7,7 @@ block socketio
 block menu
 block content
 	#content
-		h2 Game: #{game.name}
+		h2 #{game.playerOne.handle}'s Game
 		label(for="PlayersList") Players:
 		ol#PlayersList
 		br
@@ -18,4 +18,4 @@ block content
 		button(id='chat_submit') [ Send Message ]
 		br
 		p
-			a(href='/games') Leave Lobby
+			a(href='/games/' + game['_id']) Leave Lobby

@@ -17,7 +17,7 @@ debug = new Debug();
 
 var url = window.location.href.split('/');
 
-var protocol = 'https:'; //url[0];
+var protocol = url[0];
 var address = url[2];
 var host = url[2].split(':')[0];
 var port = url[2].split(':')[1];
@@ -27,6 +27,13 @@ var gameId = url[4];
 var socket = io.connect();
 
 var connectedPlayers = {};
+
+socket.on('disconnect', function () {
+	console.log('disconnect from server - have we disconnected yet? i\'ll try to emit another event...');
+
+	socket.emit('test', {foo:'bar'});
+
+});
 
 socket.on('entered', function (newPlayer, players) {
 	
@@ -44,38 +51,30 @@ socket.on('roster', function (players) {
 	connectedPlayers = players;
 	debug.val('connectedPlayers', connectedPlayers, '/scripts/socket.js', 64);
 
-	$("#PlayersList").replaceWith(function() {
-		var newPlayers ={};
-		var newPlayersList = '<div id="PlayersList"><blockquote><table>';
-		newPlayersList += '<tr><th>Player No.</th><th>Handle</th></tr>';
+	$("#PlayersList").replaceWith(function () {
+		var updatedPlayersList = '<div id="PlayersList"><blockquote><table>';
+		updatedPlayersList += '<tr><th>Player No.</th><th>Handle</th></tr>';
 
-		// create an array of players who's keys are their seat numbers
-		players.forEach(function(player) {
-			newPlayers[''+player.seat] = player.handle;
+		players.forEach(function (player, seat) {
+			updatedPlayersList += '<tr><td>' + (seat + 1) + '</td><td>' + player + '</td></tr>\n';
 		});
 
-		debug.val('newPlayers', newPlayers, '/scripts/socket.js', 64);
-
-		for (var seat in newPlayers) {
-			newPlayersList += '<tr><td>' + seat + '</td><td>' + newPlayers[seat] + '</td></tr>\n';
-		};
-
-		newPlayersList += '</table></blockquote></div>';
-		return newPlayersList;
+		updatedPlayersList += '</table></blockquote></div>';
+		return updatedPlayersList;
 	});
 });
 
-socket.on('denied', function(reason) {
+socket.on('denied', function (reason) {
 	console.log('denied: ' + reason);
 	window.location = '/games';
 });
 
-socket.on('msg', function(msg) {
+socket.on('msg', function (msg) {
 	console.log(msg);
 });
 
 socket.emit('enterLobby', gameId);
 
-$('#chat_submit').on('click', function(event) {
+$('#chat_submit').on('click', function (event) {
 
 });
