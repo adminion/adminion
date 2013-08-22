@@ -9,10 +9,23 @@
 
 #phases {
 	float:right;
-	position:relative;
+	position:fixed;
 	background-color:blue;
 	height:245px;
+	right:5px;
+	top:400px;
 
+}
+
+#commentary {
+	font-size: 20px;
+	clear:right;
+	overflow: scroll;
+	background-color:green;
+	height:400px;
+	width:250px;
+	display: block;
+	color: white;
 }
 
 #inPlay {

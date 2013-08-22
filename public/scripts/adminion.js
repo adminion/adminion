@@ -181,7 +181,6 @@ var KingdomCards = [
 		function(player) {
 			player.actions += 1;
 			drawCard(player);
-			discardCard(player, this);
 		}
 	},
 	
@@ -214,9 +213,6 @@ var KingdomCards = [
 				player.money += 2
 				trashCard(player, this);
 			}
-			else {
-				discardCard(player, this);
-			}
 		}
 	},
 
@@ -244,7 +240,7 @@ var KingdomCards = [
 			player.actions += 2;
 			player.buys += 1;
 			player.money += 2;
-			discardCard(player, this);
+
 		} 
 	},
 	
@@ -255,11 +251,10 @@ var KingdomCards = [
 	image:		"http://dominion.diehrstraits.com/scans/base/laboratory.jpg",
 	quantity: 10,
 		action: function(player) {
-			alert(player.Name +' played a Laboratory');
 			player.actions += 1;
 			drawCard(player);
 			drawCard(player);
-			discardCard(player, this);
+
 		}  
 	},
 	
@@ -404,11 +399,9 @@ function drawCard(player){
 	
 	// if this is during the player's actionphase, update the actionevent on the newcard so that it can be bought
 	if (actionPhaze) {
-	console.log(actionPhaze);
-
+	console.log('actioning still?: ' +actionPhaze);
+	updateActionEvent(playerHand.lastChild);
 	
-	
-		updateActionEvent(document.getElementById(newCard.name));
 	}
 
 }
@@ -445,16 +438,17 @@ function actionCheck(player) {
 		}
 	}
 
-	// if action is true and there are action cards in the player's hand, the action button is turned on
+	// if action is true and there are action cards in the player's hand, actionPhase() is initiated
 	if (action) {
-		document.getElementById("action").disabled=false;
+		announce('action phase is initiated!');
+		actionPhase(player);
+	
 	}
-
-	// if not, turn the button off
+	
 	else {
-		document.getElementById("action").disabled=true;
+		announce('buy phase initiate!');
+		buyPhase(player);
 	}
-	console.log('actioncheck: ' + action);
 }
 
 
@@ -463,11 +457,10 @@ var actionPhaze = false;
 // initiates action phase for player
 function actionPhase(player){
 
+	announce('choose action card to play!');
+
 	// set actionphaze to true, to signify that the actionphase is in effect
 	actionPhaze = true;
-
-	// disable the action button
-	document.getElementById('action').disabled = true;
 
 	// for every card in the player's hand
 	for (var each in player.hand) {
@@ -537,32 +530,63 @@ function playCard(element, player) {
 	
 	// now that the correct object is found, execute the card's action
 	cardOb.action(player, cardOb);
+	
 
 
 	// grabs the inPlay element
 	var inPlay = document.getElementById('inPlay');
+	
 	// adds the image of the played card to the inPlay element
-	addImage('70px', '5px', cardOb.image, inPlay, 'inPlay');	
+	addImage('70px', '5px', cardOb.image, inPlay, 'inPlay');
+	
+	// announce that the player played the card
+	announce(player.Name + ' has played a ' + element.id);
 
+	// grab the playerCards element
+	var hand = document.getElementById('playerCards');
+
+	// removes the element from player's hand
+	hand.removeChild(hand.childNodes[child_index]);	
+
+	// pushes the played card into the playCards array (so played cards don't get cycled back into discard/deck while the play is going on)
+	playCards.push(player.hand[child_index]);
+
+	// splice the card from the player's hand
+	player.hand.splice(child_index, 1);
+
+	// subtract one from the player's actions	
 	player.actions -= 1;
-		statusUpdate(player);
-		console.log('actions: ' + player.actions);
+
+	statusUpdate(player);
+
+	// if there are no more actions for the player, it is announced and actionphaze is turned off to signify the end of the player's action phase
 	if (player.actions == 0) {
-		alert('you dun w/ACTIOnS!');
+		announce('you dun w/ACTIOnS! BUYPHASE INITIATE!!');
+		buyPhase(player);
 		actionphaze = false;
+	}
+	else {
+		actionCheck(player);
 	}
 	
 }
 
+// an array for storing the cards in play- during cleanupphase, they move into discard pile
+var playCards = [];
+
+
+// a function for updating the click event on a card, based upon the element/card's class name
 function updateActionEvent(element) {
 
+	// if it's an Action card, give it an onclick event to playCard
 	if (element.className == 'Action') {
 		element.onclick = function() {
-		
- playCard(element, players[0])		
-
+			playCard(element, players[0]);
+ 			console.log(element.id+' action event set');		
 		};
 	}
+
+	// if the classname is 'normal', take away the onclick event
 	else if (element.className == 'normal') {
 		element.onclick = null;
 	}
@@ -572,53 +596,53 @@ function updateActionEvent(element) {
 // a function to add an event in order to trigger buycard()
 function updateBuyEvent(element) {
 
+	// if the classname is buyable at all, adds buycard() to the click event
   if (element.className == 'buyable' || element.className == 'buyableKingdomTreasure')  {
-	element.onclick = function() {
-	buyCard(element.id, players[0]);
+		element.onclick = function() {
+			buyCard(element.id, players[0]);
 		};
-   	console.log('event added?!!?!');
-
+   	console.log(element.id+' buy event set');
   }
+
+	// if the className is normal or its a normal kingdom card, the click event is set back to cardInspect
   else if (element.className == 'normal' || element.className == 'kingdomTreasure' || element.className == 'kingdomVictory') {
   	element.onclick = function() {
-  	cardInspect(element.src);
+ 		 	cardInspect(element.src);
  		};
   }
 
 }
+// a variable to signify that its the player's first buy in the turn, so that treasure cards aren't counted more than once
+var firstBuy = true;
 
 //the buy phase of a player's turn
 function buyPhase(player) {
-
+	announce('choose card to buy!');
 	// disable the buy button
 	document.getElementById('buy').disabled = true;
 
 	// if player has buys left:
 	if (player.buys > 0) {
 
-	// goes through each card in the player's hand to check if there are treasure cards
-	for (var card in player.hand) {
+		// only runs while its the player's first buy
+		while (firstBuy == true) {
 
-// if the card's type is treasure,
-		if (player.hand[card].type.indexOf('treasure') != -1) {
+			// goes through each card in the player's hand to check if there are treasure cards
+			for (var card in player.hand) {
 
-// add the value of the treasure card to the player's usable money supply
-		player.money += player.hand[card].treasure;
+				// if the card's type is treasure,
+				if (player.hand[card].type.indexOf('reasure') != -1 ) {
 
+					// add the value of the treasure card to the player's usable money supply
+					player.money += player.hand[card].treasure;
+				}	
+			}
+
+			// since its run through and counted treasure cards in the player's hand, firstBuy is turned off, so that next time buyPhase is run, money is not counted again
+			firstBuy = false;
 		}
-	}
+	
 	statusUpdate(player);
-// console.logs the player, how many buys and money they have to spend, and a list of cards that they're able to buy this turn
-
-		console.log(	player.Name	 											+ 
-								" has " 			 											+ 
-									player.buys	 											+
-								' buys and ' 	 											+ 
-									player.money 											+
-								' moneys!'												 );
-
-
-
 
 		// goes through all the available cards in the kingdom to set them to buyable
 		for (var card in KingdomCards) {
@@ -628,17 +652,23 @@ function buyPhase(player) {
 	
 				// the card's dom object's class is switched to 'buyable'
 				document.getElementById(KingdomCards[card].name).setAttribute('class', 'buyable');
-
+				
+				// if there are no more cards left in that pile, the class is set to unbuyable
+				if (KingdomCards[card].quantity <= 0) {
+					document.getElementById(KingdomCards[card].name).setAttribute('class', 'unbuyable');
+				}
 			}
+			
+			// if the cost of the card is less than what the player has in money, it is set to unbuyable
 			else {
 			document.getElementById(KingdomCards[card].name).setAttribute('class', 'unbuyable');
 			}
 			
-				// a click event is added to the card, based on its buyability
-				updateBuyEvent(document.getElementById(KingdomCards[card].name), "click");
-
+			// a click event is added to the card, based on its buyability
+			updateBuyEvent(document.getElementById(KingdomCards[card].name), "click");
 		}
-		
+
+		// goes through all the available Treasure cards to see if they're buyable or not		
 		for (var card in Treasure) {
 		
 			// if the cost of the card is less than or equal to how much money the player has, 	
@@ -646,19 +676,18 @@ function buyPhase(player) {
 	
 				// the card's dom object's class is switched to 'buyable'
 				document.getElementById(Treasure[card].name).setAttribute('class', 'buyableKingdomTreasure');
-
-
 			}
+			
+			// if its too expensive for how much money they have, it is set to unbuyable
 			else {
 			document.getElementById(Treasure[card].name).setAttribute('class', 'unbuyableKingdomTreasure');
 			}
 			
-				// a click event is added to the card, based on its buyability
-				updateBuyEvent(document.getElementById(Treasure[card].name), "click");
-				console.log(document.getElementById(Treasure[card].name))
-
+			// a click event is added to the card, based on its buyability
+			updateBuyEvent(document.getElementById(Treasure[card].name), "click");
 		}
-	
+
+		// goes through victory cards to see if they're buyable or not	
 		for (var card in Victory) {
 		
 			// if the cost of the card is less than or equal to how much money the player has, 	
@@ -666,65 +695,34 @@ function buyPhase(player) {
 	
 				// the card's dom object's class is switched to 'buyable'
 				document.getElementById(Victory[card].name).setAttribute('class', 'buyable');
-
 			}
+			
+			// if they can't afford the victory card it is set to unbuyable
 			else {
 			document.getElementById(Victory[card].name).setAttribute('class', 'unbuyable');
 			}
 			
 				// a click event is added to the card, based on its buyability
 				updateBuyEvent(document.getElementById(Victory[card].name), "click");
-				console.log(document.getElementById(Victory[card].name))
-
 		}
 	}
-}
-function findCard(cardname) {
-
-	// loops through KingdomCards in order to find the card object (because we're given just the name of the card)
-	for (var each in KingdomCards) {
-		
-		// if the given card name is matched up with the card object,
-		if (cardname == KingdomCards[each].name) {
-
-			// set card equal to the card object
-			card = KingdomCards[each];
-			
-			break;
-		}
-	}
-	
-	for (var each in Treasure) {
-		if (cardname == Treasure[each].name) {
-			card = Treasure[each];
-			console.log(card);
-			break;
-		}
-	}
-	for (var each in Victory) {
-		if (cardname == Victory[each].name) {
-			card = Victory[each];
-			break;
-		}
-	}		
-
 }
 
 // a function to buy a card, given a player and the name of a card
 function buyCard(card, player) {
+
 	// loops through KingdomCards in order to find the card object (because we're given just the name of the card)
 	for (var each in KingdomCards) {
 		
 		// if the given card name is matched up with the card object,
 		if (card == KingdomCards[each].name) {
 
-			// set card equal to the card object
+			// set card equal to the card object and break from the loop
 			card = KingdomCards[each];
-			
 			break;
 		}
 	}
-	
+	// does the same for Treasures	
 	for (var each in Treasure) {
 		if (card == Treasure[each].name) {
 			card = Treasure[each];
@@ -732,6 +730,8 @@ function buyCard(card, player) {
 			break;
 		}
 	}
+	
+	// and the same for Victories
 	for (var each in Victory) {
 		if (card == Victory[each].name) {
 			card = Victory[each];
@@ -739,19 +739,14 @@ function buyCard(card, player) {
 		}
 	}
 	
-	console.log(card);
-			// subract 1 buy from the player
-			player.buys -= 1;
+	// subract 1 buy from the player
+	player.buys -= 1;
 		
-			// and player gains that card
-			gainCard(card, player);
-
-	console.log(player.money - card.cost);
+	// and player gains that card
+	gainCard(card, player);
 
 	// subtract the cost of the card from the player's money
 	player.money -= card.cost;
-	console.log(player.money);
-
 
 	// if the player has no more buys,
 	if (player.buys == 0) {
@@ -759,29 +754,44 @@ function buyCard(card, player) {
 		// engage cleanup Phase
 		cleanupPhase(player);
 	}
+
+	// if they still have more buys, engage buyphase() again!
 	else {
 		buyPhase(player);
 	}
-	//update the player's status!
+
 	statusUpdate(player);
 }
+var gameLog = [];
 
+// function for displaying messages, typically ones pertaining to what just happened in the game
+function announce(message) {
+	gameLog.push(message);
+
+	// grabs the dom object 'commentary' and sets it equal to commentary
+	var commentary = document.getElementById('commentary');
+
+	// clears the contents of commentary
+//	commentary.innerHTML = '';
+
+
+	var comment = document.createElement('p');
+	comment.setAttribute('id', 'comment');
+
+	// creates comment, a new textNode with the message inside of it
+	var txt = document.createTextNode(message);	
+
+	comment.appendChild(txt);
+	// adds comment to commentary
+	commentary.appendChild(comment);
+
+		document.getElementById('comment').scrollIntoView();
+}
 
 // a function to gain a card, given its name and the target player
 function gainCard(card,player) {
 
-	// alert that the player has gained the card
-	
-	if (player.buys == 0) {
-	alert(player.Name+ ' gained a '+card.name+' \n you have no more buys.. END OF TURN!');	
-	}
-	else {	
-		alert(player.Name+ ' gained a '+card.name);
-	}
-
-	console.log(	player.Name		 +
-								' gained a '	 +
-								card.name			 )
+	announce(player.Name+ ' gained a '+card.name);
 
 	// push the card into the player's discard pile
 	player.discard.push(card);
@@ -797,21 +807,23 @@ function gainCard(card,player) {
 	// if the card pile has run out (quantity = 0), 
 	if (card.quantity <= 0) {
 
+		// set the card's opacity to 0.4
+		document.getElementById(card.name).style.opacity = '0.4';
+			
 		// push the card into the list of exhausted cards
-		gameConfig.exhausted.push(card);
-		
-		// log the new developments
-		console.log(	card.name								 																 +
-							 ' 	pile has been EXHAUSTED															  \n'+
-							 
-							 // and how many more piles exhaustion until the end of the game
-							 (	gameConfig.exhaustLimit - gameConfig.exhausted.length		)+
-							 '	piles left til the end of the game!		'									);
+		gameConfig.exhausted.push(card);	
+	}
+	
+	// if the player has no more buys, it is announced	
+	if (player.buys == 0) {
+		announce('you have no more buys.. NEXT TURN!');	
 	}
 } 
 
+// a function to start a player's turn
 function turn(player) {
 
+	// logs the player's hand
 	console.log(		player.Name		+
 									"'s hand: "		
 	 														 );
@@ -819,11 +831,9 @@ function turn(player) {
 	for (i =0; i<player.hand.length; i++) {
 		console.log('| '+ player.hand[i].name);
 	}
+	
+	// performs test to see if there are action cards in the player's hand
 	actionCheck(player);
-//	actionPhase(player);
-//	buyPhase(player);
-//	cleanupPhase(player);
-
 }
 
 // a function to discard a given card from a given player's hand
@@ -833,7 +843,7 @@ function discardCard(player, card) {
 //	console.log(player.hand.indexOf(card));
 //	console.log(hand.childNodes.length);
 
-console.log(card);
+console.log('discarded '+ card.name);
 
 hand.removeChild(hand.childNodes[player.hand.indexOf(card)]);
 
@@ -871,7 +881,7 @@ var cleanedUp = false
 //to prepare for the players next turn, all player attributes get reset to default values, hand is discarded and a new one drawn
 function cleanupPhase(player) {
 
-
+	firstBuy = true;
 	// discard the player's hand
 	discardHand(player);
 
@@ -922,7 +932,10 @@ function cleanupPhase(player) {
 				updateBuyEvent(element);
 
 	}
-	
+	for (var each in playCards) {
+		player.discard.push(playCards[each]);
+	}
+	playCards = [];
 	var inPlay = document.getElementById('inPlay');
 	inPlay.innerHTML = '';
 	
@@ -1105,7 +1118,7 @@ console.log(kingdomCards);
 			cleanedUp = false;
 			statusUpdate(players[0]);
 			//assign phase buttons to current player
-			document.getElementById("action").onclick = function() {actionPhase(players[0])};
+
 			document.getElementById("buy").onclick = function() {buyPhase(players[0])};
 			document.getElementById("clean").onclick = function() {cleanupPhase(players[0])};
 
