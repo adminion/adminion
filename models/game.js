@@ -132,26 +132,26 @@ module.exports = function (mongoose) {
 		 */
 		isRegistered: function (accountID) {
 			
-			debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 143);
-			debug.val('accountID', accountID, 'models/game.js', 144);
+			debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 135);
+			debug.val('accountID', accountID, 'models/game.js', 136);
 			
 			match = -1;
 
 			for (var i = 0; i < this.registeredPlayers.length; i += 1) {
 				var player = this.registeredPlayers[i];
 
-				debug.msg('i' + i , 'models/game.js', 151);
-				debug.val('player', player, 'models/game.js', 152);	
+				debug.msg('i' + i , 'models/game.js', 143);
+				debug.val('player', player, 'models/game.js', 144);	
 
 				debug.val('new vs existing player comparison', [accountID
-					, ''+player.accountID], 'models/game.js', 157);
+					, ''+player.accountID], 'models/game.js', 147);
 
 				if (accountID === ''+player.accountID ) {
 					var match = seat;
-					debug.msg('accountIDs match!', 'models/game.js', 161);
+					debug.msg('accountIDs match!', 'models/game.js', 151);
 					break;
 				} else {
-					debug.msg('accountIDs DO NOT match!', 'models/game.js', 163);
+					debug.msg('accountIDs DO NOT match!', 'models/game.js', 154);
 				}
 			};
 
@@ -166,8 +166,8 @@ module.exports = function (mongoose) {
 			
 			var accountID = socket.handshake.user['_id'].toString();
 
-			debug.val('accountID', accountID, 'models/game.js', 292);
-			debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 295);
+			debug.val('accountID', accountID, 'models/game.js', 169);
+			debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 170);
 
 			// define the new player
 			this.registeredPlayers.push({ accountID: accountID });
@@ -179,20 +179,20 @@ module.exports = function (mongoose) {
 
 			var index = this.isRegistered(accountID)
 
-			debug.val('index', index, 'models/game.js', 400);
+			debug.val('index', index, 'models/game.js', 182);
 
 			// if the index matches the return value of this.isRegistered()...
 			if ( index >= 0) {
 				this.registeredPlayers[index].remove();
 
-				debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 418);
+				debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 188);
 
 				return true; 
 
 			} else {
 
 				// not sure who this person wants to delete, sorry.
-				debug.msg('player not found', 'models/game.js', 426);
+				debug.msg('player not found', 'models/game.js', 195);
 				return false;
 			}
 		}	

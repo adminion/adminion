@@ -10,6 +10,40 @@ module.exports = function SocketCache () {
 		, byGame 	= {}
 		, byAccount 	= {}
 
+	Object.defineProperty(byGame, 'length', {
+		configurable: false,
+		enumerable: false,
+		writable: false,
+		value: function () {
+			var count = 0;
+
+			for ( i in this ) {
+				if (this[i] !== undefined) {
+					count +=1;
+				}
+			}
+
+			return count;
+		}
+	});
+
+	Object.defineProperty(byAccount, 'length', {
+		configurable: false,
+		enumerable: false,
+		writable: false,
+		value: function () {
+			var count = 0;
+
+			for ( i in this ) {
+				if (this[i] !== undefined) {
+					count +=1;
+				}
+			}
+
+			return count;
+		}
+	});
+
 	// public method for caching a socket
 	this.add = function (socket) {
 
@@ -63,7 +97,7 @@ module.exports = function SocketCache () {
 				// save the index and stop searching
 				which = i;
 				socket = Sockets[i];
-				console.log('breaking at ' + i);
+				console.log('socket stored at index ' + i);
 				break;
 			}
 		}
@@ -75,7 +109,7 @@ module.exports = function SocketCache () {
 		// get details for readability
 		var socketID = socket.id;
 		var gameID = util.gameID(socket);
-		var accountID = AccountID(socket);
+		var accountID = util.accountID(socket);
 
 		// delete references to the stored socket...
 		delete byID[socketID];
@@ -97,6 +131,9 @@ module.exports = function SocketCache () {
 
 		// for this socket in the byAccount array
 		for (var i = 0; i < byAccount[accountID].length; i+=1) {
+
+			debug.val('byAccount[accountID]', byAccount[accountID], 'models/sockets.js', 135);
+
 			// when we find it
 			if (byAccount[accountID][i].id === socketID) {
 				// delete the index and stop searching
@@ -105,13 +142,18 @@ module.exports = function SocketCache () {
 			}
 		}
 
+		// if there are no more sockets in this game, delete the list 
+		if (byAccount[accountID].length === 0) {
+			delete byAccount[accountID];
+		}		
+
 		// now finally delete the socket itself
 		Sockets.splice(which,1);
 
-		debug.val('Sockets', Sockets, 'models/socket.js', 116);
-		debug.val('byID', byID, 'models/socket.js', 117);
-		debug.val('byGame', byGame, 'models/socket.js', 118);
-		debug.val('byAccount', byAccount, 'models/socket.js', 119);
+		debug.val('Sockets', Sockets, 'models/socket.js', 153);
+		debug.val('byID', byID, 'models/socket.js', 154);
+		debug.val('byGame', byGame, 'models/socket.js', 155);
+		debug.val('byAccount', byAccount, 'models/socket.js', 156);
 
 		return Sockets.length;
 	};
