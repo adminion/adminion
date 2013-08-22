@@ -73,7 +73,7 @@ socket.on('msg', function (msg) {
 	console.log(msg);
 });
 
-socket.emit('enterLobby', gameId);
+socket.emit('joinGame', gameId);
 
 $('#chat_submit').on('click', function (event) {
 
