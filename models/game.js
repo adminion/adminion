@@ -141,7 +141,7 @@ module.exports = function (mongoose) {
 				var player = this.registeredPlayers[i];
 
 				debug.msg('i' + i , 'models/game.js', 143);
-				debug.val('player', player, 'models/game.js', 144);	
+				debug.val('player.accountID', player.accountID, 'models/game.js', 144);	
 
 				debug.val('new vs existing player comparison', [accountID
 					, ''+player.accountID], 'models/game.js', 147);
@@ -162,15 +162,15 @@ module.exports = function (mongoose) {
 
 		},
 
-		register: function (socket) {
+		register: function (accountID) {
 			
-			var accountID = socket.handshake.user['_id'].toString();
-
 			debug.val('accountID', accountID, 'models/game.js', 169);
 			debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 170);
 
 			// define the new player
-			this.registeredPlayers.push({ accountID: accountID });
+			this.registeredPlayers.addToSet({ accountID: accountID });
+
+			debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 173);
 		
 			return this.registeredPlayers.length;
 		},

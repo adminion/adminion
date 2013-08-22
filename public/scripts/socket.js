@@ -66,7 +66,7 @@ socket.on('roster', function (players) {
 
 socket.on('denied', function (reason) {
 	console.log('denied: ' + reason);
-	window.location = '/games';
+	window.location = '/games/' + gameId;
 });
 
 socket.on('msg', function (msg) {
