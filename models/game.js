@@ -74,7 +74,7 @@ module.exports = function (mongoose) {
 		return  this.config.maxPlayers - this.occupiedSeats();
 	});
 
-	GameSchema.virtual('registration').get(function () {
+	GameSchema.virtual('this.registration').get(function () {
 
 		// if open seats is between one and the maximum, return true; else return false
 		return ( 0 < this.openSeats && this.openSeats <= this.config.maxPlayers) ? true : false;
@@ -89,14 +89,14 @@ module.exports = function (mongoose) {
 	GameSchema.virtual('roster').get(function () {
 		var roster = [];
 
-		// fill the roster players who's keys are their seat numbers
+		// fill the roster with players who's keys are their seat numbers
 		this.registeredPlayers.forEach(function (player, seat) {
 			roster[ seat + 1 ] = player.handle;
 		});
 
-		debug.val('players', players, 'models/game.js', 114);
+		debug.val('roster', roster, 'models/game.js', 114);
 
-		return players;
+		return roster;
 		
 	});
 
