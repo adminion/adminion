@@ -5,6 +5,7 @@ module.exports = function(mongoose) {
 
 	var PlayerSchema = new mongoose.Schema({
 		accountID: 	{ type: ObjectId, 	required: true, unique: true 	}
+		, ready: 	{ type: Boolean, 	default: false } 
 		, dominion: 	[ ObjectId ]
 		, hand: 		[ ObjectId ]
 		, inPlay: 		[ ObjectId ]

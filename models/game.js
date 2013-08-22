@@ -3,19 +3,11 @@
  * 
  */
 
-var ERR_PARTIAL_MATCH		= 'the connetion partially matches another connection.'
-	, ERR_INVALID_SESSION	= 'bad combination of playerID and sessionID'
-	, ERR_NOT_UNIQUE 		= 'the connection is not unique.'
-	, ERR_NOT_AUTHENTIC		= 'the player is not authentic.'
-	, ERR_NO_SEATS 			= 'sorry, but all seats are occupied.'
-	, ERR_NO_PLAYER_ONE 	= 'game is full, but no player one...'
-	, ERR_UNKNOWN_SOCKET	= 'unknown socket.'
-
-	, MSG_DUPLICATE 		= 'the connection is a duplicate of an existing user connection.'
-	, MSG_IS_PLAYER_ONE		= 'connection is player one.'
+var ERR_NO_SEATS 			= 'sorry, but all seats are occupied.'
+	, MSG_REGISTERED 		= 'this user has already.'
+	, MSG_IS_PLAYER_ONE		= 'the user is player one.'
 	, MSG_PLAYER_AUTHETIC	= 'the player is authentic.'
-	, MSG_NOT_PLAYER_ONE	= 'connection is not player one.'
-	, MSG_UNIQUE			= 'the connection is unique.';
+	, MSG_NOT_PLAYER_ONE	= 'connection is not player one.';
 
 // returns that to which an XOR expression would evaluate
 function XOR (a,b) {
@@ -57,9 +49,8 @@ module.exports = function (mongoose) {
 		}
 	});
 
-	GameSchema.virtual('allReady'.get(function () {
-		var count = 0
-			, seats = this.occupiedSeats(true);
+	GameSchema.virtual('allReady').get(function () {
+		var count = 0;
 
 		// count the players that are ready
 		this.registeredPlayers.forEach(function (player) { 
@@ -71,20 +62,11 @@ module.exports = function (mongoose) {
 		});
 
 		// emit the ready event
-		if ( count === seats ) {
+		if ( count === this.registeredPlayers.length ) {
 			return true;
 		} else {
 			return false;
 		}
-	});
-
-	GameSchema.virtual('nextSeat').get(function () {
-		for (var seat = 1; seat < this.config.maxPlayers; seat += 1) {
-			if (!this.registeredPlayers[seat]) {
-				return seat;
-			}
-		}
-		return false;
 	});
 
 	GameSchema.virtual('openSeats').get(function () {
@@ -109,7 +91,7 @@ module.exports = function (mongoose) {
 
 		// fill the roster players who's keys are their seat numbers
 		this.registeredPlayers.forEach(function (player, seat) {
-			roster[ seat ] = player.handle;
+			roster[ seat + 1 ] = player.handle;
 		});
 
 		debug.val('players', players, 'models/game.js', 114);
@@ -125,13 +107,13 @@ module.exports = function (mongoose) {
 		 * determines whether or not the given socket is playerOne
 		 */
 
-		isPlayerOne: function (playerID) {
-			debug.val('player vs playerOne', [playerID
-				, ''+this.playerOne.playerID
+		isPlayerOne: function (accountID) {
+			debug.val('player vs playerOne', [accountID
+				, ''+this.playerOne.accountID
 				, sessionID
 				, this.playerOne.sessionID], 'models/game.js', 209);
 
-			if (playerID === ''+this.playerOne.playerID) {
+			if (accountID === ''+this.playerOne.accountID) {
 				if (sessionID === this.playerOne.sessionID) {
 					debug.msg(MSG_IS_PLAYER_ONE, 'models/game.js', 213);
 					return true;
@@ -151,121 +133,60 @@ module.exports = function (mongoose) {
 		isRegistered: function (accountID) {
 			
 			debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 143);
-			debug.val('playerID', playerID, 'models/game.js', 144);
+			debug.val('accountID', accountID, 'models/game.js', 144);
 			
-			match = -1
+			match = -1;
 
-			eachPlayer:
-			this.registeredPlayers.forEach(function (player, seat) {
-				debug.msg('player ' + seat , 'models/game.js', 151);
+			for (var i = 0; i < this.registeredPlayers.length; i += 1) {
+				var player = this.registeredPlayers[i];
+
+				debug.msg('i' + i , 'models/game.js', 151);
 				debug.val('player', player, 'models/game.js', 152);	
 
-				debug.val('new vs existing player comparison', [playerID
-					, ''+player.playerID
-					, sessionID
-					, player.sessionID], 'models/game.js', 157);
+				debug.val('new vs existing player comparison', [accountID
+					, ''+player.accountID], 'models/game.js', 157);
 
-				if (playerID === ''+player.playerID ) {
-					var playerMatch = true;
-					debug.msg('playerIDs match!', 'models/game.js', 161);
+				if (accountID === ''+player.accountID ) {
+					var match = seat;
+					debug.msg('accountIDs match!', 'models/game.js', 161);
+					break;
 				} else {
-					debug.msg('playerIDs DO NOT match!', 'models/game.js', 163);
+					debug.msg('accountIDs DO NOT match!', 'models/game.js', 163);
 				}
-
-				if (sessionID === player.sessionID) {
-					var sessionMatch = true;
-					debug.msg('sessionIDs match!', 'models/game.js', 168);	
-				} else {
-					debug.msg('sessionIDs DO NOT match!', 'models/game.js', 170);	
-				}
-
-				if (playerMatch && sessionMatch ) {
-
-					match = seat;
-				}
-
-				
-			});
+			};
 
 			return match;
 		}, 
-
-		seatOf: function (socketID) {
-			return this.playerExists(socketID);
-
-		},
 
 		startGame: function () {
 
 		},
 
 		register: function (socket) {
-			var handle = 		socket.handshake.user.handle
-				, playerID = 	socket.handshake.user['_id'].toString()
-				, sessionID = 	socket.handshake.sessionID;
-
-			debug.val('playerID', playerID, 'models/game.js', 292);
-			debug.val('sessionID', sessionID, 'models/game.js', 293);
-			debug.val('this.playerOne', this.playerOne, 'models/game.js', 294);
-			debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 295);
-			debug.val('seats', seats, 'models/game.js', 296);
-
-			////////////////////////////////////////////////////////////////////
-			//
-			// connection screening algorithm
-			//
-			////////////////////////////////////////////////////////////////////
-
 			
-			////////////////////////////////////////////////////////////////////
-			//
-			// we're good to connect if we've made it this far!
-			//
-			////////////////////////////////////////////////////////////////////
+			var accountID = socket.handshake.user['_id'].toString();
 
-			// calculate the lowest open seat number
-			var seat = this.nextSeat();
-
-			debug.val('seat', seat, 'models/game.js', 381);
+			debug.val('accountID', accountID, 'models/game.js', 292);
+			debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 295);
 
 			// define the new player
-			this.registeredPlayers.push({
-				seat: seat,
-				handle: handle,
-				playerID: playerID,
-				sessionID: sessionID
-			});
+			this.registeredPlayers.push({ accountID: accountID });
 		
-			return seat;
+			return this.registeredPlayers.length;
 		},
 
-		exitLobby: function (handshake) {
+		exitLobby: function (accountID) {
 
-			var handle = 		handshake.user.handle
-				, playerID = 	handshake.user['_id'].toString()
-				, sessionID = 	handshake.sessionID
+			var index = this.isRegistered(accountID)
 
-			debug.val('seat', seat, 'models/game.js', 400);
+			debug.val('index', index, 'models/game.js', 400);
 
-			// has the player connected?
-			var seat = this.playerExists(playerID, sessionID);
-			
-			debug.val('seat', seat, 'models/game.js', 405);
-			
-			// if the seat matches the return value of this.sessionExists()...
-			if ( seat !== -1) {
-				// we have a valid user, delete them!
-				if (seat === 0) {
-					this.registeredPlayers[0] = {};
-				} else {
-					this.registeredPlayers[seat].remove();
-					
-				}
-
+			// if the index matches the return value of this.isRegistered()...
+			if ( index >= 0) {
+				this.registeredPlayers[index].remove();
 
 				debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 418);
 
-				debug.msg(handle + ' has left seat ' + seat + '.', 'models/game.js', 420);
 				return true; 
 
 			} else {
