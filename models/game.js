@@ -84,9 +84,15 @@ module.exports = function (mongoose) {
 		},
 
 		roster: function () {
-			var roster = [];
+			var roster = {};
 
-			debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 89);
+			// debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 89);
+
+			// if playerOne is registered
+			if ( this.isRegistered(this.playerOne.accountID) ) {
+
+
+			}
 
 			// fill the roster with players who's keys are their seat numbers
 			for ( var i = 0; i < this.registeredPlayers.length; i += 1 ) {
@@ -94,13 +100,34 @@ module.exports = function (mongoose) {
 				roster.push(this.registeredPlayers[i]);
 			};
 
-			debug.val('roster', roster, 'models/game.js', 114);
+			// debug.val('roster', roster, 'models/game.js', 114);
+
+
+			// build a client-friendly roster...
+			// var roster = game.roster();
+			// var simplified = {};
+
+			// var p1 = Accounts[game.playerOne.accountID];
+
+			// if ( game.playerOneRegistered() !== false ) {
+			// 	simplified['0'] = p1.handle;
+			// }
+
+			// for (var i = 1; i <= roster.length; i +=1) {
+			// 	// get the user's account info 
+			// 	var accoutInfo = Accounts[roster[i].accountID];
+
+			// 	if (game.isPlayerOne(roster[i].accountID) === false ) {
+			// 		simplified[String(i)] = accoutInfo.handle;
+			// 	}
+			// }
+		
 
 			return roster;	
 		},
 
 		/**
-		 *	GameSchema.isPlayerOne(us)
+		 *	GameSchema.isPlayerOne(accountID)
 		 *
 		 * determines whether or not the given socket is playerOne
 		 */
@@ -152,7 +179,11 @@ module.exports = function (mongoose) {
 		}, 
 
 		startGame: function () {
-
+			debug.msg('eventually, startGame() will start the game... for now it just talks about it.');
+			// starting the game includes: 
+			//  * set status to inPlay or something
+			//  * saving the roster to the database
+			//  * instructing sockets to 
 		},
 
 		register: function (accountID) {
@@ -160,7 +191,7 @@ module.exports = function (mongoose) {
 			debug.val('accountID', accountID, 'models/game.js', 169);
 			debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 170);
 
-			debug.msg(accountID + ' is now egistered.', 'models/game.js', 163);
+			debug.msg(accountID + ' is now registered.', 'models/game.js', 163);
 
 			// define the new player
 			this.registeredPlayers.addToSet({ accountID: accountID });
@@ -177,7 +208,7 @@ module.exports = function (mongoose) {
 			debug.val('index', index, 'models/game.js', 182);
 
 			// if the index matches the return value of this.isRegistered()...
-			if ( index >= 0) {
+			if ( index !== false ) {
 				this.registeredPlayers[index].remove();
 
 				debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 188);
@@ -186,7 +217,7 @@ module.exports = function (mongoose) {
 
 			} else {
 
-				// not sure who this person wants to delete, sorry.
+				// not sure who to delete, sorry.
 				debug.msg('player not found', 'models/game.js', 195);
 				return false;
 			}
