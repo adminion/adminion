@@ -70,10 +70,10 @@ module.exports = function SocketCache () {
 		byGame[gameID].push(Sockets[which]);
 		byAccount[accountID].push(Sockets[which]);
 
-		debug.val('Sockets', Sockets, 'models/socket.js', 49);
-		debug.val('byID', byID, 'models/socket.js', 50);
-		debug.val('byGame', byGame, 'models/socket.js', 51);
-		debug.val('byAccount', byAccount, 'models/socket.js', 52);
+		// debug.val('Sockets', Sockets, 'models/socket.js', 49);
+		// debug.val('byID', byID, 'models/socket.js', 50);
+		// debug.val('byGame', byGame, 'models/socket.js', 51);
+		// debug.val('byAccount', byAccount, 'models/socket.js', 52);
 
 		return Sockets.length;
 
@@ -137,7 +137,7 @@ module.exports = function SocketCache () {
 			// when we find it
 			if (byAccount[accountID][i].id === socketID) {
 				// delete the index and stop searching
-				delete byAccount[accountID][i];
+				byAccount[accountID].splice(i,1);;
 				break;
 			}
 		}
@@ -150,10 +150,10 @@ module.exports = function SocketCache () {
 		// now finally delete the socket itself
 		Sockets.splice(which,1);
 
-		debug.val('Sockets', Sockets, 'models/socket.js', 153);
-		debug.val('byID', byID, 'models/socket.js', 154);
-		debug.val('byGame', byGame, 'models/socket.js', 155);
-		debug.val('byAccount', byAccount, 'models/socket.js', 156);
+		// debug.val('Sockets', Sockets, 'models/socket.js', 153);
+		// debug.val('byID', byID, 'models/socket.js', 154);
+		// debug.val('byGame', byGame, 'models/socket.js', 155);
+		// debug.val('byAccount', byAccount, 'models/socket.js', 156);
 
 		return Sockets.length;
 	};
