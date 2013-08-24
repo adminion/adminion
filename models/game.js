@@ -49,75 +49,95 @@ module.exports = function (mongoose) {
 		}
 	});
 
-	GameSchema.virtual('allReady').get(function () {
-		var count = 0;
-
-		// count the players that are ready
-		this.registeredPlayers.forEach(function (player) { 
-			// if this player is ready
-			if (player.ready) {
-				// add 1 to the count
-				count +=1; 
-			}
-		});
-
-		// emit the ready event
-		if ( count === this.registeredPlayers.length ) {
-			return true;
-		} else {
-			return false;
-		}
-	});
-
-	GameSchema.virtual('openSeats').get(function () {
-
-		return  this.config.maxPlayers - this.occupiedSeats();
-	});
-
-	GameSchema.virtual('this.registration').get(function () {
-
-		// if open seats is between one and the maximum, return true; else return false
-		return ( 0 < this.openSeats && this.openSeats <= this.config.maxPlayers) ? true : false;
-	});
-
-	GameSchema.virtual('playerOneRegistered').get(function () {
-
-		// if player 0 is registered, 
-		return (this.registeredPlayers[0]) ? true : false;
-	});
-
-	GameSchema.virtual('roster').get(function () {
-		var roster = [];
-
-		// fill the roster with players who's keys are their seat numbers
-		this.registeredPlayers.forEach(function (player, seat) {
-			roster[ seat + 1 ] = player.handle;
-		});
-
-		debug.val('roster', roster, 'models/game.js', 114);
-
-		return roster;
-		
-	});
-
 	GameSchema.method({
+
+		allReady: function () {
+			var count = 0;
+
+			// count the players that are ready
+			this.registeredPlayers.forEach(function (player) { 
+				// if this player is ready
+				if (player.ready) {
+					// add 1 to the count
+					count +=1; 
+				}
+			});
+
+			// emit the ready event
+			if ( count === this.registeredPlayers.length ) {
+				return true;
+			} else {
+				return false;
+			}
+		},
+
+		openSeats: 	function () {
+
+			// the maximum players minus the number occupied seats
+			return  this.config.maxPlayers - this.registeredPlayers.length;
+		},
+
+		playerOneRegistered: function () {
+
+			// return the return value of isRegistered provided playerOne's accountID
+			return this.isRegistered( this.playerOne.accountID );
+		},
+
+		roster: function () {
+			var roster = {};
+
+			// debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 89);
+
+			// if playerOne is registered
+			if ( this.isRegistered(this.playerOne.accountID) ) {
+
+
+			}
+
+			// fill the roster with players who's keys are their seat numbers
+			for ( var i = 0; i < this.registeredPlayers.length; i += 1 ) {
+
+				roster.push(this.registeredPlayers[i]);
+			};
+
+			// debug.val('roster', roster, 'models/game.js', 114);
+
+
+			// build a client-friendly roster...
+			// var roster = game.roster();
+			// var simplified = {};
+
+			// var p1 = Accounts[game.playerOne.accountID];
+
+			// if ( game.playerOneRegistered() !== false ) {
+			// 	simplified['0'] = p1.handle;
+			// }
+
+			// for (var i = 1; i <= roster.length; i +=1) {
+			// 	// get the user's account info 
+			// 	var accoutInfo = Accounts[roster[i].accountID];
+
+			// 	if (game.isPlayerOne(roster[i].accountID) === false ) {
+			// 		simplified[String(i)] = accoutInfo.handle;
+			// 	}
+			// }
+		
+
+			return roster;	
+		},
+
 		/**
-		 *	GameSchema.isPlayerOne(us)
+		 *	GameSchema.isPlayerOne(accountID)
 		 *
 		 * determines whether or not the given socket is playerOne
 		 */
 
 		isPlayerOne: function (accountID) {
 			debug.val('player vs playerOne', [accountID
-				, ''+this.playerOne.accountID
-				, sessionID
-				, this.playerOne.sessionID], 'models/game.js', 209);
+				, ''+this.playerOne.accountID], 'models/game.js', 209);
 
 			if (accountID === ''+this.playerOne.accountID) {
-				if (sessionID === this.playerOne.sessionID) {
-					debug.msg(MSG_IS_PLAYER_ONE, 'models/game.js', 213);
-					return true;
-				} 
+				return true;
 			} 
 			
 			debug.msg(MSG_NOT_PLAYER_ONE, 'models/game.js', 218);
@@ -135,7 +155,7 @@ module.exports = function (mongoose) {
 			debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 135);
 			debug.val('accountID', accountID, 'models/game.js', 136);
 			
-			match = -1;
+			match = false;
 
 			for (var i = 0; i < this.registeredPlayers.length; i += 1) {
 				var player = this.registeredPlayers[i];
@@ -144,10 +164,10 @@ module.exports = function (mongoose) {
 				debug.val('player.accountID', player.accountID, 'models/game.js', 144);	
 
 				debug.val('new vs existing player comparison', [accountID
-					, ''+player.accountID], 'models/game.js', 147);
+					, player.accountID], 'models/game.js', 147);
 
-				if (accountID === ''+player.accountID ) {
-					var match = seat;
+				if (accountID === player.accountID ) {
+					var match = i;
 					debug.msg('accountIDs match!', 'models/game.js', 151);
 					break;
 				} else {
@@ -159,13 +179,19 @@ module.exports = function (mongoose) {
 		}, 
 
 		startGame: function () {
-
+			debug.msg('eventually, startGame() will start the game... for now it just talks about it.');
+			// starting the game includes: 
+			//  * set status to inPlay or something
+			//  * saving the roster to the database
+			//  * instructing sockets to 
 		},
 
 		register: function (accountID) {
 			
 			debug.val('accountID', accountID, 'models/game.js', 169);
 			debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 170);
+
+			debug.msg(accountID + ' is now registered.', 'models/game.js', 163);
 
 			// define the new player
 			this.registeredPlayers.addToSet({ accountID: accountID });
@@ -182,7 +208,7 @@ module.exports = function (mongoose) {
 			debug.val('index', index, 'models/game.js', 182);
 
 			// if the index matches the return value of this.isRegistered()...
-			if ( index >= 0) {
+			if ( index !== false ) {
 				this.registeredPlayers[index].remove();
 
 				debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 188);
@@ -191,7 +217,7 @@ module.exports = function (mongoose) {
 
 			} else {
 
-				// not sure who this person wants to delete, sorry.
+				// not sure who to delete, sorry.
 				debug.msg('player not found', 'models/game.js', 195);
 				return false;
 			}

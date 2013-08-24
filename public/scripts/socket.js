@@ -56,7 +56,7 @@ socket.on('roster', function (players) {
 		updatedPlayersList += '<tr><th>Player No.</th><th>Handle</th></tr>';
 
 		players.forEach(function (player, seat) {
-			updatedPlayersList += '<tr><td>' + (seat + 1) + '</td><td>' + player + '</td></tr>\n';
+			updatedPlayersList += '<tr><td>' + (seat + 1) + '</td><td>' + player.accountID + '</td></tr>\n';
 		});
 
 		updatedPlayersList += '</table></blockquote></div>';
