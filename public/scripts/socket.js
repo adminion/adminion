@@ -47,7 +47,7 @@ socket.on('exited', function (oldPlayer, players) {
 
 });
 
-socket.on('roster', function (players) {
+socket.on('roster', function (players, accountInfo) {
 	connectedPlayers = players;
 	debug.val('connectedPlayers', connectedPlayers, '/scripts/socket.js', 64);
 
@@ -56,7 +56,7 @@ socket.on('roster', function (players) {
 		updatedPlayersList += '<tr><th>Player No.</th><th>Handle</th></tr>';
 
 		players.forEach(function (player, seat) {
-			updatedPlayersList += '<tr><td>' + (seat + 1) + '</td><td>' + player.accountID + '</td></tr>\n';
+			updatedPlayersList += '<tr><td>' + (seat + 1) + '</td><td>' + accountInfo[player.accountID].handle + '</td></tr>\n';
 		});
 
 		updatedPlayersList += '</table></blockquote></div>';

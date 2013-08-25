@@ -84,44 +84,32 @@ module.exports = function (mongoose) {
 		},
 
 		roster: function () {
-			var roster = {};
+			var roster = [];
+
+			var tmp = this.registeredPlayers.toObject();
 
 			// debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 89);
 
 			// if playerOne is registered
-			if ( this.isRegistered(this.playerOne.accountID) ) {
 
+			var index = this.isRegistered(this.playerOne.accountID);
+			if ( index !== false ) {
 
+				roster[0] = tmp[index];
+				tmp.splice(index,1);
 			}
 
-			// fill the roster with players who's keys are their seat numbers
-			for ( var i = 0; i < this.registeredPlayers.length; i += 1 ) {
+			// debug.val('roster[0]', roster[0], 'models/game.js', 101);
 
-				roster.push(this.registeredPlayers[i]);
+			// fill the roster with players who's keys are their seat numbers
+			for ( index in tmp ) {
+
+				roster.push(tmp[index]);
+				tmp.splice(index,1);
+
 			};
 
-			// debug.val('roster', roster, 'models/game.js', 114);
-
-
-			// build a client-friendly roster...
-			// var roster = game.roster();
-			// var simplified = {};
-
-			// var p1 = Accounts[game.playerOne.accountID];
-
-			// if ( game.playerOneRegistered() !== false ) {
-			// 	simplified['0'] = p1.handle;
-			// }
-
-			// for (var i = 1; i <= roster.length; i +=1) {
-			// 	// get the user's account info 
-			// 	var accoutInfo = Accounts[roster[i].accountID];
-
-			// 	if (game.isPlayerOne(roster[i].accountID) === false ) {
-			// 		simplified[String(i)] = accoutInfo.handle;
-			// 	}
-			// }
-		
+			debug.val('roster', roster, 'models/game.js', 114);
 
 			return roster;	
 		},
@@ -160,13 +148,13 @@ module.exports = function (mongoose) {
 			for (var i = 0; i < this.registeredPlayers.length; i += 1) {
 				var player = this.registeredPlayers[i];
 
-				debug.msg('i' + i , 'models/game.js', 143);
+				debug.msg('index ' + i , 'models/game.js', 143);
 				debug.val('player.accountID', player.accountID, 'models/game.js', 144);	
 
 				debug.val('new vs existing player comparison', [accountID
 					, player.accountID], 'models/game.js', 147);
 
-				if (accountID === player.accountID ) {
+				if (accountID.toString() === player.accountID.toString() ) {
 					var match = i;
 					debug.msg('accountIDs match!', 'models/game.js', 151);
 					break;
