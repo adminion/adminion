@@ -4,12 +4,7 @@ global.debug = require('./lib/debug');
 console.log('\nStarting Adminion Game Server...\n');
 
 // load main library and controllers
-var AdminionServer = require('./lib/');
-
-// create our instance
-global.Adminion = Object.create(null);
-
-Adminion = AdminionServer();
+var Adminion = require('./lib/');
 
 // if (Adminion.config.debug) {
 // 	Adminion.on('listening', function() {
