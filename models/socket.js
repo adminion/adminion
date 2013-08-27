@@ -44,6 +44,56 @@ module.exports = function SocketCache () {
 		}
 	});
 
+	this.initAccount = function (accountID) {
+		byAccount[accountID] = [];
+
+		Object.defineProperty(byAccount[accountID], 'byGame', {
+			configurable: false,
+			enumerable: false,
+			writable: false,
+			value: function (gameID) {
+				var inGame = [];
+				var socket;
+
+				for ( var i = 0; i < byAccount[accountID].length; i +=1) {
+					socket = byAccount[accountID][i];
+
+					if (util.gameID(socket).toString() === gameID.toString()) {
+						inGame.push(socket); 
+					}
+				}
+
+				return inGame;
+			}
+		});
+	};
+
+	this.initGame = function (gameID) {
+		byGame[gameID] = [];
+
+		// declare byAccount method to get sockets belonging to one player
+		Object.defineProperty(byGame[gameID], 'byAccount', {
+			configurable: false,
+			enumerable: false,
+			writable: false,
+			value: function (accountID) {
+				var belongToAccount = [];
+				var socket;
+
+				for ( var i = 0; i < byGame[gameID].length; i+=1) {
+					socket = byGame[gameID][i];
+
+					if (util.accountID(socket).toString() === accountID.toString()) {
+						belongToAccount.push(socket);
+					}
+				}
+
+				return belongToAccount;
+			}
+		});
+	};
+
+
 	// public method for caching a socket
 	this.add = function (socket) {
 
