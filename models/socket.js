@@ -1,9 +1,9 @@
 
 var util = require('../lib/util');
 
-module.exports = function SocketCache () {
-	var Sockets = [];
-	var self = this;
+module.exports = function () {
+	var cache = Object.create(null);
+	Sockets = [];
 
 	// quick reference arrays
 	var byID		= {}
@@ -44,7 +44,7 @@ module.exports = function SocketCache () {
 		}
 	});
 
-	this.initAccount = function (accountID) {
+	cache.initAccount = function (accountID) {
 		byAccount[accountID] = [];
 
 		Object.defineProperty(byAccount[accountID], 'byGame', {
@@ -68,7 +68,7 @@ module.exports = function SocketCache () {
 		});
 	};
 
-	this.initGame = function (gameID) {
+	cache.initGame = function (gameID) {
 		byGame[gameID] = [];
 
 		// declare byAccount method to get sockets belonging to one player
@@ -94,7 +94,7 @@ module.exports = function SocketCache () {
 	};
 
 	// public method for caching a socket
-	this.add = function (socket) {
+	cache.add = function (socket) {
 
 		debug.msg('adding socket ' + socket.id, 'models/socket.js', 50);
 
@@ -118,7 +118,7 @@ module.exports = function SocketCache () {
 	};
 
 	// public method for removing a socket from cache
-	this.remove = function (socketID) {
+	cache.remove = function (socketID) {
 
 		debug.val('Sockets', Sockets, 'models/socket.js', 85);
 		debug.val('byID', byID, 'models/socket.js', 86);
@@ -198,18 +198,18 @@ module.exports = function SocketCache () {
 
 
 	// public method for returning sockets indexed by their ID
-	this.byID = function (socketID) {
+	cache.byID = function (socketID) {
 		return byID[socketID];
 	};
 
 	// public method for returning all sockets belonging to the specified Account
-	this.byAccount = function (accountID) {
+	cache.byAccount = function (accountID) {
 		
 		return byAccount[accountID] || false;
 	};
 
 	// public method for returning sockets connected to the Game with the given id
-	this.byGame = function (gameID) {
+	cache.byGame = function (gameID) {
 		
 		return byGame[gameID] || false;
 	};
@@ -218,5 +218,7 @@ module.exports = function SocketCache () {
 	debug.val('byID', byID, 'models/socket.js', 237);
 	debug.val('byGame', byGame, 'models/socket.js', 238);
 	debug.val('byAccount', byAccount, 'models/socket.js', 239);
+
+	return cache
 
 };
