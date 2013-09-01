@@ -47,17 +47,18 @@ socket.on('exited', function (oldPlayer, players) {
 
 });
 
-socket.on('roster', function (players, accountInfo) {
-	connectedPlayers = players;
+socket.on('roster', function (roster) {
+	connectedPlayers = roster;
 	debug.val('connectedPlayers', connectedPlayers, '/scripts/socket.js', 64);
 
 	$("#PlayersList").replaceWith(function () {
 		var updatedPlayersList = '<div id="PlayersList"><blockquote><table>';
 		updatedPlayersList += '<tr><th>Player No.</th><th>Handle</th></tr>';
 
-		players.forEach(function (player, seat) {
-			updatedPlayersList += '<tr><td>' + (seat + 1) + '</td><td>' + accountInfo[player.accountID].handle + '</td></tr>\n';
-		});
+		for (var playerNo in roster) {
+
+			updatedPlayersList += '<tr><td>' + (playerNo) + '</td><td>' + roster[playerNo] + '</td></tr>\n';
+		};
 
 		updatedPlayersList += '</table></blockquote></div>';
 		return updatedPlayersList;

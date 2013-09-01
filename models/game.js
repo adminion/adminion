@@ -3,6 +3,11 @@
  * 
  */
 
+
+ var Player = require('./player')
+ 	, ChatLog = require('./chatLog')
+ 	, EventLog = require('./eventLog');
+
 var ERR_NO_SEATS 			= 'sorry, but all seats are occupied.'
 	, MSG_REGISTERED 		= 'this user has already.'
 	, MSG_IS_PLAYER_ONE		= 'the user is player one.'
@@ -17,10 +22,10 @@ function XOR (a,b) {
 // export the Game constructor
 module.exports = function (mongoose) {
 
-	// get the required schemas
-	var PlayerSchema = require('./player')(mongoose)
-		, ChatLogSchema = require('./chatLog')(mongoose)
-		, EventLogSchema = require('./eventLog')(mongoose);
+	// build player schemas
+	var PlayerSchema = Player(mongoose)
+		, ChatLogSchema = ChatLog(mongoose)
+		, EventLogSchema = EventLog(mongoose);
 
 	// define the GameSchema
 	var GameSchema = new mongoose.Schema({
@@ -84,29 +89,27 @@ module.exports = function (mongoose) {
 		},
 
 		roster: function () {
-			var roster = [];
+			var roster = {};
 
-			var tmp = this.registeredPlayers.toObject();
+			var players = this.registeredPlayers.toObject();
 
 			// debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 89);
 
-			// if playerOne is registered
-
 			var index = this.isRegistered(this.playerOne.accountID);
+			
+			// if playerOne is registered
 			if ( index !== false ) {
-
-				roster[0] = tmp[index];
-				tmp.splice(index,1);
+				roster['1'] = players[index];
+				players.splice(index,1);
 			}
 
 			// debug.val('roster[0]', roster[0], 'models/game.js', 101);
 
-			// fill the roster with players who's keys are their seat numbers
-			for ( index in tmp ) {
+			var i = 2;
 
-				roster.push(tmp[index]);
-				tmp.splice(index,1);
-
+			// fill the roster with the rest of them in whatever order the js engine feels is nice
+			for ( index in players ) {
+				roster[String(i)] = players[index];
 			};
 
 			debug.val('roster', roster, 'models/game.js', 114);

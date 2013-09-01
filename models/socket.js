@@ -214,10 +214,10 @@ module.exports = function () {
 		return byGame[gameID] || false;
 	};
 
-	debug.val('Sockets', Sockets, 'models/socket.js', 236);
-	debug.val('byID', byID, 'models/socket.js', 237);
-	debug.val('byGame', byGame, 'models/socket.js', 238);
-	debug.val('byAccount', byAccount, 'models/socket.js', 239);
+	// debug.val('Sockets', Sockets, 'models/socket.js', 236);
+	// debug.val('byID', byID, 'models/socket.js', 237);
+	// debug.val('byGame', byGame, 'models/socket.js', 238);
+	// debug.val('byAccount', byAccount, 'models/socket.js', 239);
 
 	return cache
 
