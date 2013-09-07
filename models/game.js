@@ -39,7 +39,7 @@ module.exports = function (mongoose) {
 		// , cards: 		{ type: Array, 	default: new Array() 	}
 		// , trash: 		{ type: Array, 	default: new Array() 	}
 		, config: 		{ 
-			// the number of players that may join the game, including player 1
+			// the number of players allowed to join the game, including player 1
 			maxPlayers: 	{ type: Number, default: 4, min: 2, max: 8 }
 			, toWin: 		{ type: Number, default: 4 }
 			, timeLimit: 	{ type: Number, default: 0 }
@@ -88,8 +88,8 @@ module.exports = function (mongoose) {
 			return this.isRegistered( this.playerOne.accountID );
 		},
 
-		roster: function () {
-			var roster = {};
+		playersConnected: function () {
+			var connected = {};
 
 			var players = this.registeredPlayers.toObject();
 
@@ -99,22 +99,22 @@ module.exports = function (mongoose) {
 			
 			// if playerOne is registered
 			if ( index !== false ) {
-				roster['1'] = players[index];
+				connected['1'] = players[index];
 				players.splice(index,1);
 			}
 
-			// debug.val('roster[0]', roster[0], 'models/game.js', 101);
+			// debug.val('connected[0]', connected[0], 'models/game.js', 101);
 
 			var i = 2;
 
-			// fill the roster with the rest of them in whatever order the js engine feels is nice
+			// fill connected with the rest of them in whatever order the js engine feels is nice
 			for ( index in players ) {
-				roster[String(i)] = players[index];
+				connected[String(i)] = players[index];
 			};
 
-			debug.val('roster', roster, 'models/game.js', 114);
+			debug.val('connected', connected, 'models/game.js', 114);
 
-			return roster;	
+			return connected;	
 		},
 
 		/**
@@ -146,27 +146,25 @@ module.exports = function (mongoose) {
 			debug.val('this.registeredPlayers', this.registeredPlayers, 'models/game.js', 135);
 			debug.val('accountID', accountID, 'models/game.js', 136);
 			
-			match = false;
-
 			for (var i = 0; i < this.registeredPlayers.length; i += 1) {
 				var player = this.registeredPlayers[i];
 
 				debug.msg('index ' + i , 'models/game.js', 143);
 				debug.val('player.accountID', player.accountID, 'models/game.js', 144);	
 
-				debug.val('new vs existing player comparison', [accountID
-					, player.accountID], 'models/game.js', 147);
+				debug.val('new player', accountID, 'models/game.js', 155);
+				debug.val('registered player ' + i, player.accountID, 'models/game.js', 156);
 
 				if (accountID.toString() === player.accountID.toString() ) {
-					var match = i;
 					debug.msg('accountIDs match!', 'models/game.js', 151);
-					break;
+					return i;
 				} else {
 					debug.msg('accountIDs DO NOT match!', 'models/game.js', 154);
 				}
 			};
 
-			return match;
+			return false;
+
 		}, 
 
 		startGame: function () {
