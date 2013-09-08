@@ -8,9 +8,8 @@ block content
 			&nbsp;]&nbsp;
 			ol
 				each game in games
-					- var playerOne = accounts[game.playerOne.accountID];
 					li 
-						a(href='/games/' + game['_id']) #{playerOne.handle}'s Game
+						a(href='/games/' + game['_id']) #{playerOnes[game].handle}'s Game
 						if (game.status === 'lobby')
 							&nbsp;[&nbsp;
 							a(href='/games/' + game['_id'] + '/lobby') Join
