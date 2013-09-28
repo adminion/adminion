@@ -9,12 +9,9 @@ block content
 		h2 #{playerOne.handle}'s Game
 		label(for="PlayersList") Players:
 		ol#PlayersList
+		label(for="chat_log") Chat Log:
 		br
-		label(for="chat") Chat:
-		#chat
+		textarea(id='chat_log', cols='100', rows='15', disabled='disabled')
 		br
-		input(id='chat_input')
-		button(id='chat_submit') [ Send Message ]
-		br
-		p
-			a(href='/games/' + game['_id']) Leave Lobby
+		input(id='chat_input', disabled='disabled', size='100')
+		button(id='chat_submit', disabled='disabled') Chat
