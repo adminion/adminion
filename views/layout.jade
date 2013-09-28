@@ -39,7 +39,7 @@ html
 							#session
 								if (request.session.passport.user)
 									span Logged on as 
-										a(href='/players/' + request.session.passport.user) #{request.session.passport.user}
+										a(href='/accounts/' + request.session.passport.user) #{request.session.passport.user}
 										&nbsp;[&nbsp;
 										a(href='/logoff') Logoff
 										&nbsp;]&nbsp;

@@ -762,31 +762,46 @@ function buyCard(card, player) {
 
 	statusUpdate(player);
 }
-var gameLog = [];
 
-// function for displaying messages, typically ones pertaining to what just happened in the game
-function announce(message) {
-	gameLog.push(message);
+function logger () {
 
-	// grabs the dom object 'commentary' and sets it equal to commentary
-	var commentary = document.getElementById('commentary');
+	var logger = Object.create(null);
 
-	// clears the contents of commentary
-//	commentary.innerHTML = '';
+	var announcements = [];
 
+	logger.announce = function (message) {
+		announcements.push(message);
 
-	var comment = document.createElement('p');
-	comment.setAttribute('id', 'comment');
+		// grabs the dom object 'commentary' and sets it equal to commentary
+		var commentary = document.getElementById('commentary');
 
-	// creates comment, a new textNode with the message inside of it
-	var txt = document.createTextNode(message);	
+		// clears the contents of commentary
+	//	commentary.innerHTML = '';
 
-	comment.appendChild(txt);
-	// adds comment to commentary
-	commentary.appendChild(comment);
+		var comment = document.createElement('p');
+		comment.setAttribute('id', 'comment');
+
+		// creates comment, a new textNode with the message inside of it
+		var txt = document.createTextNode(message);	
+
+		comment.appendChild(txt);
+		// adds comment to commentary
+		commentary.appendChild(comment);
 
 		document.getElementById('comment').scrollIntoView();
-}
+	};
+
+
+
+
+	return logger;
+};
+
+var instance1 = logger();
+var instance2 = logger();
+
+instance1.announce('asdf');
+
 
 // a function to gain a card, given its name and the target player
 function gainCard(card,player) {
