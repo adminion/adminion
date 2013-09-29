@@ -24,6 +24,17 @@ var socket = io.connect();
 
 var connectedPlayers = {};
 
+function chat_addToLog (msg) {
+	// get the existing message
+	var existing = $('#chat_log')[0].value;
+
+	// and set the value to the existing chat content plus the new message at the end
+	$('#chat_log')[0].value = existing + '\n' + msg;
+
+	$('#chat_log')[0].scrollTop =    $('#chat_log')[0].scrollHeight;
+	
+};
+
 function chat_send () {
 	var msg = $('#chat_input')[0].value;
 	socket.send(msg);
@@ -70,13 +81,13 @@ $(document).ready(function() {
 
 	socket.on('entered', function (newPlayer, players) {
 		
-		console.log(newPlayer + ' joined the game.');
+		chat_addToLog(newPlayer + ' joined the game.');
 
 	});
 
 	socket.on('exited', function (oldPlayer, players) {
 		
-		console.log(oldPlayer + ' left the game.');
+		chat_addToLog(oldPlayer + ' left the game.');
 
 	});
 
@@ -109,16 +120,8 @@ $(document).ready(function() {
 		}
 	});
 
-	socket.on('chat', function (msg) {
-		
-		// get the existing message
-		var existing = $('#chat_log')[0].value;
-
-		// and set the value to the existing chat content plus the new message at the end
-		$('#chat_log')[0].value = existing + '\n' + msg;
-
-		$('#chat_log')[0].scrollTop =    $('#chat_log')[0].scrollHeight;
-		
+	socket.on('chat', function(msg) {
+		chat_addToLog(msg);
 	});
 });
 
