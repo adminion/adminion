@@ -41,6 +41,7 @@ All server configuration options are defined within `config.json`.  If an option
 If you want to enable SSL encryption using the default key and certificate files:
 ```json
 {
+	...
 	"ssl" :		true
 }
 ```
@@ -50,6 +51,7 @@ The example above will prompt the server to use `.ssl/adminion-cert.pem` and `.s
 You may specify the path(s) to your key and certificate.  Both absolute and relative paths are accepted.  Relative paths resolve to `.ssl/`
 ```json
 {
+	...
 	"ssl" :		true
 	, "cert" : 	"myServer-cert.pem"
 	, "key" : 	"/path/.to/myServer-key.pem"
