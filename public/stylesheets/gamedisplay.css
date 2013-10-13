@@ -3,8 +3,23 @@
 	text-align:center;
 	background-color:yellow;
 	width:900px;
+	position:fixed;
+	bottom:0px;
+	left:200px;
+	height:133px;
 
 
+}
+
+#lookBox {
+	position: fixed;
+	background-color: blue;
+	left: 300px;
+	top: 300px;
+	height: 250px;
+	width: 200px;
+	z-index: 999;
+	display:none;
 }
 
 #phases {
@@ -26,6 +41,9 @@
 	width:250px;
 	display: block;
 	color: white;
+	position: fixed;
+	left: 0px;
+	top: 350px;
 }
 
 #inPlay {
@@ -33,6 +51,9 @@
 	margin-left:248px;
 	height:200px;
 	border:1px solid black;
+	position:fixed;
+	bottom: 133px;
+	left:200px;
 
 }
 
@@ -40,7 +61,12 @@
 	background-color:#B2D1FF;
 	height:245px;
 	float:left;
+	margin-left: -40px;
 
+}
+
+#doneDiscarding {
+	display: none;
 }
 
 #stats {
@@ -58,9 +84,9 @@
 
 #bigStats {
 	width:30px;
-	height:90px;
+	height:150px;
 	margin-left:50px;
-	margin-top:-90px;
+	margin-top:-150px;
 	float:right;
 
 }
@@ -77,9 +103,9 @@
 
 #kingdom {
 
-	margin-bottom:50px;
-	margin-left:20px;
-	margin-right:20px;
+	position: fixed;
+	left: 400px ;
+	top: ;
 	border:2px solid red;
 	width:500px;
 	height:211px;
@@ -88,19 +114,102 @@
 
 }
 
+.normal {
+height: 100px;
+width: 100px;
+display: inline-block;
+
+}
+
+
 #treasures {
-	display:inline-block;
+	position: fixed;
+	left: 220px;
+	top: 150px;
 	width:160px;
 	height:165px;
 	border: 2px solid black;
-	margin-right:0px;
 
 }
 
 #victories {
+	position: fixed;
+	left: 220px;
+	top: 25px;
+	width:160px;
+}
+
+.kingdomCard {
+
+
+}
+
+
+.actionCard {
+
+	border: 2px solid red;
+
+}
+
+.handSelect {
+
+	border: 2px solid blue;
+}
+.victory {
+
+	margin-top: -12px;
+}
+
+.victoryAttrWrap {
+	overflow:hidden; /* this is important */
+
+	height:30px;
+	z-index: 1;
+	display: inline-block;
+}
+
+
+
+.victoryAttr {
+	margin: -230px 0px 0px 0px;
+
+}
+
+.victoryName {
+	margin: -8px 0px 0px -42px;
+
+}
+#actionButton {
+	display: none;
+}
+.victoryNameWrap {
+	overflow:hidden; /* this is important */
+	width: 80px;
+	height: 21px;
+	margin: -34px 52px 0px 42px;
+	z-index: 99;
+}
+
+.kingdomCardWrap {
+	overflow:hidden; /* this is important */
+	width:100px;
+	height:103px;
 	display:inline-block;
 
+}
 
+.kingdomCardBottomWrap {
+	overflow:hidden; /* this is important */
+	width:100px;
+	height:20px;
+	display:inline-block;
+	margin-left:-100px;
+	margin-top:0px;
+	z-index:1000;
+}
+
+.kingdomCardBottom {
+	margin: -137px 0px 0px 0px;
 }
 
 .kingdomTreasureWrap {
@@ -116,55 +225,32 @@
 	margin: -40px 0px 0px -10px;
 }
 
-.buyableKingdomTreasure {
+.buyableTreasure {
 	margin: -40px 0px 0px -10px;
 }
-.unbuyableKingdomTreasure {
+.unbuyableTreasure {
 	margin: -40px 0px 0px -10px;
 	opacity: 0.4;
 	filter: alpha(opacity=40);
 }
 
-.kingdomCardWrap {
-
-	overflow:hidden; /* this is important */
-
-	width:100px;
-	height:103px;
-	display:inline-block;
-
+.unbuyableVictory {
+	opacity: 0.4;
+	margin-top: -12px;
 }
 
-.kingdomCardBottomWrap {
-	overflow:hidden; /* this is important */
-
-	width:100px;
-	height:20px;
-	display:inline-block;
-	margin-left:-100px;
-	margin-top:0px;
-	z-index:1000;
+.buyableVictory {
+	margin-top: -12px;
 }
 
-.kingdomCardBottom {
-	margin: -137px 0px 0px 0px;
-}
-
-.kingdomCard {
-
-
-}
-
-.normal {
-
-}
 
 
 .buyable {
-	
+	display: inline-block;
 }
 
 .unbuyable {
 	opacity: 0.4;
+	display: inline-block;
 	filter: alpha(opacity=40);
 }

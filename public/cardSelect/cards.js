@@ -112,13 +112,29 @@ var Dominion = [
 	type:		"Action",
 	cost:		5,
 	instructions:	"+2 Actions, +1 Buy; +$2.",
-	image:		"http://dominion.diehrstraits.com/scans/base/festival.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/base/festival.jpg",
+	quantity: 10,
+		action: function(player) {
+			player.actions += 2;
+			player.buys += 1;
+			player.money += 2;
+
+		} 
+	},
 	
 	{name:		"Laboratory",
 	type:		"Action",
 	cost:		5,
 	instructions:	"+2 Cards; +1 Action.",
-	image:		"http://dominion.diehrstraits.com/scans/base/laboratory.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/base/laboratory.jpg",
+	quantity: 10,
+		action: function(player) {
+			player.actions += 1;
+			drawCard(player);
+			drawCard(player);
+
+		}  
+	},
 
 	{name:		"Library",
 	type:		"Action",
@@ -241,7 +257,20 @@ var Intrigue = [
 	type:		"Action",
 	cost:		4,
 	instructions:	"+1 Card; +2 Actions. You may trash this card immediately. If you do, +$2.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/miningvillage.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/miningvillage.jpg",
+	quantity: 10,
+	action: 
+		function(player) {
+			player.actions += 2;
+			drawCard(player);
+			var confr = confirm('trash this?');
+			if (confr) {
+				player.money += 2;
+				console.log(this);				
+				trashCard(player, this.element);
+			}
+		}
+	},
 
 	{name:		"Scout",
 	type:		"Action",
@@ -291,15 +320,18 @@ var Intrigue = [
 	type:		"Action",
 	cost:		5,
 	instructions:	"+1 Card; +1 Action. Trash a card from your hand. Gain a card costing exactly $1 more than it.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/upgrade.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/upgrade.jpg",
+	quantity: 10	
+	},
 
 	{name:		"Harem",
 	type:		"Treasure-Victory",
 	cost:		6,
+	treasure: 2,
 	victory:	2,
-	treasure:	2,
 	instructions:	"Worth $2. 2 Victory Points.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/harem.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/harem.jpg",
+	quantity: 10 },
 
 	{name:		"Nobles",
 	type:		"Action-Victory",
@@ -340,7 +372,14 @@ var Seaside = [
 	type:		"Action",	
 	cost:		2,
 	instructions:	"+1 Card; +1 Action. Look at the bottom card of your deck. You may put it on top.",
-	image:		"http://dominion.diehrstraits.com/scans/seaside/pearldiver.jpg"  }, 
+	image:		"http://dominion.diehrstraits.com/scans/seaside/pearldiver.jpg",
+	quantity: 10,
+	action: 
+		function(player) {
+			player.actions += 1;
+			drawCard(player);
+		}
+	}, 
 
 	{name:		"Ambassador",	
 	type:		"Action-Attack",
@@ -461,7 +500,18 @@ var Seaside = [
 	type:		"Action",
 	cost:		5,
 	instructions:	"+1 Card; +1 Action; +$1. When you discard this from play, if you didn't buy a Victory card this turn, you may put this on top of your deck.",
-	image:		"http://dominion.diehrstraits.com/scans/seaside/treasury.jpg"  },
+	image:		"http://dominion.diehrstraits.com/scans/seaside/treasury.jpg",
+	quantity: 10,
+	action:
+		function(player) {
+			player.actions += 1;
+			player.money += 1;
+			drawCard(player);
+			this.returnToDeck = true;
+			console.log(this);
+		}, 
+	returnToDeck: false
+	},
 
 	{name:		"Wharf",
 	type:		"Action-Duration",
@@ -718,22 +768,26 @@ var Treasure = [
 	type:		"Treasure",
 	cost:		0,
 	treasure:	1,
-	image:		"http://dominion.diehrstraits.com/scans/common/copper.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/copper.jpg",
+	quantity: 20 },
 	{name:		"Silver",
 	type:		"Treasure",
 	cost:		3,
 	treasure:	2,
-	image:		"http://dominion.diehrstraits.com/scans/common/silver.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/silver.jpg",
+	quantity: 20 },
 	{name:		"Gold",
 	type:		"Treasure",
 	cost:		6,
 	treasure:	3,
-	image:		"http://dominion.diehrstraits.com/scans/common/gold.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/gold.jpg",
+	quantity: 20 },
 	{name:		"Platinum",
 	type:		"Treasure",
 	cost:		9,
 	treasure:	5,
-	image:		"http://dominion.diehrstraits.com/scans/prosperity/platinum.jpg" }
+	image:		"/home/zane/git/adminion/public/cardImages/platinum.jpg",
+	quantity: 20 }
 ]
 
 var Cornucopia = [
@@ -1374,22 +1428,22 @@ var Victory = 	[
 	type:		"Victory",
 	cost:		2,
 	victory:	1,
-	image:		"http://dominion.diehrstraits.com/scans/basecards/estate.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/estate.jpg" },
 	{name:		"Duchy",
 	type:		"Victory",
 	cost:		5,
 	victory:	3,
-	image:		"http://dominion.diehrstraits.com/scans/basecards/duchy.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/duchy.jpg" },
 	{name:		"Province",
 	type:		"Victory",
 	cost:		8,
 	victory:	6,
-	image:		"http://dominion.diehrstraits.com/scans/basecards/province.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/province.jpg" },
 	{name:		"Colony",
 	type:		"Victory",
 	cost:		11,
 	victory:	10,
-	image:		"http://dominion.diehrstraits.com/scans/basecards/colony.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/colony.jpg" },
 
 ]
 var promoCards = [
