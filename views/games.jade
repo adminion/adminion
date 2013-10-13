@@ -8,8 +8,9 @@ block content
 			&nbsp;]&nbsp;
 			ol
 				each game in games
+					- var handle = playerOnes[game['_id']].handle;
 					li 
-						a(href='/games/' + game['_id']) #{game.playerOne.handle}'s Game
+						a(href='/games/' + game['_id']) #{handle}'s Game
 						if (game.status === 'lobby')
 							&nbsp;[&nbsp;
 							a(href='/games/' + game['_id'] + '/lobby') Join

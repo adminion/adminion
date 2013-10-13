@@ -1,87 +1,158 @@
 
 var util = require('../lib/util');
 
-function GameID (socket) {
-	// the two slashes create an empty index 
-	//    0     1         2	           3              4
-	// https: /   / localhost:1337 / games / abcdefghi12345678990
-	return socket.handshake.headers.referer.split('/')[4];
-};
-
-function PlayerID (socket) {
-	return socket.handshake.user['_id'];
-};
-
-module.exports = function SocketCache () {
-	var sockets = [];
-	var self = this;
+module.exports = function () {
+	var cache = Object.create(null);
+	Sockets = [];
 
 	// quick reference arrays
 	var byID		= {}
 		, byGame 	= {}
-		, byPlayer 	= {}
+		, byAccount 	= {}
+
+	Object.defineProperty(byGame, 'length', {
+		configurable: false,
+		enumerable: false,
+		writable: false,
+		value: function () {
+			var count = 0;
+
+			for ( i in this ) {
+				if (this[i] !== undefined) {
+					count +=1;
+				}
+			}
+
+			return count;
+		}
+	});
+
+	Object.defineProperty(byAccount, 'length', {
+		configurable: false,
+		enumerable: false,
+		writable: false,
+		value: function () {
+			var count = 0;
+
+			for ( i in this ) {
+				if (this[i] !== undefined) {
+					count +=1;
+				}
+			}
+
+			return count;
+		}
+	});
+
+	cache.initAccount = function (accountID) {
+		byAccount[accountID] = [];
+
+		Object.defineProperty(byAccount[accountID], 'byGame', {
+			configurable: false,
+			enumerable: false,
+			writable: false,
+			value: function (gameID) {
+				var inGame = [];
+				var socket;
+
+				for ( var i = 0; i < byAccount[accountID].length; i +=1) {
+					socket = byAccount[accountID][i];
+
+					if (util.gameID(socket).toString() === gameID.toString()) {
+						inGame.push(socket); 
+					}
+				}
+
+				return inGame;
+			}
+		});
+	};
+
+	cache.initGame = function (gameID) {
+		byGame[gameID] = [];
+
+		// declare byAccount method to get sockets belonging to one player
+		Object.defineProperty(byGame[gameID], 'byAccount', {
+			configurable: false,
+			enumerable: false,
+			writable: false,
+			value: function (accountID) {
+				var belongToAccount = [];
+				var socket;
+
+				for ( var i = 0; i < byGame[gameID].length; i+=1) {
+					socket = byGame[gameID][i];
+
+					if (util.accountID(socket).toString() === accountID.toString()) {
+						belongToAccount.push(socket);
+					}
+				}
+
+				return belongToAccount;
+			}
+		});
+	};
 
 	// public method for caching a socket
-	this.add = function (socket) {
+	cache.add = function (socket) {
 
-		debug.msg('adding socket ' + socket.id, 'models/socket.js', 26);
+		debug.msg('adding socket ' + socket.id, 'models/socket.js', 50);
 
 		// add the socket to the list and make note of its current index
-		var which = sockets.push(socket) -1;
-		var gameID = GameID(socket);
-		var playerID = PlayerID(socket);
-
-		// if the store for this game is not yet defined
-		if (byGame[gameID] === undefined) {
-			// create a new array store
-			byGame[gameID] = [];
-		}
-
-		// and do the same for the player store
-		if (byPlayer[playerID] === undefined) {
-			byPlayer[playerID] = [];
-		}
+		var which = Sockets.push(socket) -1;
+		var gameID = util.gameID(socket);
+		var accountID = util.accountID(socket);
 
 		// create references to the stored socket
-		byID[socket.id] = sockets[which];
-		byGame[gameID].push(sockets[which]);
-		byPlayer[playerID].push(sockets[which]);
+		byID[socket.id] = Sockets[which];
+		byGame[gameID].push(Sockets[which]);
+		byAccount[accountID].push(Sockets[which]);
 
-		debug.val('sockets', sockets, 'models/socket.js', 49);
+		debug.val('Sockets', Sockets, 'models/socket.js', 49);
 		debug.val('byID', byID, 'models/socket.js', 50);
 		debug.val('byGame', byGame, 'models/socket.js', 51);
-		debug.val('byPlayer', byPlayer, 'models/socket.js', 52);
+		debug.val('byAccount', byAccount, 'models/socket.js', 52);
 
-		return sockets.length;
+		return Sockets.length;
 
 	};
 
 	// public method for removing a socket from cache
-	this.remove = function (socketID) {
+	cache.remove = function (socketID) {
 
-		debug.msg('removing socket ' + socket.id, 'models/socket.js', 61);
+		debug.val('Sockets', Sockets, 'models/socket.js', 85);
+		debug.val('byID', byID, 'models/socket.js', 86);
+		debug.val('byGame', byGame, 'models/socket.js', 87);
+		debug.val('byAccount', byAccount, 'models/socket.js', 88);
+
+		debug.msg('removing socket ' + socketID, 'models/socket.js', 90);
 
 		var socket; 
 		var which;
+		
+		debug.msg(Sockets.length + (Sockets.length === 1) ? " socket" : " sockets", 'models/socket.js', 95);
 
 		// determine at which index this socket is hanging out
-		for (var i = 0; i < sockets.length; i+=1) {
-			console.log(socket.length);
+		for (var i = 0; i < Sockets.length; i+=1) {
 			console.log(i)
 			// when we find it
-			if (sockets[i].id === socketID) {
+			if (Sockets[i].id === socketID) {
 				// save the index and stop searching
 				which = i;
-				socket = sockets[i];
-				console.log('breaking at ' + i);
+				socket = Sockets[i];
+				console.log('socket stored at index ' + i);
 				break;
 			}
 		}
 
+		if (socket === undefined) {
+			return false;
+		}
+
 		// get details for readability
 		var socketID = socket.id;
-		var gameID = GameID(socket);
-		var playerID = PlayerID(socket);
+		var gameID = util.gameID(socket);
+		var accountID = util.accountID(socket);
 
 		// delete references to the stored socket...
 		delete byID[socketID];
@@ -96,106 +167,58 @@ module.exports = function SocketCache () {
 			}
 		}
 
-		// if there are no more sockets in this game, delete the list 
-		if (byGame[gameID].length === 0) {
-			delete byGame[gameID];
-		}
+		// for this socket in the byAccount array
+		for (var i = 0; i < byAccount[accountID].length; i+=1) {
 
-		// for this socket in the byPlayer array
-		for (var i = 0; i < byPlayer[playerID].length; i+=1) {
+			debug.val('byAccount[accountID]', byAccount[accountID], 'models/sockets.js', 140);
+
 			// when we find it
-			if (byPlayer[playerID][i].id === socketID) {
+			if (byAccount[accountID][i].id === socketID) {
 				// delete the index and stop searching
-				delete byPlayer[playerID][i];
+				byAccount[accountID].splice(i,1);;
 				break;
 			}
 		}
 
+		// if there are no more sockets in this game, delete the list 
+		if (byAccount[accountID].length === 0) {
+			delete byAccount[accountID];
+		}		
+
 		// now finally delete the socket itself
-		sockets.splice(which,1);
+		Sockets.splice(which,1);
 
-		debug.val('sockets', sockets, 'models/socket.js', 116);
-		debug.val('byID', byID, 'models/socket.js', 117);
-		debug.val('byGame', byGame, 'models/socket.js', 118);
-		debug.val('byPlayer', byPlayer, 'models/socket.js', 119);
+		debug.val('Sockets', Sockets, 'models/socket.js', 153);
+		debug.val('byID', byID, 'models/socket.js', 154);
+		debug.val('byGame', byGame, 'models/socket.js', 155);
+		debug.val('byAccount', byAccount, 'models/socket.js', 156);
 
-		return sockets.length;
+		return Sockets.length;
 	};
 
 
 	// public method for returning sockets indexed by their ID
-	this.byID = function (socketID) {
+	cache.byID = function (socketID) {
 		return byID[socketID];
 	};
 
-	// public method for returning all sockets belonging to the specified Player
-	this.byPlayer = function (playerID) {
-		var player = {
-			// the raw list of sockets belonging to this player
-			sockets : byPlayer[playerID]
-		};
-
-		// declare byGame method
-		Object.defineProperty(player, 'byGame', {
-			configurable: false,
-			enumerable: false,
-			writable: false,
-			value: function (gameID) {
-				var inGame = [];
-				var socket;
-
-				for ( var i = 0; i < this.sockets.length; i +=1) {
-					socket = this.sockets[i];
-
-					if (GameID(socket) === gameID) {
-						inGame.push(socket);
-					}
-				}
-
-				return inGame;
-			}
-		});
-
-		// now return a nice pretty listing of this person's sockets
-		// with nice method to get only sockets connected to a certain game
-		return player;
-
+	// public method for returning all sockets belonging to the specified Account
+	cache.byAccount = function (accountID) {
+		
+		return byAccount[accountID] || false;
 	};
 
 	// public method for returning sockets connected to the Game with the given id
-	this.byGame = function (gameID) {
-		var game = {
-			// the raw list of sockets conencted to this game
-			sockets : byPlayer[playerID]
-		};
-
-		// declare byPlayer method to get sockets belonging to one player
-		Object.defineProperty(game, 'byPlayer', {
-			configurable: false,
-			enumerable: false,
-			writable: false,
-			value: function (playerID) {
-				var belongToPlayer = [];
-				var socket;
-
-				for ( var i = 0; i < this.sockets.length; i+=1) {
-					socket = this.sockets[i];
-
-					if (PlayerID(socket) === playerID) {
-						arePlayer.push(socket);
-					}
-				}
-
-				return inGame;
-			}
-		});
-
-		return game;
+	cache.byGame = function (gameID) {
+		
+		return byGame[gameID] || false;
 	};
 
-	debug.val('sockets', sockets, 'models/socket.js', 195);
-	debug.val('byID', byID, 'models/socket.js', 196);
-	debug.val('byGame', byGame, 'models/socket.js', 197);
-	debug.val('byPlayer', byPlayer, 'models/socket.js', 198);
+	// debug.val('Sockets', Sockets, 'models/socket.js', 236);
+	// debug.val('byID', byID, 'models/socket.js', 237);
+	// debug.val('byGame', byGame, 'models/socket.js', 238);
+	// debug.val('byAccount', byAccount, 'models/socket.js', 239);
+
+	return cache
 
 };

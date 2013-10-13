@@ -1400,25 +1400,47 @@ function announce(message) {
 
 	gameLog.push(message);
 
-	// grabs the dom object 'commentary' and sets it equal to commentary
-	var commentary = document.getElementById('commentary');
+function logger () {
+
+	var logger = Object.create(null);
 
 	// clears the contents of commentary
 	//	commentary.innerHTML = '';
+	var announcements = [];
 
+	logger.announce = function (message) {
+		announcements.push(message);
 
-	var comment = document.createElement('p');
-	comment.setAttribute('id', 'comment');
+		// grabs the dom object 'commentary' and sets it equal to commentary
+		var commentary = document.getElementById('commentary');
 
-	// creates comment, a new textNode with the message inside of it
-	var txt = document.createTextNode(message);	
+		// clears the contents of commentary
+	//	commentary.innerHTML = '';
 
-	comment.appendChild(txt);
-	// adds comment to commentary
-	commentary.appendChild(comment);
+		var comment = document.createElement('p');
+		comment.setAttribute('id', 'comment');
+
+		// creates comment, a new textNode with the message inside of it
+		var txt = document.createTextNode(message);	
+
+		comment.appendChild(txt);
+		// adds comment to commentary
+		commentary.appendChild(comment);
 
 	document.getElementById('comment').scrollIntoView();
 }
+		document.getElementById('comment').scrollIntoView();
+	};
+
+
+
+
+	return logger;
+};
+
+
+
+
 
 // a function to gain a card, given its name and the target player
 function gainCard(card,player) {
