@@ -1,5 +1,8 @@
 extends layout
 
+block accounts
+script(src="foo.js")
+
 block content
 	#content
 		h2 Update Account
@@ -7,7 +10,7 @@ block content
 		if (err)
 			p.err=err
 
-		form(action='/accounts/'+account.email + '/update', method='POST')
+		form(action='/accounts/'+account.email + '/update', method='POST', id='updateAccount')
 			table
 				tbody
 					tr
