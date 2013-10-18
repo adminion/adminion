@@ -17,20 +17,26 @@
 <body>
 <button onclick='startGame()'>start game!</button><BR>
 <div id='treasures'></div>
-<div id='kingdom'></div>
 <div id='victories'></div>
+
+<div id='kingdom'></div>
 <div id='Player'>
 	<div id='stats'>
 			Actions:<BR>
 			Money:<BR>
-			Buys:
+			Buys:<BR>
+			Deck:<BR>
+			Discard:
 			
 		<div id='bigStats'>
 		1
 		</div>
-		<div id='smallStats'></div>
 	</div>
 	<div id='inPlay'></div>
+	<div id='lookBox'>
+		<button id = 'lookboxButton1'></button>
+		<button id = 'lookboxButton2'></button>
+	</div>
 
 	<div id='playerCards'></div>
 </div>
@@ -42,6 +48,9 @@
 	<button class='phase' id='buy'>Buy</button>
 	<br><br>
 	<button class='phase' id='clean'>Clean-up</button>
+	<BR><BR>
+	<button class='phase' id='doneDiscarding'>Done Discarding</button>
+	<button class='phase' id='actionButton'></button>
 </div>
 
 </body>
