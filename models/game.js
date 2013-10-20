@@ -33,7 +33,11 @@ module.exports = function (mongoose) {
 			accountID : { 
 				type: mongoose.Schema.Types.ObjectId, 
 				required: true 
-			}
+			},
+			handle : {
+				type: String,
+				required: true
+			},
 		}
 		, registeredPlayers: 	[ PlayerSchema ]
 		// , cards: 		{ type: Array, 	default: new Array() 	}

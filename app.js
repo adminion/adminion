@@ -1,10 +1,8 @@
 
 global.debug = require('./lib/debug')();
 
-debug.marker('Starting Adminion Game Server...', 'app.js', 4);
-
 // load main library and controllers
-var AdminionServer = require('./lib/');
+var adminionServer = require('./lib/');
 
 // Eventually, I want to create a pool of server instances to handle requests.  
 // if one fails: 
@@ -13,7 +11,7 @@ var AdminionServer = require('./lib/');
 //  c) create a new b
 
 // create a server instance
-var Adminion = AdminionServer();
+var Adminion = adminionServer();
 
 // if (Adminion.config.debug) {
 //  Adminion.on('listening', function() {
