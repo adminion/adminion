@@ -111,6 +111,11 @@ module.exports = function () {
 
         // create references to the stored socket
         byID[socket.id] = raw[which];
+
+        if (byGame[gameID] === undefined ) {
+            sockets.initGame(gameID);
+        }
+
         byGame[gameID].push(raw[which]);
         byAccount[accountID].push(raw[which]);
 

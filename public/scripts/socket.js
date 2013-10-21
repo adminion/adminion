@@ -93,7 +93,7 @@ $(document).ready(function() {
 
 	socket.on('roster', function (roster) {
 		connectedPlayers = roster;
-		debug.val('connectedPlayers', connectedPlayers, '/scripts/socket.js', 64);
+		debug.val('connectedPlayers', connectedPlayers, '/scripts/socket.js', 96);
 
 		$("#PlayersList").replaceWith(function () {
 			var updatedPlayersList = '<div id="PlayersList"><blockquote><table>';
