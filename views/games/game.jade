@@ -3,8 +3,8 @@ extends layout
 block content
 	#content
 		h2 #{playerOne.handle}'s Game
-		h3 Status: #{game.status}
+		h3 Status: #{request.game.status}
 		label(for="PlayersList") Players:
 		ul#PlayersList
 		p
-			a(href='/games/' + game['_id'] + '/lobby') Enter Lobby
+			a(href='/games/' + request.game['_id'] + '/lobby') Enter Lobby
