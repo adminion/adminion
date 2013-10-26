@@ -1,4 +1,20 @@
 
+# v0.6.0
+* each module now exports a factory function which is passed the tools it requires, then return server
+* factory functions should only only be used to define variables and functions which use those vars
+* all variables in modules should be private and getters/setters defined for those that need to be configurable
+* all modules are event emitters with some sort of init function that emits ready event which the main server handles
+* cache is an official module to keep things simple, it keeps track of all accounts and games in the database
+* sockets are now handled exlusively within the realtime module--it just doesn't make sense anywhere else
+* games now expire after 24 Hours; mongodb automatically checks for documents with expiry fields
+* app.js now uses cluster module to fork a number of workers either based upon config item or number of CPUs
+* db module is now more than just a wrapper for connecting to the databse
+* http and realtime are much cleaner now that they get data from cache module which does not require a callback
+* removed a lot of redudant code by setting up application parameter middleware to handle :email and :gameID request parameters
+* app.js is now master.js, worker.js is the file that runs the worker scripts; this keeps the worker script clean from cluster junk
+* and much more i'm sure since I haven't been keeping track... 
+* more or less ready to converge with zane
+
 # v0.4.1
 * the core logic behind `lib/roster.js` has been incorporated into `models/game.js`
 * now when a player enters the lobby, they are added to game.players and the document is saved

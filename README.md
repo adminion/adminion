@@ -30,6 +30,7 @@ All server configuration options are defined within `config.json`.  If an option
 ### Configuration options
 
 * `debug`: toggles debug output. default: `false`
+* `cacheUpdateInterval`: the frequency, in milliseconds, that the database cache is updated. default: `5 * 60 * 1000` // 5 minutes
 * `serverName`: name of the server. default: `Adminion`
 * `host`: network address to be used. default: `localhost`
 * `port`: port number to be used. default: `1337`
@@ -41,7 +42,6 @@ All server configuration options are defined within `config.json`.  If an option
 If you want to enable SSL encryption using the default key and certificate files:
 ```json
 {
-	...
 	"ssl" :		true
 }
 ```
@@ -51,7 +51,6 @@ The example above will prompt the server to use `.ssl/adminion-cert.pem` and `.s
 You may specify the path(s) to your key and certificate.  Both absolute and relative paths are accepted.  Relative paths resolve to `.ssl/`
 ```json
 {
-	...
 	"ssl" :		true
 	, "cert" : 	"myServer-cert.pem"
 	, "key" : 	"/path/.to/myServer-key.pem"
