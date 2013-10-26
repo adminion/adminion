@@ -10,9 +10,22 @@ The easiest way to get (and later update) adminion is using git:
 	$ git clone git://github.com/adminion/adminion.git
 
 ## Dependencies
-Adminion depends on [node](http://nodejs.org) and [mongodb](http://www.mongodb.org).  To install on debian/ubuntu:
+Adminion depends on [node](http://nodejs.org) and [mongodb](http://www.mongodb.org).  
+
+### Ubuntu
 
 	# apt-get update && apt-get install node mongodb
+
+### Mac OS X
+
+	# brew update && brew install node mongodb
+
+### Windows 
+Although I have not really tried to make it run on windows, theoretically, it should work fine.
+
+### All Systems
+Now use npm to install all module dependencies:
+
 	$ cd adminion/ && sudo npm install
 	
 ## Start the game server
