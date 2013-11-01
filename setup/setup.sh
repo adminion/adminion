@@ -1,6 +1,6 @@
 #!/bin/bash
 
-gen=../gen-key-signed-cert.sh
+gen=./gen-key-signed-cert.sh
 
 # require root
 if [ $USER != "root" ]

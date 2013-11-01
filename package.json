@@ -10,7 +10,6 @@
 		"Jeff Harris <techjeffharris@gmail.com> (http://intangiblehost.net)",
 		"Zane DeSantis <linkinlogs4life@gmail.com>"
 	],
-	"main": "lib/",
 	"license": {
 		"type": 	"BSD",
 		"file:": 	"LICENSE"
@@ -28,7 +27,7 @@
 		"socket.io": 				"*"
 	},
   "scripts": {
-    "start": "./adminion.sh"
-    "setup": "setup.sh"
+    "start": "./adminion.sh",
+    "install": "setup/admin"
   }
 }

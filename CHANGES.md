@@ -1,4 +1,5 @@
 
+
 # v0.6.0
 * each module now exports a factory function which is passed the tools it requires, then return server
 * factory functions should only only be used to define variables and functions which use those vars

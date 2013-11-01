@@ -1,6 +1,6 @@
 
-var debug = require('./lib/debug')();
-var config = require('./lib/config');
+var config = require('./lib/config'),
+	debug = require('./lib/debug')();
 
 var cluster = require('cluster');
 

@@ -1,6 +1,6 @@
 
 var root = {
-	"email": "adminion"
+	"email": "adminionionator"
 	, "firstName": "adminion"
 	, "lastName": "adminion"
 	, "handle": "adminion"
@@ -9,23 +9,25 @@ var root = {
 var passwd = 'adminion';
 
 var config = require('../lib/config')
-	, mongoose = require('mongoose')
-	, Player = require('../models/player')(mongoose);
+	debug = require('../lib/debug')();
 
-mongoose.connect(config.mongodb);
-var mongo = mongoose.connection;
+console.log('Creating new superuser...');
 
-// if the connection encounters an error
-mongo.on('error', function(err) { 
-	console.trace(err); 
-	process.exit(-1) 
-});
+var	db = require('../lib/db')(config.mongodb);
 
-mongo.once('open', function() {
-	Player.register(root, passwd, function(err, player) {
-		if (err) { console.trace(err); process.exit(-1); };
-		console.log('created superuser "adminion" with password "adminion"');
-		process.exit();
+db.once('ready', function() {
+	db.createAccount(root, passwd, function(err, account) {
+		
+		if (err) { 
+			console.trace(err); 
+			process.exit(); 
+		};
+		
+		console.log('Created new superuser!');
+		console.log(account);
+		console.log("You should probably change your password from the default ('adminion').");
+		
 	});
 });
 
+db.connect();
