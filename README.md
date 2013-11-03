@@ -25,7 +25,7 @@ The easiest way to get (and later update) adminion is using git:
 	$ cd /where/you/want/it/
 	$ git clone git://github.com/adminion/adminion.git
 
-### install 
+### Install 
 Now use npm to install all module dependencies and create the default admin user:
 
 	$ cd adminion/ && sudo npm install
@@ -67,15 +67,20 @@ The example above will prompt the server to use `.ssl/myServer-cert.pem` and `/p
 	
 ## Start the game server
 We're now ready to start the server!
+
 	# ./adminion.sh
 
 Once installed, the adminionator will be the only account that may logon and is also the only account that can change system settings and CRUD accounts
 
 ### Change adminionator password
-We recommend you change the default password ('adminion') to something a bit more seure.  
+We recommend you change the default password ('adminion') to something a bit more secure:
 
-Point your browser to adminionator's account profile:
-	https://localhost:1337/accounts/adminionator
+	https://localhost:1337/accounts/adminionator/update
 
-After logging on, you will be directed to adminionator's profile.  Click on "Update Info", enter the new password, verify it, then click "Update" to save. 
-### create user to play
+After logging on, enter the new password, verify it, then click "Update" to save. 
+
+### Create an account
+We also recommend you create your own user account for hosting and playing games:
+
+	https://localhost:1337/accounts/create
+	
