@@ -5,7 +5,7 @@ Administrate your deck
 
 Adminion is under heavy development.  Its likely going to crash on you... issues/pull requests...?
 
-## Dependencies
+## System Dependencies
 Adminion depends on [node](http://nodejs.org) and [mongodb](http://www.mongodb.org).  
 
 ### Ubuntu
@@ -22,21 +22,17 @@ Although I have not really tried to make it run on windows, theoretically, it sh
 ## Get Adminion
 The easiest way to get (and later update) adminion is using git:
 
-<<<<<<< HEAD
 	$ cd /where/you/want/it/
 	$ git clone git://github.com/adminion/adminion.git
 
-### Install 
+### Install required Node Modules
 Now use npm to install all module dependencies and create the default admin user:
 
-	$ cd adminion/ && sudo npm install
-=======
 	$ cd adminion/ && sudo npm install
 	
 ## Start the game server
 
 	# ./adminion.sh
->>>>>>> central-arch
 
 ## Server configuration
 All server configuration options are defined within `config.json`.  If an option is omitted, the default value will be used.
