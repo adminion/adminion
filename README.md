@@ -29,13 +29,8 @@ Now use npm to install all module dependencies:
 	$ cd adminion/ && sudo npm install
 	
 ## Start the game server
-You can either run `app.js` directly using node:
 
-	$ node app.js
-	
-or, you can define your own startup procedure within `adminion.sh`:
-
-	$ sudo ./adminion.sh
+	# ./adminion.sh
 
 ## Server configuration
 All server configuration options are defined within `config.json`.  If an option is omitted, the default value will be used.
