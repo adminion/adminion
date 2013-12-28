@@ -1,4 +1,4 @@
 {
-	"debug" : 		true, 
-	"https" :		true
+	"workers" : 1,
+	"debug" : true
 }

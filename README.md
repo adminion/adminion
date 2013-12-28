@@ -59,7 +59,7 @@ If you want to disable SSL encryption, simply set the ssl option to false:
 ```
 
 #### Custom paths
-You may specify the path(s) to your key and certificate.  Both absolute and relative paths are accepted.  Relative paths resolve to `.ssl/`
+You may specify the path(s) to your key and certificate. 
 ```json
 {
 	"ssl" :		true
@@ -67,7 +67,7 @@ You may specify the path(s) to your key and certificate.  Both absolute and rela
 	, "key" : 	"/path/.to/myServer-key.pem"
 }
 ```
-The example above will prompt the server to use `.ssl/myServer-cert.pem` and `/path/.to/myServer-key.pem`.
+The example above will prompt the server to use `./myServer-cert.pem` and `/path/.to/myServer-key.pem`.
 	
 ## Start the game server
 We're now ready to start the server!
