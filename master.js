@@ -5,118 +5,160 @@ var config = require('./lib/config'),
     env = require('./lib/env'),
     util = require('./lib/util');
 
-var AdminionCluster = require('cluster');
-var workers = [];
-var readyWorkers = 0;
+var cluster = require('cluster');
 
 console.log('Starting Adminion game server...');
 
-AdminionCluster.setupMaster({
+cluster.setupMaster({
     exec: "worker.js",
-    silent: false
+    silent: (config.debug) ? false : true
 });
 
-AdminionCluster.on('fork', function (worker) {
-    debug.emit('marker', 'Forking worker ' + worker.id + '.', 'master.js', 20);
+
+cluster.on('fork', function (worker) {
+    // debug.emit('marker', 'Forking worker ' + worker.id + '.', 'master.js', 20);
 });
 
-AdminionCluster.on('online', function (worker) {
-    debug.emit('marker', 'Worker ' + worker.id + ' online.', 'master.js', 24);
+cluster.on('online', function (worker) {
+    // debug.emit('marker', 'Worker ' + worker.id + ' online.', 'master.js', 24);
 });
 
-AdminionCluster.on('disconnect', function (worker) {
+cluster.on('disconnect', function (worker) {
     debug.emit('marker', 'Worker ' + worker.id + ' disconnected.', 'master.js', 28);
 });
 
-AdminionCluster.on('exit', function (worker) {
+cluster.on('exit', function (worker) {
     debug.emit('marker', 'Worker ' + worker.id + ' died.', 'master.js', 32);
-
+      
 });
 
-
 function restart (workerId) { 
+    console.log('trying to restart the server...');
     if (workerId) {
         if (typeof workerId === 'number') {
-            workers[workerId].disconnect();
+            var worker = cluster.workers[workerId];
+
+            worker.on('exit', function (worker) {
+                cluster.fork();
+            });
+
+            worker.disconnect();
         } else {
             return false;
         }
     } else {
-        for (var i = 0; i < config.workers; i += 1) {
+        for (var id in cluster.workers) {
+            var worker = cluster.workers[id];
             
-            workers[i].on('exit', function (worker) {
-                workers[worker.id] = AdminionCluster.fork();
+            worker.on('exit', function (worker) {
+                cluster.fork();
             });
 
-            workers[i].disconnect();
+            worker.disconnect();
         }
     }
 };
 
 function stop () {
-    for (var i = 0; i < config.workers; i += 1) {
-        workers[i].removeListener
+    for (var id in cluster.workers) {
+        cluster.workers[id].disconnect();
     }
-}
+};
+
+function totalMemory () {
+
+    var masterMemory = process.memoryUsage().heapTotal;    
+    var workerTotal = 0;
+
+    // debug.emit('val', 'masterMemory', masterMemory, 'master.js', 73);
+    // debug.emit('val', 'memory', memory, 'master.js', 74);
+    // debug.emit('val', 'workerTotal', workerTotal, 'master.js', 75);
+
+    for (var workerId in memory) {
+        workerTotal += memory[workerId];
+
+        // debug.emit('val', 'workerId', workerId, 'master', 78);
+        // debug.emit('val', 'memory[' + workerId + ']', memory[workerId], 'master', 79);
+        // debug.emit('val', 'workerTotal', workerTotal, 'master', 81);
+
+    }
+
+    var serverTotal = masterMemory + workerTotal;
+
+    // debug.emit('val', 'serverTotal', serverTotal, 'master', 89);
+
+    return serverTotal / util.MB;
+};
+
+function allReady () {
+    var msg = '\n\t%s worker';
+
+    if ( config.workers > 1 ) {
+        msg += 's';
+    }
+
+    msg += ' running.';
+    
+    console.log(util.format(msg, config.workers));
+
+    // notify the console user that the server is ready
+    console.log('\nAdminion Game Server Started!\n --> %s', env.url());
+
+    console.log('\ntotal memory usage: %s MB', totalMemory());
+
+    process.stdout.write('> ');
+
+    process.stdin.resume();
+    process.stdin.setEncoding('utf8');
+
+    process.stdin.on('data', function (chunk) {
+        switch (chunk.trim()) { 
+            case 'restart':
+                restart();
+                break;
+
+            case 'stop':
+                stop();
+                break;
+        }
+
+        process.stdout.write('> ');
+    });
+
+    process.stdin.on('end', function () {
+        process.stdout.write('end');
+    });
+};
+
+
+var memory = {};
+var readyWorkers = 0;
+
 
 // start all the workers
 for (var i = 0; i < config.workers; i+=1) {
-    workers[i] = AdminionCluster.fork();
+    var worker = cluster.fork();
 
-    // when a message from this worker is received
-    workers[i].on('message', function (data) {
-        debug.emit('marker', 'message received from worker ' + i, 'master.js', 65);
+    (function (workerId) {
+        cluster.workers[workerId].on('message', function (data) {
 
-        // if the worker is saying it is ready...
-        if (data['ready'] && data['ready'] === true) {
-            // add 1 to the readyWorkers countu
-            readyWorkers += 1;
-
-            // if all of our workers are ready...
-            if (readyWorkers === config.workers) {
-
-                var msg = '\n    %s worker';
-
-                if ( config.workers > 1 ) {
-                    msg += 's';
-                }
-
-                msg += ' running.';
+            // debug.emit('marker', 'message received from worker ' + workerId, 'master.js', 132);
+            
+            // if the worker is saying it is ready...
+            if (data['ready'] && data['ready'] === true) {
+                // add 1 to the readyWorkers count
+                readyWorkers += 1;
                 
-                console.log(util.format(msg, config.workers));
+                memory[workerId] = data['memoryUsage'];
 
-                // notify the console user that the server is ready
-                console.log(
-                    util.format('\nAdminion Game Server Started!\n --> %s', env.url())
-                );
-
-                process.stdout.write('> ');
-
-                process.stdin.resume();
-                process.stdin.setEncoding('utf8');
-
-                process.stdin.on('data', function(chunk) {
-
-                    if (typeof data === 'string') {
-                        switch (data) { 
-                            case 'restart':
-                                restart();
-                                break;
-                            case 'stop':
-                                stop();
-                                break;
-                        }
-                    }
-                    process.stdout.write('data: ' + chunk);
-                });
-
-                process.stdin.on('end', function() {
-                    process.stdout.write('end');
-                });
+                // if all of our workers are ready...
+                if (readyWorkers === config.workers) {
+                    allReady();
+                }
             }
-        }
-
-
-    });
+        });
+    
+    } (worker.id) );
+    // when a message from this worker is received
 }
 

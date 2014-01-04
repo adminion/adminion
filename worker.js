@@ -1,7 +1,7 @@
 
 global.debug = require('./lib/debug')();
 
-var AdminionCluster = require('cluster');
+var cluster = require('cluster');
 
 // create a server instance
 var Adminion = require('./lib/');
@@ -10,9 +10,5 @@ var Adminion = require('./lib/');
 
 // now sit back and wait for requests
 Adminion.start();
-
-Adminion.on('ready', function () {
-	process.send({'ready': true, 'memoryUsage': process.memoryUsage().heapTotal});
-});
 
 Adminion.on('error', Adminion.kill);

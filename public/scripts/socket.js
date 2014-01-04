@@ -120,6 +120,10 @@ $(document).ready(function() {
         }
     });
 
+    socket.on('msg', function (msg) {
+        chat_addToLog(new Date() + ' - ' + msg);
+    });
+
     socket.on('chat', function(msg) {
         chat_addToLog(msg);
     });
