@@ -22,6 +22,7 @@ cluster.on('fork', function (worker) {
 
 cluster.on('online', function (worker) {
     // debug.emit('marker', 'Worker ' + worker.id + ' online.', 'master.js', 24);
+    initWorker(worker);
 });
 
 cluster.on('disconnect', function (worker) {
@@ -35,29 +36,15 @@ cluster.on('exit', function (worker) {
       
 });
 
-function restart (workerId) { 
+function restart (worker) { 
     console.log('trying to restart the server...');
-    if (workerId) {
-        if (typeof workerId === 'number') {
-            var worker = cluster.workers[workerId];
-
-            worker.on('exit', function (worker) {
-                cluster.fork();
-            });
-
-            worker.disconnect();
-        } else {
-            return false;
-        }
+    if (worker) {
+        worker.kill();
+        cluster.fork();
     } else {
         for (var id in cluster.workers) {
-            var worker = cluster.workers[id];
-            
-            worker.on('exit', function (worker) {
-                cluster.fork();
-            });
-
-            worker.disconnect();
+            cluster.workers[id].kill();
+            cluster.fork();            
         }
     }
 };
@@ -138,31 +125,32 @@ function allReady () {
 var memory = {};
 var readyWorkers = 0;
 
+function initWorker (worker) {
+    // when a message from this worker is received
+    worker.on('message', function (data) {
+
+        // debug.emit('marker', 'message received from worker ' + workerId, 'master.js', 132);
+        
+        // if the worker is saying it is ready...
+        if (data['ready'] && data['ready'] === true) {
+            // add 1 to the readyWorkers count
+            readyWorkers += 1;
+            
+            memory[worker.id] = data['memoryUsage'];
+
+            // if all of our workers are ready...
+            if (readyWorkers === config.workers) {
+                allReady();
+            }
+        }
+    });
+};
+
 
 // start all the workers
 for (var i = 0; i < config.workers; i+=1) {
     var worker = cluster.fork();
 
-    (function (workerId) {
-        cluster.workers[workerId].on('message', function (data) {
-
-            // debug.emit('marker', 'message received from worker ' + workerId, 'master.js', 132);
-            
-            // if the worker is saying it is ready...
-            if (data['ready'] && data['ready'] === true) {
-                // add 1 to the readyWorkers count
-                readyWorkers += 1;
-                
-                memory[workerId] = data['memoryUsage'];
-
-                // if all of our workers are ready...
-                if (readyWorkers === config.workers) {
-                    allReady();
-                }
-            }
-        });
-    
-    } (worker.id) );
-    // when a message from this worker is received
+    initWorker(worker);
 }
 
