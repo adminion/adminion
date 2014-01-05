@@ -1,11 +1,12 @@
 
 global.debug = require('./lib/debug')();
 
+var cluster = require('cluster'),
+    util = require('util');
+
 var config = require('./lib/config'),
     env = require('./lib/env'),
-    util = require('./lib/util');
-
-var cluster = require('cluster');
+    utils = require('./lib/utils');
 
 console.log('Starting Adminion game server...');
 
@@ -25,10 +26,12 @@ cluster.on('online', function (worker) {
 
 cluster.on('disconnect', function (worker) {
     debug.emit('marker', 'Worker ' + worker.id + ' disconnected.', 'master.js', 28);
+    delete memory[worker.id];
 });
 
 cluster.on('exit', function (worker) {
     debug.emit('marker', 'Worker ' + worker.id + ' died.', 'master.js', 32);
+    delete memory[worker.id];
       
 });
 
@@ -60,8 +63,9 @@ function restart (workerId) {
 };
 
 function stop () {
+
     for (var id in cluster.workers) {
-        cluster.workers[id].disconnect();
+        cluster.workers[id].kill();
     }
 };
 
@@ -87,7 +91,7 @@ function totalMemory () {
 
     // debug.emit('val', 'serverTotal', serverTotal, 'master', 89);
 
-    return serverTotal / util.MB;
+    return serverTotal / utils.MB;
 };
 
 function allReady () {
