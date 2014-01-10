@@ -7,7 +7,7 @@ block content
 			a(href="/games/create") Create Game
 			&nbsp;]&nbsp;
 			ol
-				each game in games
+				- each game in games
 					- var handle = playerOnes[game['_id']].handle;
 					li 
 						a(href='/games/' + game['_id']) #{handle}'s Game

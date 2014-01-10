@@ -11,8 +11,7 @@ block content
 		if (err)
 			p.err=err
 		- var action = '/logon'
-		if (redir)
-			- action += '?redir=' + redir;
+		- var redir = request.cookies.redir || '/'
 		form(action=action, method='POST')
 			input(type='hidden', name='redir', value=redir)
 			table

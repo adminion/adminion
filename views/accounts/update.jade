@@ -1,5 +1,8 @@
 extends layout
 
+block accounts
+script(src="foo.js")
+
 block content
 	#content
 		h2 Update Account
@@ -7,18 +10,18 @@ block content
 		if (err)
 			p.err=err
 
-		form(action='/accounts/'+account.email + '/update', method='POST')
+		form(action='/accounts/'+request.account.email + '/update', method='POST', id='updateAccount')
 			table
 				tbody
 					tr
 						td: label(for='FirstName') First Name: 
-						td: input(type='text', name='firstName', id='firstName', value=account.firstName)
+						td: input(type='text', name='firstName', id='firstName', value=request.account.firstName)
 					tr
 						td: label(for='LastName') Last Name: 
-						td: input(type='text', name='lastName', id='lastName', value=account.lastName)
+						td: input(type='text', name='lastName', id='lastName', value=request.account.lastName)
 					tr
 						td: label(for='email') Email:
-						td: input(type='text', name='email', id='email', value=account.email, disabled='disabled')
+						td: input(type='text', name='email', id='email', value=request.account.email, disabled='disabled')
 					tr
 						td: label(for='password') Password: 
 						td: input(type='password', name='password', id='password')
@@ -28,8 +31,6 @@ block content
 						td: input(type='password', name='verifyPassword', id='verifyPassword')
 					tr
 						td: label(for='handle') Handle: 
-						td: input(type='text', name='handle', id='handle', value=account.handle)		
+						td: input(type='text', name='handle', id='handle', value=request.account.handle)		
 			p
 				input(type='submit', value='Update')
-			p
-				a(href="/logon") Logon

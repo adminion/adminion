@@ -11,9 +11,13 @@ if [ $1 ]
 then
 	# set serverName to $1
 	serverName=$1
+	if [ -d "$serverName" ]
+	then
+		serverName="$serverNameadminion"
+	fi
 else
 	# set serverName to default: "adminion"
-	serverName="adminion"
+	serverName="../.ssl/adminion"
 fi
 
 # ouput the server name to be used
@@ -34,7 +38,7 @@ openssl req -new -key $key -out $csr
 echo "self-signing $cert..."
 openssl x509 -req -days 9999 -in $csr -signkey $key -out $cert
 
-echo "removing $csr..."
+echo "deleting $csr..."
 rm $csr
 
 echo "successfully generated $key, self-signed $cert from $csr."

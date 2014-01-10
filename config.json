@@ -1,7 +1,4 @@
 {
-	"debug" : 		true
-	, "serverName" : 	"Adminion"
-	, "host" : 		"localhost"
-	, "port" : 		"1337"
-	, "https" :		true
+	"workers" : 1,
+	"debug" : true
 }
