@@ -2,58 +2,59 @@
 <html>
 <head>
 <script type="text/javascript" src="cardSelect/cards.js"></script>
-<script type="text/javascript" src="cardSelect/cardDisplay.js"></script>
-<<<<<<< HEAD:gamedisplay.html
 
-<script type="text/javascript" src="scripts/jquery.js"></script>
+<script type = "text/javascript" src = "scripts/jquery.js"></script>
 
-<link rel='stylesheet' type='text/css' href='stylesheets/gamedisplay.css'/>
+<link rel = 'stylesheet' type = 'text/css' href = 'stylesheets/gamedisplay.css'/>
 
-=======
-
-
->>>>>>> 99b4bab17564fc8d154b8b3ce07abda91cf83ab1:public/gamedisplay.html
-
+</head>
 <body>
-<button onclick='startGame()'>start game!</button><BR>
-<div id='treasures'></div>
-<div id='victories'></div>
+<div id = 'treasures'></div>
+<div id = 'victories'></div>
 
-<div id='kingdom'></div>
-<div id='Player'>
-	<div id='stats'>
+<div id = 'kingdom'></div>
+<div id = 'cardDisplay'></div>
+<div id = 'Player'>
+	<div id = 'stats'>
 			Actions:<BR>
 			Money:<BR>
 			Buys:<BR>
 			Deck:<BR>
 			Discard:
 			
-		<div id='bigStats'>
-		1
+		<div id = 'bigStats'>
+			<ul>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
 		</div>
 	</div>
-	<div id='inPlay'></div>
-	<div id='lookBox'>
+	<div id = 'inPlay'></div>
+	<div id = 'lookBox'>
 		<button id = 'lookboxButton1'></button>
 		<button id = 'lookboxButton2'></button>
 	</div>
 
-	<div id='playerCards'></div>
+	<div id = 'playerCards'></div>
 </div>
 
-<div id='commentary'></div>
+<div id = 'commentary'></div>
 
-<div id='phases'>
+<div id = 'phases'>
 	
-	<button class='phase' id='buy'>Buy</button>
+	<button class = 'phase' id='buy'>Buy</button>
 	<br><br>
-	<button class='phase' id='clean'>Clean-up</button>
+	<button class = 'phase' id='clean'>Clean-up</button>
 	<BR><BR>
-	<button class='phase' id='doneDiscarding'>Done Discarding</button>
-	<button class='phase' id='actionButton'></button>
+	<button class = 'phase' id='doneDiscarding'>Done Discarding</button>
+	<button class = 'phase' id='actionButton'></button>
 </div>
 
 </body>
-<script type="text/javascript" src="scripts/adminion.js"></script>
-
+<script type = "text/javascript" src = "scripts/adminion.js"></script>
+<script>
+	startGame();
+</script>
 </html>

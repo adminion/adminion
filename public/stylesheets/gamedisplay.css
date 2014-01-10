@@ -11,6 +11,43 @@
 
 }
 
+
+#probability {
+	border-radius:50px;
+	background-color:black;
+	color: white;
+	height: 30px;
+	width: 30px;
+	position: absolute;
+	text-align: center;
+	top: 10px;
+	right: 10px;
+
+}
+.buyButton {
+	width: 25px;
+	height: 25px;
+	position: absolute;
+	display: none;
+	font-weight: bold;
+	font-size: 20px;
+	margin:0px;
+	bottom: 0px;
+	right: 0px;
+	color: white;
+	background-color: blue;
+	border-radius: 10px;
+	text-align: center;
+	z-index: 110;
+}
+#treasures .buyButton {
+
+}
+
+#cardDisplay {
+	float:right;
+}
+
 #lookBox {
 	position: fixed;
 	background-color: blue;
@@ -51,7 +88,7 @@
 	margin-left:248px;
 	height:200px;
 	border:1px solid black;
-	position:fixed;
+	position:absolute;
 	bottom: 133px;
 	left:200px;
 
@@ -96,6 +133,10 @@
 	padding: 0px;
 }
 
+#bigStats li {
+	list-style: none;
+}
+
 #stats span {
 	border:1px dotted black;
 
@@ -106,7 +147,6 @@
 	position: fixed;
 	left: 400px ;
 	top: ;
-	border:2px solid red;
 	width:500px;
 	height:211px;
 	display: inline-block;
@@ -118,9 +158,20 @@
 height: 100px;
 width: 100px;
 display: inline-block;
+position: relative;
 
 }
 
+.healthMeter{
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	float:right;
+	display: inline-block;
+	width: 2px;
+	height: 102px;
+	background-color: #00FF00;
+}
 
 #treasures {
 	position: fixed;
@@ -131,7 +182,13 @@ display: inline-block;
 	border: 2px solid black;
 
 }
-
+.exhausted {
+	opacity: 0.4;
+}
+#treasures>div {
+	float:left;
+	position: relative;
+}
 #victories {
 	position: fixed;
 	left: 220px;
@@ -139,9 +196,10 @@ display: inline-block;
 	width:160px;
 }
 
-.kingdomCard {
-
-
+#kingdom > div {
+	width: 100px;
+	display: inline-block;
+	position: relative;
 }
 
 
@@ -156,8 +214,13 @@ display: inline-block;
 	border: 2px solid blue;
 }
 .victory {
-
+	position: relative;
 	margin-top: -12px;
+}
+
+.victory .buyButton {
+	bottom: 17px;
+	right: -3px;
 }
 
 .victoryAttrWrap {
@@ -189,13 +252,47 @@ display: inline-block;
 	margin: -34px 52px 0px 42px;
 	z-index: 99;
 }
+.victory .cost img{
+	position: absolute;
+	left:-1px;
+	bottom: 10px;
+	width: 25px;
+}
+.victory .cost p {
+	bottom:12px;
+	left: 5px;
 
+}
+.cost {
+	position: absolute;
+	bottom: 5px;
+	left: 6.5px;
+}
+.cost img {
+	width: 20px;
+	position: absolute;
+	left: -4px;
+	bottom: 0px;
+}
+.cost p {
+	z-index: 999999999999999;
+	margin: 0px;
+	display: inline-block;
+	position: absolute;
+	bottom: 0px;
+	left: 2px;
+	font-weight: bold;
+}
 .kingdomCardWrap {
 	overflow:hidden; /* this is important */
 	width:100px;
 	height:103px;
 	display:inline-block;
+}
 
+.kingdomCardWrap img{
+    position: absolute;
+    clip: rect(0, 100px, 84px, 0);
 }
 
 .kingdomCardBottomWrap {
@@ -247,10 +344,14 @@ display: inline-block;
 
 .buyable {
 	display: inline-block;
+	position: relative;
+
 }
 
 .unbuyable {
 	opacity: 0.4;
 	display: inline-block;
 	filter: alpha(opacity=40);
+	position: relative;
+
 }

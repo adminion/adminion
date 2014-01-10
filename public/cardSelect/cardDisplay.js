@@ -1,16 +1,3 @@
-//this function runs 
-function showCards(set) {
-	var ni = document.getElementById('cardDisplay');
-	for (var each in set) {
-		var newdiv = document.createElement('div');
-		var divIdName = set[each].name;
-		newdiv.setAttribute('id',divIdName);
-		newdiv.setAttribute('class','card');
-		newdiv.innerHTML =  '<form action=""><input type="checkbox" name="card" value="'+divIdName+'">' +set[each].name+ '</form>'
-		ni.appendChild(newdiv);
-	}
-}
-
 var selectedCards = [];
 
 //a function to select a random selection of cards from a certain source into a certain destination
@@ -50,6 +37,223 @@ function chooseRandom() {
 	selectRandom(selectedCards, CHOSEN);
 }
 
+
+
+//this function creates an array (selectedCards) consisting of the cards from the selected sets from which to choose cards from
+function createChoices() {
+
+//reset the selectedCards array, in case the function is run more than once in an instance
+	selectedCards = [];
+
+//creates an array containing the names of all the sets that the user wants to choose from. later on can be important for stat collecting
+	var selectedSets = [];
+
+//creates a variable containing all the checkboxes of expansion names
+	var sets = document.selectedSets.set;
+
+//for each expansion set
+	for (i=0;i<sets.length;i++) {
+
+//if it is checked off by the user
+	  if (sets[i].checked) {
+
+//the name of the expansion set is pushed into the selectedSets array
+    	selectedSets.push(sets[i].value);
+
+//an array setName is created by evaluating the name of the expansion set. in cards.js there are arrays of cards that correspond with each expansion set name
+			var setName = eval(sets[i].value);
+
+//for each card in that given expansion set
+			for (var each in setName) {
+				console.log(setName[each]);
+//a property 'origin' is added to that card, based on the name of the expansion set that the card originated from. this can be later used when referencing chosen card sets. like if user wants to know more about the set of cards they played with, they could check and see 'oh, this one had 5 cards from seaside,3 from intrigue, 2 from base set' or whatnot
+				setName[each].origin = sets[i].value;
+
+//the card is pushed into the selectedCards array, which is the end product of this function. 
+				selectedCards.push(setName[each]);
+			}
+    }
+  }
+
+	separatePrice(selectedCards);
+	CHOSEN = [];
+}
+
+//an array to collect the values of the different ensure functions, to tell if all conditions were met or not
+var ensure = [];
+
+//this function runs when the "choose" button is clicked
+function chooseCards() {
+
+//if RANDOM method of 'choose' is selected
+	if (document.choose.type[0].checked == true) {
+
+//utilizing do/while loop, because we want this list of functions to run once regardless of the condition being met
+		do {
+
+//starts off by choosing random cards
+			chooseRandom();
+
+//resets the ensure array to contain nothing, in case this function has to run more than once
+			ensure = [];
+
+//runs all 'ensure' functions. the actual functions' doing anything depends on if the corresponding checkboxes are marked or not.
+//each 'ensure' function(if checked off) will add a boolean value to the ensure array based on if its corresponding condition is met or not
+			ensureAction();
+			ensureBuy();
+			ensuretwoActions();
+			ensureTrashing();
+			ensureCard();
+		}
+
+//once ensure is populated from the above functions, if the array contains a false value, the whole loop is repeated. this continues until all ensure conditions are met. this makes sure that all conditions are met, and cannot continue with the card display portion of the function until all user-chosen conditions are met
+		while (ensure.indexOf(false) != -1);
+	}
+
+//once an adequate set of cards is chosen and gets past the 'ensure' test, the cards are prepared for display by being sorted by cost
+	sortByCost();
+
+//creates a variable cardbox, which refers to the div in the page by the ID 'chosenCards'
+	var cardbox = document.getElementById("chosenCards");
+
+//the contents of cardbox is reset, in case the user chooses to rechoose cards. without this, the new chosen cards would just stack on top of the old
+	cardbox.innerHTML = "";
+
+//for each card in the array of chosen cards, CHOSEN
+	for (var each in CHOSEN) {
+		$('<div class = "card"><img src = '+CHOSEN[each].image+'></div>')
+		.appendTo($('#chosenCards'));
+	}	
+}
+var CHOSEN = [];
+
+function newRandomCard() {
+
+	var random = Math.floor(Math.random()*selectedCards.length);
+
+//the randomly chosen card from the source is pushed into the destination
+		CHOSEN.push(selectedCards[random]);
+
+//in order to prevent choosing the same card more than once, once the chosen card is pushed to its destination, it is spliced out of the source array
+		selectedCards.splice(random, 1);
+
+	var newCard = CHOSEN[CHOSEN.length-1];	
+	$('<div class = "card"><img src = '+newCard.image+'></div>')
+	.appendTo($('#chosenCards'));
+
+}
+//sorts CHOSEN into ordered array, based on card-cost
+function sortByCost() {
+
+//separates by price all cards in CHOSEN
+	separatePrice(CHOSEN);
+
+//for each cost 
+			var newarray = [];
+	for(i=0;i<12;i++) {
+		// for each cost in the costs array 
+		for (var cost in costs[i]) {
+			
+			newarray.push(costs[i][cost]);
+		}
+	}
+
+	CHOSEN = newarray;
+}
+
+	var costs = {};
+//SEPARATES ALL CARDS INTO COST-BASED ARRAYS
+function separatePrice(cardSet) {
+
+	costs = {};
+	var MAX_COST = 12;
+// create cost storage containers	
+	for (var cost=0; cost<MAX_COST; cost++) {
+		costs[cost] = [];
+
+
+	}
+	costs.posh= [];
+// go through cards and fill up containers
+	for (var card = 0; card<cardSet.length; card++) {
+
+
+		if (typeof cardSet[card].cost == 'number') {
+//push the card from the cardSet into the corresponding cost's array inside the costs object based on the cost of the card from the cardSet
+
+			costs[cardSet[card].cost].push(cardSet[card]);
+
+
+		}
+// if cost contains potion, push into potion container
+		else {
+			costs.posh.push(cardSet[card]);
+		}
+	}
+
+}
+
+var GAMECARDS = []
+
+//this function is run when the 'START GAME' button is clicked. it is meant to run once the user has chosen a satisfactory card set.  the first portion of the function is dedicated to gathering the treasure and victory cards that the user has chosen, via checkboxes
+function startGame() {
+	var cardNames = [];
+	$.each(CHOSEN, function(index) {
+		cardNames.push(this.name);
+	});
+
+	localStorage.setItem('kingdomcards', JSON.stringify(cardNames));
+
+//creates an array treasures containing the names of all the treasure cards that are checked on/off
+	var treasures = document.treasure.type;
+
+//same thing for victory checkboxes
+	var victory = document.victory.type;	
+
+//creates an array of cards to add to the game
+	var treasuresUsed = [];
+
+//for each treasure name in the treasures array
+	for (i=0;i<treasures.length;i++) {
+
+//if the treasure is checked
+	  if (treasures[i].checked) {
+
+//loop through the Treasure array, which is located in cards.js and contains allll the treasure cards and their properties
+			for (var j=0;j<Treasure.length;j++) {
+
+//if the checked treasure is equal to the name of the Treasure card
+				if (treasures[i].value == Treasure[j].name) {
+
+//push the Treasure object into the addCards array, as it is a treasure card that the user has chosen to play with
+					treasuresUsed.push(Treasure[j]);
+
+//log it
+					console.log(Treasure[j].name);
+				}
+			}
+    }
+  }
+
+//repeat for victory cards too
+	var victorysUsed = [];
+	for (i=0;i<victory.length;i++) {
+	  if (victory[i].checked) {
+			for (var j=0;j<Victory.length;j++) {
+				if (victory[i].value == Victory[j].name) {
+					victorysUsed.push(Victory[j]);
+					console.log(Victory[j].name);
+
+				}
+			}
+    }
+  }
+//	for (var each in CHOSEN) {
+//		kingdomCards.push(CHOSEN[each]);
+//	}
+
+
+}
 //this function will ensure that the chosen cards will have at least one card that gives the player +1 Action or +2 Actions
 function ensureAction() {
 
@@ -119,221 +323,4 @@ function ensuretwoActions() {
 		ensure.push(twoACTION);
 	}
 }
-
-//this function creates an array (selectedCards) consisting of the cards from the selected sets from which to choose cards from
-function createChoices() {
-
-//reset the selectedCards array, in case the function is run more than once in an instance
-	selectedCards = [];
-
-//creates an array containing the names of all the sets that the user wants to choose from. later on can be important for stat collecting
-	var selectedSets = [];
-
-//creates a variable containing all the checkboxes of expansion names
-	var sets = document.selectedSets.set;
-
-//for each expansion set
-	for (i=0;i<sets.length;i++) {
-
-//if it is checked off by the user
-	  if (sets[i].checked) {
-
-//the name of the expansion set is pushed into the selectedSets array
-    	selectedSets.push(sets[i].value);
-
-//an array setName is created by evaluating the name of the expansion set. in cards.js there are arrays of cards that correspond with each expansion set name
-			var setName = eval(sets[i].value);
-
-//for each card in that given expansion set
-			for (var each in setName) {
-
-//a property 'origin' is added to that card, based on the name of the expansion set that the card originated from. this can be later used when referencing chosen card sets. like if user wants to know more about the set of cards they played with, they could check and see 'oh, this one had 5 cards from seaside,3 from intrigue, 2 from base set' or whatnot
-				setName[each].origin = sets[i].value;
-
-//the card is pushed into the selectedCards array, which is the end product of this function. 
-				selectedCards.push(setName[each]);
-			}
-    }
-  }
-
-	separatePrice(selectedCards);
-	CHOSEN = [];
-}
-
-//an array to collect the values of the different ensure functions, to tell if all conditions were met or not
-var ensure = [];
-
-//this function runs when the "choose" button is clicked
-function chooseCards() {
-
-//if RANDOM method of 'choose' is selected
-	if (document.choose.type[0].checked == true) {
-
-//utilizing do/while loop, because we want this list of functions to run once regardless of the condition being met
-		do {
-
-//starts off by choosing random cards
-			chooseRandom();
-
-//resets the ensure array to contain nothing, in case this function has to run more than once
-			ensure = [];
-
-//runs all 'ensure' functions. the actual functions' doing anything depends on if the corresponding checkboxes are marked or not.
-//each 'ensure' function(if checked off) will add a boolean value to the ensure array based on if its corresponding condition is met or not
-			ensureAction();
-			ensureBuy();
-			ensuretwoActions();
-			ensureTrashing();
-			ensureCard();
-		}
-
-//once ensure is populated from the above functions, if the array contains a false value, the whole loop is repeated. this continues until all ensure conditions are met. this makes sure that all conditions are met, and cannot continue with the card display portion of the function until all user-chosen conditions are met
-		while (ensure.indexOf(false) != -1);
-	}
-
-//once an adequate set of cards is chosen and gets past the 'ensure' test, the cards are prepared for display by being sorted by cost
-	sortByCost();
-
-//creates a variable cardbox, which refers to the div in the page by the ID 'chosenCards'
-	var cardbox = document.getElementById("chosenCards");
-
-//the contents of cardbox is reset, in case the user chooses to rechoose cards. without this, the new chosen cards would just stack on top of the old
-	cardbox.innerHTML = "";
-
-//for each card in the array of chosen cards, CHOSEN
-	for (var each in CHOSEN) {
-
-//a new variable card is created and set equal to a newly created div
-		var card = document.createElement("div");
-
-//the new card is given the ID of card, for css purposes
-		card.setAttribute('id', "card");
-
-//a newly created img element is set equal to a new variable image
-		var image = document.createElement("img");
-
-//the image's source is set equal to the image url contained within the chosen card's properties
-		image.src = CHOSEN[each].image;
-
-//the images is given a width and margin
-		image.setAttribute('width', '150px');
-		image.setAttribute('margin', '3px');
-
-//now that the image is all ready to be 'posted', it is appended to the cardbox div on the page
-		cardbox.appendChild(image);
-	}	
-}
-var CHOSEN = [];
-
-//sorts CHOSEN into ordered array, based on card-cost
-function sortByCost() {
-
-//separates by price all cards in CHOSEN
-	separatePrice(CHOSEN);
-
-//for each cost 
-			var newarray = [];
-	for(i=0;i<12;i++) {
-	console.log(costs[i]);
-		// for each cost in the costs array 
-		for (var cost in costs[i]) {
-			
-			console.log(costs[i][cost]);
-			// push it into newarray
-
-
-			newarray.push(costs[i][cost]);
-		}
-	}
-	console.log(newarray);
-	CHOSEN = newarray;
-}
-
-	var costs = {};
-//SEPARATES ALL CARDS INTO COST-BASED ARRAYS
-function separatePrice(cardSet) {
-
-	costs = {};
-	var MAX_COST = 12;
-// create cost storage containers	
-	for (var cost=0; cost<MAX_COST; cost++) {
-		costs[cost] = [];
-
-
-	}
-	costs.posh= [];
-// go through cards and fill up containers
-	for (var card = 0; card<cardSet.length; card++) {
-
-
-		if (typeof cardSet[card].cost == 'number') {
-//push the card from the cardSet into the corresponding cost's array inside the costs object based on the cost of the card from the cardSet
-
-			costs[cardSet[card].cost].push(cardSet[card]);
-
-
-		}
-// if cost contains potion, push into potion container
-		else {
-			costs.posh.push(cardSet[card]);
-		}
-	}
-
-}
-
-var GAMECARDS = []
-
-//this function is run when the 'START GAME' button is clicked. it is meant to run once the user has chosen a satisfactory card set.  the first portion of the function is dedicated to gathering the treasure and victory cards that the user has chosen, via checkboxes
-function startGame() {
-
-//creates an array treasures containing the names of all the treasure cards that are checked on/off
-	var treasures = document.treasure.type;
-
-//same thing for victory checkboxes
-	var victory = document.victory.type;	
-
-//creates an array of cards to add to the game
-	var treasuresUsed = [];
-
-//for each treasure name in the treasures array
-	for (i=0;i<treasures.length;i++) {
-
-//if the treasure is checked
-	  if (treasures[i].checked) {
-
-//loop through the Treasure array, which is located in cards.js and contains allll the treasure cards and their properties
-			for (var j=0;j<Treasure.length;j++) {
-
-//if the checked treasure is equal to the name of the Treasure card
-				if (treasures[i].value == Treasure[j].name) {
-
-//push the Treasure object into the addCards array, as it is a treasure card that the user has chosen to play with
-					treasuresUsed.push(Treasure[j]);
-
-//log it
-					console.log(Treasure[j].name);
-				}
-			}
-    }
-  }
-
-//repeat for victory cards too
-	var victorysUsed = [];
-	for (i=0;i<victory.length;i++) {
-	  if (victory[i].checked) {
-			for (var j=0;j<Victory.length;j++) {
-				if (victory[i].value == Victory[j].name) {
-					victorysUsed.push(Victory[j]);
-					console.log(Victory[j].name);
-
-				}
-			}
-			console.log(addCards);
-    }
-  }
-	for (var each in CHOSEN) {
-		kingdomCards.push(CHOSEN[each]);
-	}
-}
-
   var kingdomCards = [];

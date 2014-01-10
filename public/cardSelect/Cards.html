@@ -3,11 +3,11 @@
 <head>
 </head>
 <body>
-<script src="cards.js"></script>
-<script src="cardDisplay.js"></script> 
+
 <link rel='stylesheet' type='text/css' href='stylesheet.css'/>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-<script type="text/javascript" src="jqueryness.js"></script>
+<script src="cards.js"></script>
+<script src="cardDisplay.js"></script> 
 
 <div id="form">
 
@@ -159,26 +159,47 @@
 					</ul>
 
 				<li>
+
 					<form name="cardType">
-						<input type="checkbox" name="action" checked>
-							Ensure + Actions
-						</input>
-						<br>
-						<input type="checkbox" name="twoActions"checked>
-							Ensure +2 Actions
-						</input>
-						<br>
-						<input type="checkbox" name="buy"checked>
-							Ensure + Buys
-						</input>
-						<br>
-						<input type="checkbox" name="card" checked>
-							Ensure + Cards
-						</input>
-						<br>
-						<input type="checkbox" name="trash" checked>
-							Ensure Trashing
-						</input>
+
+		<div class = 'ensuringCheck'>+2 Actions?
+  	  		<div class="checkboxThree">
+  				<input 	type="checkbox" 
+  						value="1" 
+  						id="checkboxThreeInput1" 
+  						name="twoActions" />
+	  			<label 	for="checkboxThreeInput1"></label>
+  			</div>
+		</div>
+
+		<div class = 'ensuringCheck'>+ Buys?
+	  		<div class="checkboxThree">
+	  			<input 	type="checkbox" 
+			  			value="1" 
+			  			id="checkboxThreeInput2" 
+			  			name="buy" />
+		  		<label for="checkboxThreeInput2"></label>
+	  		</div>
+	  	</div>
+	  	<div class = 'ensuringCheck'>+ Cards?
+	  		<div class="checkboxThree">
+		  		<input 	type="checkbox" 
+				  		value="1" 
+				  		id="checkboxThreeInput3" 
+				  		name="card" />
+			  	<label for="checkboxThreeInput3"></label>
+	  		</div>
+	  	</div>
+	  	<div class = 'ensuringCheck'>Trashing?
+	  		<div class="checkboxThree">
+		  		<input 	type="checkbox" 
+		  				value="1" 
+				  		id="checkboxThreeInput4" 
+				  		name="trash" />
+			  	<label for="checkboxThreeInput4"></label>
+	  		</div>
+	  	</div>
+
 					</form>
 				</ul> 
 					<BR>
@@ -256,7 +277,7 @@
 			</ul>
 		<br>
 		<li>
-			<a href="../gamedisplay.html"><button onclick='startGame()'>START GAME</button></a>
+		<a href = '../gamedisplay.html'><button onclick='startGame()'>START GAME</button></a>
 </div>
 
 

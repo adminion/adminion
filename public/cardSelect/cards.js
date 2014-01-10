@@ -2,117 +2,236 @@ var Dominion = [
 	{name: 		"Cellar",
 	type:		"Action",
 	cost:		2,
+ 
 	instructions: 	"+1 Action. Discard any number of cards. +1 Card per card discarded.",
-	image:		"http://dominion.diehrstraits.com/scans/base/cellar.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/cellar.jpg",
+		action: 	function(player) {
+			player.actions += 1;
+			choose(player, 'discard', 0, 'draw', 'none', true);
+		},
+	actionWait: true
+	},
 
 	{name: 		"Chapel",
 	type:		"Action",
 	cost:		2,
+ 
 	instructions: 	"Trash up to 4 cards from your hand.",
-	image:		"http://dominion.diehrstraits.com/scans/base/chapel.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/chapel.jpg",
+		action: function(player) {
+			choose(player, 'trash', 4, 'none', 'none', true)
+		},
+	actionWait: true
+
+	},
 
 	{name: 		"Moat",
 	type:		"Action-Reaction",
 	cost:		2,
+
 	instructions: 	"+2 Cards. When another player plays an Attack card, you may reveal this from your hand. If you do, you are unaffected by that Attack.",
-	image:		"http://dominion.diehrstraits.com/scans/base/moat.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/moat.jpg",
+		action: function(player) {
+			drawCard(player);
+			drawCard(player);
+		}
+	},
+
+
 
 	{name: 		"Chancellor",
 	type:		"Action",
 	cost:		3,
+
 	instructions: 	"+2 Money. You may immediately put your deck into your discard pile.",
-	image:		"http://dominion.diehrstraits.com/scans/base/chancellor.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/chancellor.jpg",
+		action: function(player) {
+			player.money += 2;
+			useButton(player, 'put deck into discard pile?', 'discardDeck');
+
+		},
+	actionWait: true
+	},
 
 	{name: 		"Village",
 	type:		"Action",
 	cost:		3,
+ 
 	instructions: 	"+1 Card; +2 Actions.",
-	image:		"http://dominion.diehrstraits.com/scans/base/village.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/village.jpg",
+		action: function(player) {
+			drawCard(player);
+			player.actions += 2;
+		}
+	},
 
 	{name: 		"Woodcutter",
 	type:		"Action",
 	cost:		3,
+
 	instructions: 	"+1 Buy; +2 Money.",
-	image:		"http://dominion.diehrstraits.com/scans/base/woodcutter.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/woodcutter.jpg",
+		action: function(player) {
+			player.buys +=1;
+			player.money +=2;
+		} 
+	},
 
 	{name: 		"Workshop",
 	type:		"Action",
 	cost:		3,
+
 	instructions: 	"Gain a card costing up to $4.",
-	image:		"http://dominion.diehrstraits.com/scans/base/workshop.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/workshop.jpg",
+		action: function(player) {
+			setGainable(player, 4, false, false, 'discard');
+
+		},
+	actionWait: true
+	},
 
 	{name: 		"Bureaucrat",
 	type:		"Action-Attack",
 	cost:		4,
+
 	instructions: 	"Gain a silver card; put it on top of your deck. Each other player reveals a Victory card from his hand and puts it on his deck (or reveals a hand with no Victory cards).",
-	image:		"http://dominion.diehrstraits.com/scans/base/bureaucrat.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/bureaucrat.jpg",
+		action: function(player) {
+		
+		}
+	},
 
 	{name: 		"Feast",
 	type:		"Action",
 	cost:		4,
+
 	instructions: 	"Trash this card. Gain a card costing up to $5.",
-	image:		"http://dominion.diehrstraits.com/scans/base/feast.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/feast.jpg",
+		action: function(player) {
+			trashCard(player, this, 'play');
+			setGainable(player, 5, false, false, 'discard');
+		},
+	actionWait: true
+	},
 
 	{name: 		"Gardens",
 	type:		"Victory",
 	cost:		4,
+
 	instructions: 	"Worth 1 Victory for every 10 cards in your deck (rounded down).",
-	image:		"http://dominion.diehrstraits.com/scans/base/gardens.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/gardens.jpg",
+		action: function(player) {
+		
+		}
+	},
 
 	{name: 		"Militia",
 	type:		"Action-Attack",
 	cost:		4,
+
 	instructions: 	"+$2; Each other player discards down to 3 cards in his hand.",
-	image:		"http://dominion.diehrstraits.com/scans/base/militia.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/militia.jpg",
+		action: function(player) {
+			player.money += 2;
+		}
+	},
 
 	{name: 		"Moneylender",
 	type:		"Action",
 	cost:		4,
+
 	instructions: 	"Trash a Copper from your hand. If you do, +$3.",
-	image:		"http://dominion.diehrstraits.com/scans/base/moneylender.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/moneylender.jpg",
+		action: function(player) {
+			choose(player, 'trash', 1, 'money3', 'copper', false);
+
+		},
+	actionWait: true
+	},
 
 	{name: 		"Remodel",
 	type:		"Action",
 	cost:		4,
+
 	instructions: 	"Trash a card from your hand. Gain a card costing up to $2 more than the trashed card.",
-	image:		"http://dominion.diehrstraits.com/scans/base/remodel.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/remodel.jpg",
+		action: function(player) {
+			choose(player, 'trash', 1, ['gain', 2, 'none', 'discard'], 'none', false);
+		},
+	actionWait: true
+	},
 
 	{name: 		"Smithy",
 	type:		"Action",
 	cost:		4,
+
 	instructions: 	"+3 Cards.",
-	image:		"http://dominion.diehrstraits.com/scans/base/smithy.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/smithy.jpg",
+		action:	function(player) {
+			for (var i=0;i<3;i +=1) {
+				drawCard(player);
+			}	
+		} 
+	},
 
 	{name: 		"Spy",
 	type:		"Action-Attack",
 	cost:		4,
+
 	instructions: 	"+1 Card; +1 Action; Each player (including you) reveals the top card of his deck and either discards it or puts it back, your choice.",
-	image:		"http://dominion.diehrstraits.com/scans/base/spy.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/spy.jpg",
+		action: function(player) {
+			drawCard(player);
+			player.actions += 1;
+		}
+	},
 
 	{name: 		"Thief",
 	type:		"Action-Attack",
 	cost:		4,
-	instructions: 	"Each other player reveals the top 2 cards of his deck. If they revealed any Treasure cards, they trash one of them that you choose. You may gain any or all of these trashed cards. They discard the other revealed cards.",
-	image:		"http://dominion.diehrstraits.com/scans/base/thief.jpg" },
 
+	instructions: 	"Each other player reveals the top 2 cards of his deck. If they revealed any Treasure cards, they trash one of them that you choose. You may gain any or all of these trashed cards. They discard the other revealed cards.",
+	image:		"/home/zane/git/adminion/public/cardImages/thief.jpg",
+		action: function(player) {
+		
+		}
+	},
 
 	{name: 		"Throne Room",
 	type:		"Action",
 	cost:		4,
+
 	instructions:	"Choose an Action card in your hand. Play it twice.",
-	image:		"http://dominion.diehrstraits.com/scans/base/throneroom.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/throneroom.jpg",
+		action: function(player) {
+			choose(player, 'play2', 1, 'none', 'action', false);
+
+
+		
+		},
+	actionWait: true
+	},
 	
 	{name:		"Council Room",
 	type:		"Action",
 	cost:		5,
+
 	instructions:	"+4 Cards; +1 Buy. Each other player draws a card.",
-	image:		"http://dominion.diehrstraits.com/scans/base/councilroom.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/councilroom.jpg",
+		action:	function(player) {
+			player.buys += 1;
+			drawCard(player);
+			drawCard(player);
+			drawCard(player);
+			drawCard(player);
+		}
+	},
 
 	{name:		"Festival",
 	type:		"Action",
 	cost:		5,
 	instructions:	"+2 Actions, +1 Buy; +$2.",
-	image:		"http://dominion.diehrstraits.com/scans/base/festival.jpg",
+	image:		"/home/zane/git/adminion/public/cardImages/festival.jpg",
 	quantity: 10,
 		action: function(player) {
 			player.actions += 2;
@@ -126,132 +245,262 @@ var Dominion = [
 	type:		"Action",
 	cost:		5,
 	instructions:	"+2 Cards; +1 Action.",
-	image:		"http://dominion.diehrstraits.com/scans/base/laboratory.jpg",
+	image:		"/home/zane/git/adminion/public/cardImages/laboratory.jpg",
 	quantity: 10,
 		action: function(player) {
 			player.actions += 1;
 			drawCard(player);
 			drawCard(player);
-
 		}  
 	},
 
 	{name:		"Library",
 	type:		"Action",
 	cost:		5,
+
 	instructions:	"Draw until you have 7 cards in hand. You may set aside any Action cards drawn this way, as you draw them; discard the set aside cards after you finish drawing.",
-	image:		"http://dominion.diehrstraits.com/scans/base/library.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/library.jpg",
+		action: function(player) {
+			drawUntil(player, 7);
+		},
+	actionWait: true
+	},
 
 	{name:		"Market",
 	type:		"Action",
 	cost:		5,
+
 	instructions:	"+1 Card; +1 Action; +1 Buy; +$1.",
-	image:		"http://dominion.diehrstraits.com/scans/base/market.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/market.jpg",
+		action: function(player) {
+			drawCard(player);
+			player.actions += 1;
+			player.money += 1;
+			player.buys += 1;
+		}
+	},
 
 	{name:		"Mine",
 	type:		"Action",
 	cost:		5,
+
 	instructions:	"Trash a Treasure card from your hand. Gain a Treasure card costing up to $3 more; put it into your hand.",
-	image:		"http://dominion.diehrstraits.com/scans/base/mine.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/mine.jpg",
+		action: function(player) {
+			choose(player, 'trash', 1, ['gain', 3, 'treasure', 'hand'], 'treasure', false);
+		
+		},
+	actionWait: true
+	},
 
 	{name:		"Witch",
 	type:		"Action-Attack",
 	cost:		5,
+
 	instructions:	"+2 Cards. Each other player gains a Curse card.",
-	image:		"http://dominion.diehrstraits.com/scans/base/witch.jpg" },
+	image:		"/home/zane/git/adminion/public/cardImages/witch.jpg",
+		action: function(player) {
+			drawCard(player);
+			drawCard(player);
+		}
+	},
 
 	{name:		"Adventurer",
 	type:		"Action",
 	cost:		6,
+
 	instructions:	"Reveal cards from your deck until you reveal 2 Treasure cards. Put those Treasure cards in your hand and discard the other revealed cards.",
-	image:		"http://dominion.diehrstraits.com/scans/base/adventurer.jpg" }
+	image:		"/home/zane/git/adminion/public/cardImages/adventurer.jpg",
+		action: function(player) {
+			drawUntil(player, 'Treasure', 2);
+		}
+	}
 ]
 
 var Intrigue = [
+	{name: 		"Cellar",
+	type:		"Action",
+	cost:		2,
+ 
+	instructions: 	"+1 Action. Discard any number of cards. +1 Card per card discarded.",
+	image:		"/home/zane/git/adminion/public/cardImages/cellar.jpg",
+		action: 	function(player) {
+			player.actions += 1;
+			choose(player, 'discard', 0, 'draw', 'none', true);
+			//emit finished event HERE! "THIS CARD IS DONE" finish and like something
+		},
+	actionWait: true
+	},
+
 	{name:		"Courtyard",
 	type:		"Action",
 	cost:		2,
+
 	instructions:	"+3 Cards. Put a card from your hand on top of your deck.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/courtyard.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/courtyard.jpg",
+		action: 	function(player) {
+			for (var courtyard = 0; courtyard < 3; courtyard += 1) {
+				drawCard(player, true);
+			};
+			choose(player, 'move', 1, 'deck0',  'none', false);
+		},
+	actionWait: true
+	},
 
 	{name:		"Pawn",
 	type:		"Action",
 	cost:		2,
+
 	instructions:	"Choose two: +1 Card; +1 Action; +1 Buy; +$1. (The choices must be different.)",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/pawn.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/pawn.jpg",
+		action: function(player) {
+			chooseAction(player, ['+1 card', '+1 action', '+1 buy', '+1 money'],
+ 				2)		
+			},
+	actionWait: true },
 
-	{name:		"Secret Chamber",
-	type:		"Action-Reaction",
+	{name:		"Secret-Chamber",
+	type:		"Action Reaction",
 	cost:		2,
-	instructions:	"Discard any number of cards. +$1 per card discarded. When another player plays an Attack card, you may reveal this from your hand. If you do, +2 cards, then put 2 cards from your hand on top of your deck.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/secretchamber.jpg" },
 
-	{name:		"Great Hall",
-	type:		"Action-Victory",
+	instructions:	"Discard any number of cards. +$1 per card discarded. When another player plays an Attack card, you may reveal this from your hand. If you do, +2 cards, then put 2 cards from your hand on top of your deck.",
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/secretchamber.jpg",
+	actionWait: true,
+		action: function(player) {
+
+			choose(player, 'discard', 0, 'money1', 'none', true) 		
+		}
+	},
+
+	{name:		"Great-Hall",
+	type:		"Action Victory",
 	cost:		3,
+
 	victory:	1,
 	instructions:	"1 Victory Point. +1 Card; +1 Action.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/greathall.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/greathall.jpg",
+		action: 	function(player) {
+			player.actions += 1;
+			drawCard(player, true);
+		}, 
+	},
 
 	{name:		"Masquerade",
 	type:		"Action",
 	cost:		3,
+
 	instructions:	"+2 Cards. Each player passes a card in their hand to the player on their left. You may trash a card from your hand.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/masquerade.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/masquerade.jpg",
+		action: 	function(player) {
+			drawCard(player);
+			drawCard(player, true);
+		}, 
+	},
 
 	{name:		"Shanty Town",
 	type:		"Action",
 	cost:		3,
+
 	instructions:	"+2 Actions. Reveal your hand. If you have no Action cards in hand, +2 Cards.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/shantytown.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/shantytown.jpg",
+		action: 	function(player) {
+			player.actions += 2;
+		}, 
+	},
 	
 	{name:		"Steward",
 	type:		"Action",
 	cost:		3,
+
 	instructions:	"Choose one: +2 Cards; or +$2; or trash 2 cards from your hand.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/steward.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/steward.jpg",
+		action: 	function(player) {
+			chooseAction(player, ['+2 card', '+2 money', 'Trash 2 cards'],
+ 				1)		
+			
+		}, 
+	actionWait: true
+	},
 
 	{name:		"Swindler",
 	type:		"Action-Attack",
 	cost:		3,
-	instructions:	"+$2. Each other player trashes the top card of his deck and gains a card with the same cost that you choose.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/swindler.jpg" },
 
-	{name: 		"Wishing Well",
+	instructions:	"+$2. Each other player trashes the top card of his deck and gains a card with the same cost that you choose.",
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/swindler.jpg",
+		action: 	function(player) {
+			player.money += 2;
+		}, 
+	},
+
+	{name: 		"Wishing-Well",
 	type:		"Action",
 	cost:		3,
+
 	instructions:	"+1 Card; +1 Action. Name a card, then reveal the top card of your deck. If it is the named card, put it in your hand.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/wishingwell.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/wishingwell.jpg",
+		action: 	function(player) {
+			drawCard(player, true);
+			player.actions += 1;
+		}, 
+	},
 	
+		
 	{name:		"Baron",
 	type:		"Action",
 	cost:		4,
+	
 	instructions:	"+1 Buy. You may discard an Estate card. If you do, +$4. Otherwise, gain an Estate card.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/baron.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/baron.jpg",
+		action: 	function(player) {
+			player.buys += 1;
+			choose(player, 'discard', 1, 'money4', ['Estate', 'gain'], false);
+		},
+	actionWait: true 
+	},
 
 	{name:		"Bridge",
 	type:		"Action",
 	cost:		4,
 	instructions:	"+1 Buy; +$1. All cards (including cards in players' hands) cost $1 less this turn, but not less than $0.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/bridge.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/bridge.jpg",
+		action: 	function(player) {
+			player.money += 1;
+			player.buys += 1;
+			alterCost('none', -1);
+		}, 
+	},
 	
 	{name:		"Conspirator",
 	type:		"Action",
 	cost:		4,
+
 	instructions:	"+$2. If you've played 3 or more Actions this turn (counting this): +1 Card; +1 Action.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/conspirator.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/conspirator.jpg",
+		action: 	function(player) {
+			player.money += 2;
+		}, 
+	},
 
 	{name:		"Coppersmith",
 	type:		"Action",
 	cost:		4,
 	instructions:	"Copper produces an extra $1 this turn.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/coppersmith.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/coppersmith.jpg",
+		action: 	function(player) {
+		}, 
+	},
 
 	{name:		"Ironworks",
 	type:		"Action",
 	cost:		4,
+
 	instructions:	"Gain a card costing up to $4. If it is an Action card, +1 Action. Treasure card, +$1. Victory card, +1 Card.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/ironworks.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/ironworks.jpg",
+		action: 	function(player) {
+			setGainable(player, 4, false, false, 'discard')
+		}, 
+	},
 
 	{name:		"Mining Village",
 	type:		"Action",
@@ -275,20 +524,42 @@ var Intrigue = [
 	{name:		"Scout",
 	type:		"Action",
 	cost:		4,
+
 	instructions:	"+1 Action. Reveal the top 4 cards of your deck. Put the revealed Victory cards into your hand. Put the other cards on top of your deck in any order.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/scout.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/scout.jpg",
+		action: 	function(player) {
+			player.actions += 1;
+		}, 
+	},
 
 	{name:		"Duke",
 	type:		"Victory",
 	cost:		5,
+
 	instructions:	"Worth 1 Victory Point per Duchy you have.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/duke.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/duke.jpg",
+		action: 	function(player) {
+		}, 
+	},
 
 	{name:		"Minion",
 	type:		"Action-Attack",
 	cost:		5,
+
 	instructions:	"+1 Action. Choose one: +$2; or discard your hand, +4 Cards; and each other player with at least 5 cards in hand discards his hand and draws 4 cards.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/minion.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/minion.jpg",
+		action: 	function(player) {
+			player.actions += 1;
+
+			player.money += 2;
+			// ORRRR
+			discardHand(player);
+			drawCard(player);
+			drawCard(player);
+			drawCard(player);
+			drawCard(player);
+		}, 
+	},
 
 
 
@@ -296,49 +567,73 @@ var Intrigue = [
 	type:		"Action-Attack",
 	cost:		5,
 	instructions:	"Each other player reveals cards from the top of his deck until revealing one costing $3 or more. He trashes that card and may gain a card costing at most $2 less than it. He discards the other revealed cards.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/saboteur.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/saboteur.jpg",
+		action: 	function(player) {
+		}, 
+	},
 
 	{name:		"Torturer",
 	type:		"Action-Attack",
 	cost:		5,
 	instructions:	"+3 Cards. Each other player chooses one: he discards 2 cards; or he gains a Curse card, putting it in his hand.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/torturer.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/torturer.jpg",
+		action: 	function(player) {
+		}, 
+	},
 
 	{name:		"Trading Post",
 	type:		"Action",
 	cost:		5,
 	instructions:	"Trash 2 cards from your hand. If you do, gain a silver card; put it into your hand.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/tradingpost.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/tradingpost.jpg",
+		action: 	function(player) {
+		}, 
+	},
 
 	{name:		"Tribute",
 	type:		"Action",
 	cost:		5,
 	instructions:	"The player to your left reveals then discards the top 2 cards of his deck. For each differently named card revealed, if it is an Action Card; +2 Actions; Treasure Card; +$2; Victory Card; +2 Cards.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/tribute.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/tribute.jpg",
+		action: 	function(player) {
+		}, 
+	},
 
 	{name:		"Upgrade",
 	type:		"Action",
 	cost:		5,
 	instructions:	"+1 Card; +1 Action. Trash a card from your hand. Gain a card costing exactly $1 more than it.",
 	image:		"http://dominion.diehrstraits.com/scans/intrigue/upgrade.jpg",
+		action: 	function(player) {
+			drawCard(player);
+			player.actions += 1;
+			choose(player, 'trash', 1, ['gain', 1, 'none', 'discard'], 'none', false);
+		}, 
 	quantity: 10	
 	},
 
 	{name:		"Harem",
 	type:		"Treasure-Victory",
 	cost:		6,
-	treasure: 2,
+	treasure: 	2,
 	victory:	2,
 	instructions:	"Worth $2. 2 Victory Points.",
 	image:		"http://dominion.diehrstraits.com/scans/intrigue/harem.jpg",
-	quantity: 10 },
+	quantity: 10
+	},
 
 	{name:		"Nobles",
-	type:		"Action-Victory",
+	type:		"Action Victory",
 	cost:		6,
 	victory:	2,
 	instructions:	"2 Victory Points. Choose one: +3 Cards; or +2 Actions.",
-	image:		"http://dominion.diehrstraits.com/scans/intrigue/nobles.jpg" }
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/nobles.jpg",
+		action: 	function(player) {
+			chooseAction(player, ['+3 card', '+2 action'],
+ 				1)	
+		}, 
+	actionWait: true 
+	}	
 ]	
 
 
@@ -632,7 +927,12 @@ var Prosperity = [
 	type:		"Action",
 	cost:		4,
 	instructions:	"+$2; +1 VP token.",
-	image:		"http://dominion.diehrstraits.com/scans/prosperity/monument.jpg" },
+	image:		"http://dominion.diehrstraits.com/scans/prosperity/monument.jpg",
+		action: function(player) {
+			player.money += 2;
+			console.log('player.money is ' + player.money)
+		}
+	},
 
 	{name:		"Quarry",
 	type:		"Treasure",
@@ -1479,4 +1779,16 @@ var promoCards = [
 	instructions:	"Worth $2. When you shuffle, you may put this anywhere in your deck.",
 	image:		"http://dominion.diehrstraits.com/scans/promo/stash.jpg" } 
 
+]
+
+var ALLEXPANSIONS = [	Dominion,
+						Intrigue,
+						Seaside,
+						Prosperity,
+						Hinterlands,
+						darkAges,
+						promoCards,
+						Victory,
+						Treasure,
+						Cornucopia
 ]
