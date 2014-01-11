@@ -16,22 +16,22 @@ cluster.setupMaster({
 });
 
 
-cluster.on('fork', function (worker) {
-    // debug.emit('marker', 'Forking worker ' + worker.id + '.', 'master.js', 20);
+cluster.on('fork', function fork (worker) {
+    // debug.emit('msg', 'Forking worker ' + worker.id + '.');
 });
 
-cluster.on('online', function (worker) {
-    // debug.emit('marker', 'Worker ' + worker.id + ' online.', 'master.js', 24);
+cluster.on('online', function online (worker) {
+    // debug.emit('msg', 'Worker ' + worker.id + ' online.');
     initWorker(worker);
 });
 
-cluster.on('disconnect', function (worker) {
-    debug.emit('marker', 'Worker ' + worker.id + ' disconnected.', 'master.js', 28);
+cluster.on('disconnect', function disconnect (worker) {
+    debug.emit('msg', 'Worker ' + worker.id + ' disconnected.');
     delete memory[worker.id];
 });
 
-cluster.on('exit', function (worker) {
-    debug.emit('marker', 'Worker ' + worker.id + ' died.', 'master.js', 32);
+cluster.on('exit', function exit (worker) {
+    debug.emit('msg', 'Worker ' + worker.id + ' died.');
     delete memory[worker.id];
       
 });
@@ -116,7 +116,7 @@ function allReady () {
         process.stdout.write('> ');
     });
 
-    process.stdin.on('end', function () {
+    process.stdin.on('end', function end() {
         process.stdout.write('end');
     });
 };
@@ -127,9 +127,9 @@ var readyWorkers = 0;
 
 function initWorker (worker) {
     // when a message from this worker is received
-    worker.on('message', function (data) {
+    worker.on('message', function message (data) {
 
-        // debug.emit('marker', 'message received from worker ' + workerId, 'master.js', 132);
+        // debug.emit('msg', 'message received from worker ' + workerId, 'master.js', 132);
         
         // if the worker is saying it is ready...
         if (data['ready'] && data['ready'] === true) {
@@ -149,8 +149,7 @@ function initWorker (worker) {
 
 // start all the workers
 for (var i = 0; i < config.workers; i+=1) {
-    var worker = cluster.fork();
 
-    initWorker(worker);
+    initWorker(cluster.fork());
 }
 

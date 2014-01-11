@@ -1,14 +1,33 @@
 extends layout
 block socketio
     script(src='/socket.io/socket.io.js')
-    script(src='/scripts/socket.js')
+    script(src='/scripts/gameChat.js')
     
 block menu
 block content
     #content
         h2 #{playerOne.handle}'s Game
-        label(for="PlayersList") Players:
-        ol#PlayersList
+        h3 Game Config:
+        #Config
+            table
+                tbody
+                    tr
+                        th Option
+                        th Value
+                    - each value, option in request.game.config.toObject()
+                        tr
+                            td #{option}
+                            td 
+                                input(type="number", class="config", name=option, id="game-config-" + option, min="2", max="4", value=value) 
+
+
+        h3 Players:
+        #PlayersList
+            table
+                tbody
+                    tr
+                        th Player No.
+                        th Handle
         label(for="chat_log") Chat Log:
         br
         textarea(id='chat_log', cols='100', rows='15', disabled='disabled')

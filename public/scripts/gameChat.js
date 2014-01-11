@@ -1,16 +1,4 @@
 
-var debug = Object.create(null);
-
-debug.val = function (name, value, file, line) {
-    console.log("\nDEBUG: %s %s - %s", file, line, name);
-    console.log(value);
-    console.log();
-};
-    
-debug.msg = function (message, file, line) {
-    console.log('\nDEBUG: %s %s: %s\n', file, line, message);
-};
-
 var url = window.location.href.split('/');
 
 var protocol = url[0];
@@ -24,12 +12,12 @@ var socket = io.connect();
 
 var connectedPlayers = {};
 
-function chat_addToLog (msg) {
+function chat_addToLog (handle, msg) {
     // get the existing message
     var existing = $('#chat_log')[0].value;
 
     // and set the value to the existing chat content plus the new message at the end
-    $('#chat_log')[0].value = existing + '\n' + msg;
+    $('#chat_log')[0].value = existing + '\n' + new Date() + ' [' + handle + ']: ' + msg;
 
     $('#chat_log')[0].scrollTop =    $('#chat_log')[0].scrollHeight;
     
@@ -52,7 +40,14 @@ function disable_chat () {
     $('#chat_submit')[0].disabled = 'disabled';
 };
 
-$(document).ready(function() {
+function sysMsg (msg) {
+    chat_addToLog('SYSTEM', msg);
+};
+
+$(document).ready(function documentReady () {
+
+
+
     $('#chat_input').on('keyup', function (event) {
         if (event.keyCode === 13) {
             chat_send();
@@ -63,40 +58,49 @@ $(document).ready(function() {
         chat_send();
     });
 
+    socket.on('connecting', function () {
+        sysMsg('connecting...');
+    });
+
     socket.on('connect', function () {
+        sysMsg('...connected.');
         socket.emit('joinGame', gameId);
     });
 
     socket.on('disconnect', function () {
+        sysMsg('disconnected from server.');
         console.log('disconnect from server - have we disconnected yet? i\'ll try to emit another event...');
         socket.emit('test', {foo:'bar'});
 
         disable_chat();
     });
 
-    socket.on('reconnect', function () {
-        enable_chat();
+    socket.on('reconnecting', function () {
+        sysMsg('trying to reconnect...');
+    });
 
+    socket.on('reconnect', function () {
+        sysMsg('...reconnected.');
+        enable_chat();
     });
 
     socket.on('entered', function (newPlayer, players) {
-        
-        chat_addToLog(newPlayer + ' joined the game.');
+        sysMsg(newPlayer + ' joined the game');
 
     });
 
     socket.on('exited', function (oldPlayer, players) {
-        
-        chat_addToLog(oldPlayer + ' left the game.');
+        sysMsg(oldPlayer + ' left the game');
 
     });
 
     socket.on('roster', function (roster) {
         connectedPlayers = roster;
-        debug.val('connectedPlayers', connectedPlayers, '/scripts/socket.js', 96);
+        console.log('connectedPlayers');
+        console.log(connectedPlayers);
 
         $("#PlayersList").replaceWith(function () {
-            var updatedPlayersList = '<div id="PlayersList"><blockquote><table>';
+            var updatedPlayersList = '<div id="PlayersList"><table>';
             updatedPlayersList += '<tr><th>Player No.</th><th>Handle</th></tr>';
 
             for (var playerNo in roster) {
@@ -104,28 +108,35 @@ $(document).ready(function() {
                 updatedPlayersList += '<tr><td>' + (playerNo) + '</td><td>' + roster[playerNo] + '</td></tr>\n';
             };
 
-            updatedPlayersList += '</table></blockquote></div>';
+            updatedPlayersList += '</table></div>';
             return updatedPlayersList;
         });
     });
 
     socket.on('joined', function (result, reason) {
-        if (!result) {
-            debug.msg('denied: ' + reason, 'public/scripts/socket.js', 114);
-            window.location = '/games/' + gameId;
-        } else {
-            debug.msg('joined!', 'public/scripts/socket.js', 114);
+        if (result) {
+            console.log('joined!');
             enable_chat();
-            $('#chat_input')[0].focus();
+            $('#chat_input').focus();
+        } else {
+            console.log('denied: ' + reason);
+            window.location = '/games/' + gameId;
+        }
+    });
+
+    socket.on('config', function (adjustments) {
+        console.log(adjustments);
+        for (option in adjustments) {
+            $('game-config-' + option).value(adjustments[option]);
         }
     });
 
     socket.on('msg', function (msg) {
-        chat_addToLog(new Date() + ' - ' + msg);
+        sysMsg(msg);
     });
 
-    socket.on('chat', function(msg) {
-        chat_addToLog(msg);
+    socket.on('chat', function(handle, msg) {
+        chat_addToLog(handle, msg);
     });
 });
 

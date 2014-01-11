@@ -23,8 +23,11 @@ html
                             #breadcrumbs
                                 // breadcrumbs leave a trail as players navigate the server
                                 h3
+                                    - // remove everything after and including the '?'
                                     - var breadcrumbs = request.url.replace(/\?.*$/, '')
+                                    - // split the string by '/' into an array
                                     - breadcrumbs = breadcrumbs.split('/')
+                                    - // for each item in the array
                                     - each crumb, id in breadcrumbs
                                         if (!id)
                                             a(href='/') #{adminion.env.serverName}
@@ -47,7 +50,9 @@ html
                                 else
                                     span Not logged on. 
                                         [&nbsp; 
-                                        a(href='/logon?redir=' + request.url) Logon
+                                        a(href='/logon?redir=' + request.url) Logon 
+                                        &nbsp;|&nbsp;
+                                        a(href='/accounts/create') Sign-up
                                         &nbsp;]
                 #body
                     block body

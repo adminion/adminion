@@ -3,10 +3,10 @@ extends layout
 block content
 	#content
 		h2 Accounts:
-			if (request.user.admin)
-				&nbsp;[&nbsp;
-				a(href="/accounts/create") Create Account
-				&nbsp;]&nbsp;
+			// if (request.user.admin)
+			&nbsp;[&nbsp;
+			a(href="/accounts/create") Create Account
+			&nbsp;]&nbsp;
 		ul
 			each account in accounts
 				li 

@@ -8,11 +8,11 @@ var cluster = require('cluster'),
 var AdminionServer = require('./lib/'),
     utils = require('./lib/utils');
 
-debug.emit('val', 'AdminionServer', AdminionServer, 'worker.js', 10);
+debug.emit('val', 'AdminionServer', AdminionServer);
 
 AdminionServer.on('error', AdminionServer.kill);
 
-AdminionServer.on('ready', function () {
+AdminionServer.on('ready', function ready () {
 
     var mem = process.memoryUsage();
 
@@ -24,8 +24,8 @@ AdminionServer.on('ready', function () {
 
     msg += util.format(" ready --> %s", AdminionServer.env.url());
     
-    debug.emit('marker', msg, 'worker.js', 26);
-    debug.emit('msg', util.format('memory heap total: %s MB', mem.heapTotal / utils.MB), 'worker.js', 27);
+    debug.emit('msg', msg);
+    debug.emit('val', 'mem.heapTotal', mem.heapTotal);
 
     if (cluster.isWorker) {
         process.send({'ready': true, 'memoryUsage': mem.heapTotal});
