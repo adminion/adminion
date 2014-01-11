@@ -59,9 +59,14 @@ function reveal(player, card) {
 
 // function to look at a card, to just a select player
 function cardLook(player, whichCard, number) {
+	statusUpdate(player);
 	var count = 0;
 	var lookbox = document.getElementById('lookBox');
 	lookbox.innerHTML = '<button id = "lookboxButton1" </button> <button id = "lookboxButton2" </button>';
+	if (player.deck.length === 0) {
+		console.log('drawUntil( no cards in deck! run shuffleDeck()');
+		shuffleDeck(player);
+	}
 	if (number > count) {
 
 		console.log('cardLook( running');
@@ -83,6 +88,7 @@ function cardLook(player, whichCard, number) {
 		button1.onclick = function() {
 			console.log('button1.onclick( PLAYER chooses to put ' + card.name + ' into discard pile');
 			player.discard.push(card);
+			statusUpdate(player);
 
 		
 
@@ -115,25 +121,23 @@ function cardLook(player, whichCard, number) {
 	console.log('cardLook( ending');
 }
 
-
 // a function to choose cards from a players hands, for specific actions ('trash a card'), reactions('gain a card per discarded'), and howmany to do
 function choose(player, action, howMany, reaction, conditions, buttonChoice) {
-	console.log('choose( action: ' + action + ', howMany: ' + howMany + ', reaction: ' + reaction + ', conditions: ' + conditions + ', buttonChoice: ' + buttonChoice);
-
+	console.log('===( action: ' + action + ', howMany: ' + howMany + ', reaction: ' + reaction + ', conditions: ' + conditions + ', buttonChoice: ' + buttonChoice);
 
 	//  a function for applying the reaction of the card-choosing (draw per chosen, etc)
 	function applyReaction(reaction) {
 
 		// if the reaction is to draw a card 														
-		if (reaction == 'draw') {
-			console.log('choose( applyReaction( reaction is to draw:');
+		if (reaction === 'draw') {
+			console.log('===( applyReaction( reaction is to draw:');
 
 			// loops through as many times as cards were chosen (thisMany)							
 			for (var i = 1; i <= thisMany; i += 1) {
 
 				// and draws a card for each one 													
 				action = false;
-				console.log('choose( applyReaction( run drawCard() for the ' + i + 'th time');
+				console.log('===( applyReaction( run drawCard() for the ' + i + 'th time');
 				drawCard(player, true);
 			};
 		}
@@ -142,25 +146,36 @@ function choose(player, action, howMany, reaction, conditions, buttonChoice) {
 		else if (reaction.indexOf('money') != -1) {
 
 			// creates a multiplier based on the last character of reaction (a number, hopefully, inputted in with the card.action)													
-			var multiplier = reaction[reaction.length-1];
+			var multiplier = reaction[reaction.length-1]
 
 			// the money gained is equal to thisMany * the multiplier gleaned from the function call
-			var moneyz = thisMany * multiplier;
+			, moneyz = thisMany * multiplier;
 
-			console.log('choose( applyReaction( reaction is to gain money: gain ' + moneyz + ' moneys');
+			console.log('===( applyReaction( reaction is to gain money: gain ' + moneyz + ' moneys');
+
 			// add corresponding moneyz amount to player's money
 			player.money += moneyz;
 		}
 
-		else if (reaction.indexOf('gain') != -1) {
-			var costModifier = 0;
-			costModifier += parseInt(reaction[reaction.length-1]);
+		// KEY: 
+		//			reaction[0] = 'gain'
+		//			reaction[1] = the cost differential that you seek (+3, -2, etc.)
+		// 			reaction[2] = the type of card, if any specific, that you seek to gain (action, treasure, victory)
+		//			reaction[3] = the location that the card will go to (hand, discard, deck)
+		else if (reaction[0] === 'gain') {
 
-			costModifier = chosen[0].cost + costModifier;
-			console.log(costModifier);
+			// costModifier is gotten from the card, and adds or subtracts a certain amount from the original cost
+			// (something that costs 1 more, 2 more, 3 less, etc)
+			var costModifier = reaction[1]
+			, 	cost = chosen[0].cost + costModifier
+			
+			// if the type of card specified is treasure, run setGainable with the treasure property, otherwise, run normally
+			if (reaction[2] === 'treasure') {
+				setGainable(player, cost, false, 'treasure', reaction[3]);
+			}
 
-			if (reaction[reaction.length-2] == '+') {
-				setGainable(player, costModifier, false);
+			else {
+				setGainable(player, cost, false, false, reaction[3]);
 			}
 		}
 		turnClickOff();
@@ -168,69 +183,150 @@ function choose(player, action, howMany, reaction, conditions, buttonChoice) {
 
 	// a function to apply the action of the chosen cards, given what action, and what card element
 	function applyAction(action, card){
-		chosen.push(player.hand[card.id-1]);
-		// if the action is to discard:
-		if (action == 'discard') {
-			console.log('choose( applyAction( action is to discard');
+		$("#playerCards img").unbind();
 
-			console.log('choose( applyAction( run discardCard() on ' + player.hand[card.id-1].name);
-			// discard this card, according to the card element given
-			discardCard(player, i, card);
-		}
+		var cardArray = $.makeArray($("#playerCards img"))
+		,	index = cardArray.indexOf(card)
+		,	cardObject = player.hand[index];
 
-		// if the action is to trash:
-		else if (action == 'trash') {
-		console.log('choose( applyAction( action is to trash');
+		chosen.push(cardObject);
 
-			console.log('choose( applyAction( run trashCard() on ' + player.hand[card.id-1].name);
-			// trash this card!
-			trashCard(player, card, 'hand');
+		switch (action) {
+			case 'discard':
+				console.log('===( applyAction( action is to discard, run discardCard() on ' + cardObject.name);
+				// discard this card, according to the card element given
+				discardCard(player, index);
+			break;
+			case 'trash':
+				console.log('===( applyAction( action is to trash, run trashCard() on ' + cardObject.name);
+				// trash this card!
+				trashCard(player, card, 'hand');
+			break;
+			case 'play': 
+				var timesPlayed = parseInt(action[action.length-1]);
+
+				// grabs the inPlay element
+				var inPlay = document.getElementById('inPlay');
+
+				playCards.push(cardObject);
+
+				console.log('playCard( add ' + cardObject.name + ' to inPlay element');	
+				// adds the image of the played card to the inPlay element
+				addImage('70px', '5px', cardObject.image, inPlay, 'inPlayCard', 'play'+playCard.length);
+
+
+				console.log('applyAction( splice ' + cardObject.name + ' from player.hand');
+				// splice the card from the player's hand
+				player.hand.splice(index, 1);
+				updateHand(player);
+
+				for (var k = 0; k < timesPlayed; k ++) {
+					console.log('appplyAction( ' + cardObject.name + '.action run');
+					cardObject.action(player);
+					statusUpdate(player);
+				}
+			break;
+			case 'move':
+				switch (reaction) {
+
+					// if it calls for moving the card to the top of the deck:
+					case 'deck0':
+
+						// splice cardObject into the beginning of the deck and remove it from the players hand
+						player.deck.splice(0,0, cardObject);
+						player.hand.splice(index, 1);
+						updateHand(player);
+					break;
+				}
+			break;
 		}
 
 		// adds 1 to thisMany, a counter for counting how many cards have been chosen
 		thisMany += 1;
-		console.log('choose( applyAction( ++ to thisMany is: '+thisMany);
+		console.log('===( applyAction( ++ to thisMany is: '+thisMany);
 	}
 
 	// a function to add the onclick event of (CHOICE) to all the cards in the hand	
 	function addOnclick(player) {
 
-		var count = 0;
-
-		// goes through each card in player's hand 
-		for (i = 1; i<=player.hand.length; i++) {
-	
-			if (conditions == 'copper') {
-				if (player.hand[i-1].name != 'Copper') {
-					continue;
-				}
-			
-			}
-
-			document.getElementById(i).setAttribute('class', 'handSelect');
-			console.log('choose( addOnclick( change ' + player.hand[i-1].name + "'s class to " + document.getElementById(i).className);
-
-			console.log('choose( addOnclick( add onclick to ' + i +'th card in player.hand, ' + player.hand[i-1].name);	
-			// grabs the corresponding card element and assigns an onclick function 
-			document.getElementById(i).onclick = function() {
-				
-				console.log(player.hand[this.id-1].name + ' onclick( run applyAction()');
-
-				// narme is a variable for storing the name of the card
-				var narme = player.hand[this.id-1].name;
-
-				// when you click on the card, the action is applied upon THIS! 
-				applyAction(action, this);
-
-				console.log(narme + ' onclick( run howManyCheck()');
-				// after action is applied, check to see is howmany is fulfilled, and whether or not to add click events again!
-				howManyCheck(howMany);		
-
-			}
-			count += 1;
+		if (typeof conditions === 'object') {
+			// if conditions is presented as an object, it will be in this format:
+			// conditions[0] = conditions
+			// conditions[1] = what to do if conditions dont exist...
+			console.log('its an array!');
+			var endConditions = conditions[1];
+			conditions = conditions[0];
 
 		}
-		if (count == 0) {
+		// sets wrapped set equal to a wrapped set of all the img's in playercards
+		var count = 0
+		,	wrappedSet = $('#playerCards>img')
+
+			// then filters that wrapped set to match conditions, if given by original command
+			.filter( function(index) {
+		
+				// runs a switch statement if there are conditions to be followed
+				if (conditions !== 'none') {
+					switch (conditions) {
+
+						// when statement returns false, the item in the wrapped set is removed from the wrapped set
+						case 'copper': 
+							return (this.id === 'Copper') ? true : false;
+						break;
+
+						case 'action':
+							return (this.className === 'Action') ? true : false;
+						break;
+
+						case 'treasure':
+							return (this.className === 'treasure') ? true : false;						
+						break;
+
+						case 'Estate':
+							return (this.id === 'Estate') ? true : false;
+						break;
+						// by this time, if there are conditions to be met, only cards who meet the conditions will be in the wrapped set
+					}
+				}
+
+				// if there are no conditions, return true for all the cards
+				else {
+					return true;
+				};
+			});
+
+		// if the wrapped set contains anything,
+		if (wrappedSet.length !== 0) {
+			wrappedSet
+
+			// add the 'handSelect' class to the cards in the set
+			.addClass('handSelect')
+			.bind('click', function() {
+				
+				// and then add a click function to the card to apply the action upon the given card
+				applyAction(action, this);
+				console.log(this.id + ' onclick( run applyAction()');
+
+				// and then check how many have occurred, to see if we need to run it again
+				howManyCheck(howMany);
+			});
+		}
+		// if the wrapped set is empty:
+		else {
+
+			// we revert to the end conditions given by the card
+			console.log('end conditions!' + endConditions);
+			switch (endConditions) {
+
+				// in the case of 'gain', we gain the card that the conditions was checking for, and gain it into player.discard
+				case 'gain':
+					gainCard(conditions, player, 'discard');
+				break;
+			}
+		}
+
+		// if there's no more cards in the player's hand
+		if (player.hand.length === 0) {
 
 			// re-enable the buy and cleanup buttons
 			document.getElementById('clean').disabled = false;
@@ -242,16 +338,10 @@ function choose(player, action, howMany, reaction, conditions, buttonChoice) {
 		}
 	}
 
+	// function to turn the clicks off
 	function turnClickOff() {
-
-
-		for (i = 1; i<=player.hand.length; i++) {
-
-			console.log('choose( turnClickOff( ' + player.hand[i-1].name + "'s onclick declared null");
-			// grabs the corresponding card element and assigns an onclick function
-			document.getElementById(i).onclick = null;
-		}
-
+		// unbind all events from the player's card imgs
+		$('#playerCards img').unbind(); 
 	}
 
 	// a function to check if the amount of cards chosen is adequate or not to keep choosing! 
@@ -261,80 +351,74 @@ function choose(player, action, howMany, reaction, conditions, buttonChoice) {
 // will check to see if another onclick event should be added to the refreshed  playerhand, and since 
 // thisMany would be 1, and howMany = 2, howManyCheck will add another round of onclick events to the player hand 
 
-			// if you do run out of cards in your hand to action upon, there are events set into place:
-			if (player.hand.length == 0) {
+		// if you do run out of cards in your hand to action upon, there are events set into place:
+		if (player.hand.length === 0) {
 
-				console.log('choose( howManyCheck( player.hand is out of cards, run applyReaction()');
-				// apply reaction with curent thisMany times!
-				applyReaction(reaction);
+			console.log('===( howManyCheck( player.hand is out of cards, run applyReaction()');
+			// apply reaction with curent thisMany times!
+			applyReaction(reaction);
 
-				console.log('choose( howManyCheck( hide button');
+			console.log('===( howManyCheck( hide button');
+			// hide the button!
+			$('#doneDiscarding').hide().unbind();
+
+			console.log('===( howManyCheck( run actionCheck()');
+
+			// re-enable the buy and cleanup buttons
+			document.getElementById('clean').disabled = false;
+			document.getElementById('buy').disabled = false;
+
+			// check for more actions!
+			actionCheck(player);	
+			return;
+		}
+
+		// if howMany is infinite ( = 0), the onclick event will be added no matter what thisMany is,
+		//	until a user button is pushed to end the choosing process or you run out of cards
+		if (howMany === 0) {
+			console.log('===( howManyCheck( infinit howManys: run addOnclick()');
+			addOnclick(player);
+		}
+
+		// in that case, if thisMany is under howMany(ok to go!), the click events will be added again
+		else if (thisMany < howMany) {
+			console.log('===( howManyCheck( ' + thisMany + ' is less than ' + howMany + ': run addOnclick()');
+			addOnclick(player);
+		}
+
+		// if you've chosen the maximum amount to be chosen
+		else if (thisMany == howMany) {
+
+			console.log('===( howManyCheck( run applyReaction()');
+			// apply reaction with curent thisMany times!
+			applyReaction(reaction);
+
+			if (buttonChoice) {
+				console.log('===( howManyCheck( hide the button');
 				// hide the button!
-				button.style.display='none';
-				console.log('choose( howManyCheck( run actionCheck()');
+			$('#doneDiscarding').hide();
+			}
+				
+			// re-enable the buy and clean buttons,
+			document.getElementById('clean').disabled = false;
+			document.getElementById('buy').disabled = false;
 
-				// re-enable the buy and cleanup buttons
-				document.getElementById('clean').disabled = false;
-				document.getElementById('buy').disabled = false;
-
+			if (reaction.indexOf('gain') == -1) {
 				// check for more actions!
-				actionCheck(player);	
-				return;
+				actionCheck(player);			
 			}
-
-
-			// if howMany is infinite ( = 0), the onclick event will be added no matter what thisMany is,
-			//	until a user button is pushed to end the choosing process or you run out of cards
-			if (howMany == 0) {
-				console.log('choose( howManyCheck( infinit howManys: run addOnclick()');
-				addOnclick(player);
-			}
-
-			// in that case, if thisMany is under howMany(ok to go!), the click events will be added again
-			else if (thisMany < howMany) {
-				console.log('choose( howManyCheck( ' + thisMany + ' is less than ' + howMany + ': run addOnclick()');
-				addOnclick(player);
-			}
-			else if (thisMany == howMany) {
-				console.log('choose( howManyCheck( thisMany meets howMany (' + thisMany + '): run turnClickOff()');
-				turnClickOff();		
-
-				console.log('choose( howManyCheck( run applyReaction()');
-				// apply reaction with curent thisMany times!
-				applyReaction(reaction);
-
-				if (buttonChoice) {
-					console.log('choose( howManyCheck( hide the button');
-					// hide the button!
-					button.style.display='none';
-				}
-				
-				
-				// re-enable the buy and clean buttons,
-				document.getElementById('clean').disabled = false;
-				document.getElementById('buy').disabled = false;
-
-				if (reaction.indexOf('gain') != -1) {
-
-
-				}
-				else {
-					// check for more actions!
-					actionCheck(player);			
-				}
-			}
-			console.log('thisMany = ' + thisMany);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////////////////
 	//////					BEGINNING OF CHOOSE() FUNCTION 							//////
 	//////////////////////////////////////////////////////////////////////////////////////
 
-	console.log('choose( create chosen array');
 	// 	an array to store the cards that get chosen, for access later
 	var chosen = [];
-
+	// creates thisMany, to keep track of how many cards have been chosen and actioned upon
+	var thisMany = 0;
 	// if the player's hand is empty, and there is nothing to choose upon,
-	if (player.hand.length == 0) {
+	if (player.hand.length === 0) {
 
 		// re-enable the buy and clean buttons,
 		document.getElementById('clean').disabled = false;
@@ -351,30 +435,19 @@ function choose(player, action, howMany, reaction, conditions, buttonChoice) {
 	document.getElementById('clean').disabled = true;
 	document.getElementById('buy').disabled = true;
 
-	// creates thisMany, to keep track of how many cards have been chosen and actioned upon
-	var thisMany = 0;
+
 
 	if (buttonChoice) {
-		// grabs the button that says 'done discarding?'
-		var button = document.getElementById('doneDiscarding');
 
-		console.log('choose( make button visible');
-		// make the button visible again
-		button.style.display='block';
+		// grabs the button that says 'done discarding?', toggles it to visible, and sets its html to fit the action prescribed
+		$('#doneDiscarding').toggle().html('Done '+ action + 'ing?');
 
-		console.log('choose( make button say: "Done ' + action + 'ing?"');
-		// change the text on the button to match the action being done to the chosen cards
-		button.innerHTML = 'Done '+ action +'ing?';
-
-		console.log('choose( set thisMany = 0');
-
-
-		console.log('choose( assign onclick function to button');
+		console.log('===( assign onclick function to button');
 
 		// change the button's behavior:
 		// it will be a user option for pretty much ending the chosen function 
 
-		button.onclick = function() {
+		$('#doneDiscarding').click(function() {
 
 			console.log('button onclick( run applyReaction()');
 			////// apply the given reaction 
@@ -383,7 +456,8 @@ function choose(player, action, howMany, reaction, conditions, buttonChoice) {
 			console.log('button onclick( make button disappear');
 			//////make the button disappear..
 			////// for now!
-			button.style.display='none';
+			$(this).hide().unbind();
+
 
 			console.log('button onclick( run actionCheck()');
 			//////carry on with the action phase!
@@ -394,10 +468,9 @@ function choose(player, action, howMany, reaction, conditions, buttonChoice) {
 			document.getElementById('buy').disabled = false;
 
 			actionCheck(player);
-		}
+		});
 	}
-
-	console.log('choose( run addOnclick()');
+	console.log('adding on click soon...');
 	////// add the onlick events to the cards, so that player can start choosing!
 	addOnclick(player);
 
@@ -406,57 +479,157 @@ function choose(player, action, howMany, reaction, conditions, buttonChoice) {
 	//////////////////////////////////////////////////////////////////////////////////////
 }
 
+////// INTRIGUE FUNCTIONS
+
+
+// a function for choosing what an action card is going to do, with an array of choices and how many to choose from
+function chooseAction(player, choices, number) {
+
+	function executeChoices(player, choices) {
+
+		for (var each in choices) {
+
+			// if there is a + in the choice, 
+			if (choices[each].indexOf('+') != -1) {
+
+				// the variable count is used to store the integer located within the character following the + in the choice 
+				// EXAMPLE: '+5' turns into just the usable #, 5
+				var count = parseInt(choices[each][choices[each].indexOf('+')+1]);
+			}
+
+			// if the word 'card' is in the choice, and it doesn't have the word 'trash', go ahead and draw cards equal to the count #
+			if (choices[each].indexOf('card') != -1 && choices[each].indexOf('Trash') == -1) {
+				for (var i = 0; i < count; i ++) {
+					drawCard(player, true);
+				}
+				
+			}
+
+			else if (choices[each].indexOf('action') != -1) {
+				player.actions += count;
+				console.log('added actions');
+
+			}
+
+			else if (choices[each].indexOf('buy') != -1) {
+				player.buys += count;
+				console.log('buy added: ' + player.buys)
+			}
+
+			else if (choices[each].indexOf('money') != -1) {
+				player.money += count;
+			}
+
+			else if (choices[each].indexOf('Trash') != -1) {
+				choose(player, 'trash', choices[each][6], 'none', 'none', false);
+				// break, because the actionCheck is built into the choose() function, and running it right after this point right now would make it not work..
+				break
+			}
+			
+		}
+
+		// while there is a button still existing associated with this function
+		//  (getElements brings an array, [0] means first in that array)
+		while (document.getElementsByClassName('choiceButton')[0]) {
+			// remove that button
+			document.getElementsByClassName('choiceButton')[0].parentNode.removeChild(document.getElementsByClassName('choiceButton')[0]);
+		}
+			console.log('running actioncheck now');
+			actionCheck(player);
+		statusUpdate(player);
+	}
+
+	// choices is the array supplied by the action card
+	for (each in choices) {
+
+		var newButton = document.createElement('button');	
+
+		// sets the button to say the text of the choice
+		newButton.innerHTML = choices[each];
+
+		// sets display of button to block/visible, set classname
+		newButton.display = 'block';
+		newButton.className = 'choiceButton';
+
+		// for storing the chosen choices to later execute
+		var choiceArray = [];
+
+		// set it's onclick function
+		newButton.onclick = function() {
+
+			// push the text from the button into the choiceArray, for later use
+			choiceArray.push(this.innerHTML);
+
+			// remove the button
+			this.parentNode.removeChild(this);
+
+			// if the number of items chosen already meet the number of choices allowed, execute said choices
+			if (choiceArray.length >= number) {
+				executeChoices(player, choiceArray);
+			}
+		}
+
+		// add this new button
+		document.getElementById('inPlay').appendChild(newButton);
+	}		
+}
+
 function drawUntil(player, condition, number) {
 
 	var count = 0;
+
 	// if the player's deck is down to 0, shuffle the deck!
-	if (player.deck.length == 0) {
+	if (player.deck.length === 0) {
 		console.log('drawUntil( no cards in deck! run shuffleDeck()');
 		shuffleDeck(player);
 	}
-	// create a newCard variable that is equal to the first card in the player's deck. shift() returns and removes the first item from an array
+
+	// create a newCard variable that is equal to the first card in the player's deck. 
+	// shift() returns and removes the first item from an array
 	var newCard = player.deck.shift();
 
 	// if the condition is a number (draw until you have 7 cards in hand)
-	if (typeof(condition) == 'number') {
+	if (typeof(condition) === 'number') {
 
 		// set number equal to the condition minus player.hand.length, the number of cards left to draw
 		console.log('drawUntil( condition is a number: ' + condition);
 		number = condition - player.hand.length;
 
 		// if the number of cards is met, return from the function and say true- that the drawUntil condition has been met
-		if (number == 0) {
+		if (number === 0) {
 			return true;
 		}
 
 		console.log('drawUntil( so we shall draw ' + number + ' cards');
-
 		console.log('drawUntil( condition is a number, run cardLook()');
 		cardLook(player, newCard, number);
 
-		console.log('break from else if condition');
 	}
 
+	// if the condition is NOT a number 
+	// EXAMPLE: 'draw 2 treasure cards'
 	else {
+
+		// while what you've done is less than what's maximally allowed:
 		while (count < number) {
-			console.log('running, while count < number');
 
+			// if the condition is a treasure card, 
+			if (condition === 'treasure') {
 
-
-
-			if (condition == 'treasure') {
-				if (newCard.type == 'treasure') {
-					console.log('drawUntil( draw ' + newCard.name + ' into player.hand');
-					// push the newCard into the player's hand
+				// if the newCard's type is treasure as well, put it into player's hand and increase count by 1
+				if (newCard.type === 'treasure') {
 					player.hand.push(newCard);
 					count += 1;
+					console.log('drawUntil( draw ' + newCard.name + ' into player.hand');
 				}
 
+				// if it's not a treasure, discard
 				else {
 					player.discard.push(newCard);
 				}
-			// update visual of player's hand
+
 			updateHand(player);	
+
 			}
 		}
 	}
@@ -473,7 +646,7 @@ function useButton(player, text, action) {
 	button.style.display='block';
 
 	button.onclick = function() {
-		if (action == 'discardDeck') {
+		if (action === 'discardDeck') {
 			var decklength = player.deck.length
 			for (i = 0; i<decklength; i ++) {
 				player.discard.push(player.deck[0]);
@@ -500,307 +673,130 @@ var KingdomCards = [
 		action: 	function(player) {
 			player.actions += 1;
 			choose(player, 'discard', 0, 'draw', 'none', true);
+			//emit finished event HERE! "THIS CARD IS DONE" finish and like something
 		},
 	actionWait: true
 	},
 
-	{name: 		"Chapel",
+	{name:		"Courtyard",
 	type:		"Action",
 	cost:		2,
-	quantity: 	10, 
-	instructions: 	"Trash up to 4 cards from your hand.",
-	image:		"/home/zane/git/adminion/public/cardImages/chapel.jpg",
-		action: function(player) {
-			choose(player, 'trash', 4, 'none', 'none', true)
+	quantity: 	10,
+	instructions:	"+3 Cards. Put a card from your hand on top of your deck.",
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/courtyard.jpg",
+		action: 	function(player) {
+			for (i = 0; i < 4; i += 1) {
+				drawCard(player, true);
+			};
+			choose(player, 'move', 1, 'deck0',  false, false);
 		},
-			actionWait: true
-
+	actionWait: true
 	},
 
-	{name: 		"Moat",
-	type:		"Action-Reaction",
+	{name:		"Pawn",
+	type:		"Action",
 	cost:		2,
 	quantity: 	10,
-	instructions: 	"+2 Cards. When another player plays an Attack card, you may reveal this from your hand. If you do, you are unaffected by that Attack.",
-	image:		"/home/zane/git/adminion/public/cardImages/moat.jpg",
+	instructions:	"Choose two: +1 Card; +1 Action; +1 Buy; +$1. (The choices must be different.)",
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/pawn.jpg",
 		action: function(player) {
-			drawCard(player);
-			drawCard(player);
-		}
-	},
+			chooseAction(player, ['+1 card', '+1 action', '+1 buy', '+1 money'],
+ 				2)		
+			},
+	actionWait: true },
 
+	{name:		"Secret-Chamber",
+	type:		"Action Reaction",
+	cost:		2,
+	quantity: 	10,
+	instructions:	"Discard any number of cards. +$1 per card discarded. When another player plays an Attack card, you may reveal this from your hand. If you do, +2 cards, then put 2 cards from your hand on top of your deck.",
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/secretchamber.jpg" },
 
-
-	{name: 		"Chancellor",
-	type:		"Action",
+	{name:		"Great-Hall",
+	type:		"Action Victory",
 	cost:		3,
 	quantity: 	10,
-	instructions: 	"+2 Money. You may immediately put your deck into your discard pile.",
-	image:		"/home/zane/git/adminion/public/cardImages/chancellor.jpg",
-		action: function(player) {
-			player.money += 2;
-			useButton(player, 'put deck into discard pile?', 'discardDeck');
-
-		},
-	actionWait: true
-	},
-
-	{name: 		"Village",
-	type:		"Action",
-	cost:		3,
-	quantity: 	10, 
-	instructions: 	"+1 Card; +2 Actions.",
-	image:		"/home/zane/git/adminion/public/cardImages/village.jpg",
-		action: function(player) {
-			drawCard(player);
-			player.actions += 2;
-		}
-	},
-
-	{name: 		"Woodcutter",
-	type:		"Action",
-	cost:		3,
-	quantity: 	10,
-	instructions: 	"+1 Buy; +2 Money.",
-	image:		"/home/zane/git/adminion/public/cardImages/woodcutter.jpg",
-		action: function(player) {
-			player.buys +=1;
-			player.money +=2;
-		} 
-	},
-
-	{name: 		"Workshop",
-	type:		"Action",
-	cost:		3,
-	quantity: 	10,
-	instructions: 	"Gain a card costing up to $4.",
-	image:		"/home/zane/git/adminion/public/cardImages/workshop.jpg",
-		action: function(player) {
-			setGainable(player, 4);
-		},
-	actionWait: true
-	},
-
-	{name: 		"Bureaucrat",
-	type:		"Action-Attack",
-	cost:		4,
-	quantity: 	10,
-	instructions: 	"Gain a silver card; put it on top of your deck. Each other player reveals a Victory card from his hand and puts it on his deck (or reveals a hand with no Victory cards).",
-	image:		"/home/zane/git/adminion/public/cardImages/bureaucrat.jpg",
-		action: function(player) {
-		
-		}
-	},
-
-	{name: 		"Feast",
-	type:		"Action",
-	cost:		4,
-	quantity: 	10,
-	instructions: 	"Trash this card. Gain a card costing up to $5.",
-	image:		"/home/zane/git/adminion/public/cardImages/feast.jpg",
-		action: function(player) {
-			trashCard(player, this, 'play');
-			setGainable(player, 5);
-		},
-	actionWait: true
-	},
-
-	{name: 		"Gardens",
-	type:		"Victory",
-	cost:		4,
-	quantity: 	10,
-	instructions: 	"Worth 1 Victory for every 10 cards in your deck (rounded down).",
-	image:		"/home/zane/git/adminion/public/cardImages/gardens.jpg",
-		action: function(player) {
-		
-		}
-	},
-
-	{name: 		"Militia",
-	type:		"Action-Attack",
-	cost:		4,
-	quantity: 	10,
-	instructions: 	"+$2; Each other player discards down to 3 cards in his hand.",
-	image:		"/home/zane/git/adminion/public/cardImages/militia.jpg",
-		action: function(player) {
-			player.money += 2;
-		}
-	},
-
-	{name: 		"Moneylender",
-	type:		"Action",
-	cost:		4,
-	quantity: 	10,
-	instructions: 	"Trash a Copper from your hand. If you do, +$3.",
-	image:		"/home/zane/git/adminion/public/cardImages/moneylender.jpg",
-		action: function(player) {
-			choose(player, 'trash', 1, 'money3', 'copper', false);
-
-		},
-	actionWait: true
-	},
-
-	{name: 		"Remodel",
-	type:		"Action",
-	cost:		4,
-	quantity: 	10,
-	instructions: 	"Trash a card from your hand. Gain a card costing up to $2 more than the trashed card.",
-	image:		"/home/zane/git/adminion/public/cardImages/remodel.jpg",
-		action: function(player) {
-			choose(player, 'trash', 1, 'gain+2', 'none', false);
-		
-		},
-	actionWait: true
-	},
-
-	{name: 		"Smithy",
-	type:		"Action",
-	cost:		4,
-	quantity: 	10,
-	instructions: 	"+3 Cards.",
-	image:		"/home/zane/git/adminion/public/cardImages/smithy.jpg",
-		action:	function(player) {
-			for (var i=0;i<3;i +=1) {
-				drawCard(player);
-			}	
-		} 
-	},
-
-	{name: 		"Spy",
-	type:		"Action-Attack",
-	cost:		4,
-	quantity: 	10,
-	instructions: 	"+1 Card; +1 Action; Each player (including you) reveals the top card of his deck and either discards it or puts it back, your choice.",
-	image:		"/home/zane/git/adminion/public/cardImages/spy.jpg",
-		action: function(player) {
-			drawCard(player);
+	victory:	1,
+	instructions:	"1 Victory Point. +1 Card; +1 Action.",
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/greathall.jpg",
+		action: 	function(player) {
 			player.actions += 1;
-		}
+			drawCard(player, true);
+		}, 
 	},
 
-	{name: 		"Thief",
-	type:		"Action-Attack",
-	cost:		4,
-	quantity: 	10,
-	instructions: 	"Each other player reveals the top 2 cards of his deck. If they revealed any Treasure cards, they trash one of them that you choose. You may gain any or all of these trashed cards. They discard the other revealed cards.",
-	image:		"/home/zane/git/adminion/public/cardImages/thief.jpg",
-		action: function(player) {
-		
-		}
-	},
-
-	{name: 		"Throne Room",
+	{name:		"Masquerade",
 	type:		"Action",
-	cost:		4,
+	cost:		3,
 	quantity: 	10,
-	instructions:	"Choose an Action card in your hand. Play it twice.",
-	image:		"/home/zane/git/adminion/public/cardImages/throneroom.jpg",
-		action: function(player) {
-		
-		}
+	instructions:	"+2 Cards. Each player passes a card in their hand to the player on their left. You may trash a card from your hand.",
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/masquerade.jpg",
+		action: 	function(player) {
+			drawCard(player);
+			drawCard(player, true);
+		}, 
+	},
+
+	{name:		"Shanty Town",
+	type:		"Action",
+	cost:		3,
+	quantity: 	10,
+	instructions:	"+2 Actions. Reveal your hand. If you have no Action cards in hand, +2 Cards.",
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/shantytown.jpg",
+		action: 	function(player) {
+			player.actions += 2;
+		}, 
 	},
 	
-	{name:		"Council Room",
+	{name:		"Steward",
 	type:		"Action",
-	cost:		5,
+	cost:		3,
 	quantity: 	10,
-	instructions:	"+4 Cards; +1 Buy. Each other player draws a card.",
-	image:		"/home/zane/git/adminion/public/cardImages/councilroom.jpg",
-		action:	function(player) {
-			player.buys += 1;
-			drawCard(player);
-			drawCard(player);
-			drawCard(player);
-			drawCard(player);
-		}
-	},
-
-	{name:		"Festival",
-	type:		"Action",
-	cost:		5,
-	instructions:	"+2 Actions, +1 Buy; +$2.",
-	image:		"/home/zane/git/adminion/public/cardImages/festival.jpg",
-	quantity: 10,
-		action: function(player) {
-			player.actions += 2;
-			player.buys += 1;
-			player.money += 2;
-
-		} 
-	},
-	
-	{name:		"Laboratory",
-	type:		"Action",
-	cost:		5,
-	instructions:	"+2 Cards; +1 Action.",
-	image:		"/home/zane/git/adminion/public/cardImages/laboratory.jpg",
-	quantity: 10,
-		action: function(player) {
-			player.actions += 1;
-			drawCard(player);
-			drawCard(player);
-		}  
-	},
-
-	{name:		"Library",
-	type:		"Action",
-	cost:		5,
-	quantity: 	10,
-	instructions:	"Draw until you have 7 cards in hand. You may set aside any Action cards drawn this way, as you draw them; discard the set aside cards after you finish drawing.",
-	image:		"/home/zane/git/adminion/public/cardImages/library.jpg",
-		action: function(player) {
-			drawUntil(player, 7);
-		},
+	instructions:	"Choose one: +2 Cards; or +$2; or trash 2 cards from your hand.",
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/steward.jpg",
+		action: 	function(player) {
+			chooseAction(player, ['+2 card', '+2 money', 'Trash 2 cards'],
+ 				1)		
+			
+		}, 
 	actionWait: true
 	},
 
-	{name:		"Market",
-	type:		"Action",
-	cost:		5,
-	quantity: 	10,
-	instructions:	"+1 Card; +1 Action; +1 Buy; +$1.",
-	image:		"/home/zane/git/adminion/public/cardImages/market.jpg",
-		action: function(player) {
-			drawCard(player);
-			player.actions += 1;
-			player.money += 1;
-			player.buys += 1;
-		}
-	},
-
-	{name:		"Mine",
-	type:		"Action",
-	cost:		5,
-	quantity: 	10,
-	instructions:	"Trash a Treasure card from your hand. Gain a Treasure card costing up to $3 more; put it into your hand.",
-	image:		"/home/zane/git/adminion/public/cardImages/mine.jpg",
-		action: function(player) {
-		
-		}
-	},
-
-	{name:		"Witch",
+	{name:		"Swindler",
 	type:		"Action-Attack",
-	cost:		5,
+	cost:		3,
 	quantity: 	10,
-	instructions:	"+2 Cards. Each other player gains a Curse card.",
-	image:		"/home/zane/git/adminion/public/cardImages/witch.jpg",
-		action: function(player) {
-			drawCard(player);
-			drawCard(player);
-		}
+	instructions:	"+$2. Each other player trashes the top card of his deck and gains a card with the same cost that you choose.",
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/swindler.jpg",
+		action: 	function(player) {
+			player.money += 2;
+		}, 
 	},
 
-	{name:		"Adventurer",
+	{name: 		"Wishing-Well",
 	type:		"Action",
+	cost:		3,
+	quantity: 	10,
+	instructions:	"+1 Card; +1 Action. Name a card, then reveal the top card of your deck. If it is the named card, put it in your hand.",
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/wishingwell.jpg",
+		action: 	function(player) {
+			drawCard(player, true);
+			player.actions += 1;
+		}, 
+	},
+	{name:		"Nobles",
+	type:		"Action Victory",
 	cost:		6,
-	quantity: 	10,
-	instructions:	"Reveal cards from your deck until you reveal 2 Treasure cards. Put those Treasure cards in your hand and discard the other revealed cards.",
-	image:		"/home/zane/git/adminion/public/cardImages/adventurer.jpg",
-		action: function(player) {
-			drawUntil(player, 'Treasure', 2);
-		}
-	}	
+	victory:	2,
+	instructions:	"2 Victory Points. Choose one: +3 Cards; or +2 Actions.",
+	image:		"http://dominion.diehrstraits.com/scans/intrigue/nobles.jpg",
+		action: 	function(player) {
+			chooseAction(player, ['+3 card', '+2 action'],
+ 				1)	
+		}, 
+	actionWait: true
+	}
+
 ];
 
 function cardConstructor (type, cards) {
@@ -817,7 +813,7 @@ cardConstructor (       'victory',      Victory         );
 //when trashing a card, the trashed card is put in trash and taken out of player's hand
 function trashCard(player, card, location) {
 
-	if (location == 'hand') {
+	if (location === 'hand') {
 	console.log('trashCard( location is in hand');
 
 		console.log('trashCard( push ' + player.hand[card.id-1].name + ' into trash');
@@ -828,7 +824,7 @@ function trashCard(player, card, location) {
 
 		updateHand(player);
 	}
-	else if (location == 'play') {
+	else if (location === 'play') {
 		console.log('trashCard( location is in play');
 		console.log('trashCard( push ' + card.name + ' into trash');
 		console.log('card.id: ' + card.id);
@@ -852,12 +848,68 @@ function trashCard(player, card, location) {
 	}
 }
 
+<<<<<<< HEAD
+function cardInspect(cardId) {
+	var displaybox = document.getElementById('cardDisplay');
+	displaybox.innerHTML = "";
+	addImage('200px', '3px', cardId, displaybox, 'displaybox');
+	setTimeout(function(){
+		displaybox.innerHTML = "";
+	},5000);
+=======
 function cardInspect(card) {
     window.open(card, 'name', 'location=no, height=480px, width=300px, menubar=no,status=no, titlebar=no, toolbar=no');
+>>>>>>> 071e6a2ceecc90ab60953a0a6566616c729e5f0f
 }
 
+function updateHealthMeters() {
+
+	$.each(KingdomCards, function() {
+		var healthMeter = $('#kingdom #' + this.name).find('.healthMeter')
+		switch (this.quantity) {
+			case 9:
+				healthMeter.css('backgroundColor', '#1Ce800');
+				break;
+			case 8:
+				healthMeter.css('backgroundColor', '#39D200');
+				break;
+			case 7:
+				healthMeter.css('backgroundColor', '#55BB00');
+				break;
+			case 6:
+				healthMeter.css('backgroundColor', '#71A400');
+				break;
+			case 5:
+				healthMeter.css('backgroundColor', '#8E8E00');
+				break;
+			case 4:
+				healthMeter.css('backgroundColor', '#AA7700');
+				break;
+			case 3:
+				healthMeter.css('backgroundColor', '#C66000');
+				break;
+			case 2:
+				healthMeter.css('backgroundColor', '#E34A00');
+				break;
+			case 1:
+				healthMeter.css('backgroundColor', '#FF3300');
+				break;
+			case 0:
+				healthMeter.css('backgroundColor', '#FF3300');
+
+		}
+		if (this.quantity > 0) {
+			healthMeter.height(this.quantity/10 * 102);
+		}
+		else {
+			healthMeter.height(102);
+		}
+	});
+};
+
+
 // a function to calculate the probability of drawing a certain card next
-function calculateProbability(card) {
+function calculateProbability(cardName) {
 
 	// creates variable quantity, to keep track of how many of the certain card there is
 	var quantity = 0;
@@ -865,18 +917,25 @@ function calculateProbability(card) {
 	// for each card in the player's deck
 	for (var each in players[0].deck) {
 		// if the name of the card is the card we're trying to calculate for, add 1 to the quantity
-		if (players[0].deck[each].name == card) {
+		if (players[0].deck[each].name === cardName) {
 			quantity += 1;
 		}
 	}
-	console.log(quantity);
 
 	// calculate the percentage of the quantity of that card over how many total cards in the deck
-	var percentage = quantity/players[0].deck.length;
+	var percentage = Math.round(quantity/players[0].deck.length*100);
 
-	// report that ratio as a percentage
-	console.log(percentage*100+'%');
+	if (percentage > 0) {
+		// create a div to display probability
+		var probz = document.createElement('div');
+		probz.id = 'probability';
 
+<<<<<<< HEAD
+		// put text in it and add to the card's element
+		var text = document.createTextNode(percentage + '%');
+		probz.appendChild(text);
+		document.getElementById(cardName).appendChild(probz);
+=======
 }
 
 function probability() {
@@ -884,32 +943,53 @@ function probability() {
     calculateProbability('Pearl Diver')
     console.log('/');
     console.log(players[0].deck.length);
+>>>>>>> 071e6a2ceecc90ab60953a0a6566616c729e5f0f
 
+		// remove the element after 200 ms
+		setTimeout(function(){
+			document.getElementById(cardName).removeChild(probz);
+		},500);
+	}
 }
 
 //DEAL IS ONLY DONE ONCE IN THE START OF THE GAME
 function deal() {
+<<<<<<< HEAD
+
+	for (var player in players) {
+
+		//CREATES A NEW PLAYER PROFILE AND INSERTS IT INTO THE ARRAY OF PLAYERS
+		var newPlayer = generatePlayer(players[player]);
+		
+		console.log('new player created: ' + newPlayer.Name);
+
+		//replaces what used to be just the player's name with the full player's profile(newPlayer)
+		players.splice(player, 1, newPlayer);
+=======
     for (var player in players) {
 //CREATES A NEW PLAYER PROFILE AND INSERTS IT INTO THE ARRAY OF PLAYERS
         var newPlayer = generatePlayer(players[player]);
         //replaces what used to be just the player's name with the full player's profile(newPlayer)
         players.splice(player, 1, newPlayer);
+>>>>>>> 071e6a2ceecc90ab60953a0a6566616c729e5f0f
 
-//PUSHES 7 COPPER AND 3 ESTATES INTO NEW PLAYER'S DISCARD PILE
+		console.log('starting cards given to players');
+		
+		//PUSHES 7 COPPER AND 3 ESTATES INTO NEW PLAYER'S DISCARD PILE
 		players[player].discard.push(		
-			gameConfig.piles[1], 
-			gameConfig.piles[1], 
-			gameConfig.piles[1], 
-			gameConfig.piles[1], 
 			gameConfig.piles[1],
- 			gameConfig.piles[1], 
 			gameConfig.piles[1],
-			KingdomCards[20],
-			KingdomCards[20],
-			KingdomCards[20],
-			KingdomCards[20]);
+			gameConfig.piles[1],
+			gameConfig.piles[1],
+			gameConfig.piles[4],
 
-		// shuffles the deck and draws a hand		
+			KingdomCards[0],
+			KingdomCards[0],
+			KingdomCards[4],
+			KingdomCards[4]			
+			);
+
+		// shuffles the deck and draws a hand	
 		shuffleDeck(players[player]);
 		drawHand(players[player]);
 
@@ -921,52 +1001,52 @@ function deal() {
 // functino for drawing a hand
 function drawHand(player) {
 
+	console.log('drawHand()')
 	// grabs playerCards DIV and resets it to contain nothing
 	var playerHand = document.getElementById("playerCards");
 	playerHand.innerHTML = "";
 
 	// draws five cards
 	for (n = 0; n < 5; n += 1) {
-		drawCard(player);
+		drawCard(player,true);
 	}
 }
 //updates player's hand visualization. keeps it up to date with player.hand object array
 function updateHand(player) {
-	console.log('updateHand()');
 	// grab playerCards dom and calls it playerHand
 	var playerHand = document.getElementById('playerCards');
+
 	// reset playerHand to nothing
 	playerHand.innerHTML = '';
+
 	// for each card in player.hand, add a corresponding image to the playerHand DOM
 	for (i = 1; i <= player.hand.length; i ++) {
+		var card = player.hand[i-1];
 		// i is set to start at 1 because i is also assigned as the image element's id (0 as an id wasn't working out..)
-		addImage('80px', '3px', player.hand[i-1].image, playerHand, 'playerhand', i);
+		addImage('80px', '3px', card.image, playerHand, card.type, card.name);
 	}
 }
 
 // a function for a player to draw a card from their deck
 function drawCard(player, partOfAction){
-
 	// if the player's deck is down to 0, shuffle the deck!
-	if (player.deck.length == 0) {
+	if (player.deck.length === 0) {
 		console.log('drawCard( no cards in deck! run shuffleDeck()');
 		shuffleDeck(player);
 	}
-
+	
 	// create a newCard variable that is equal to the first card in the player's deck. shift() returns and removes the first item from an array
 	var newCard = player.deck.shift();
-	console.log('drawCard( create newCard from top of player.deck (' + newCard.name + ')');
+	//	console.log('drawCard( create newCard from top of player.deck (' + newCard.name + ')');
 
 	if (newCard) {
 
-	console.log('drawCard( push ' + newCard.name + ' into player.hand');
-	// push the newCard into the player's hand
-	player.hand.push(newCard);
+		// push the newCard into the player's hand
+		player.hand.push(newCard);
 
-	// update visual of player's hand
-	updateHand(player);	
-}
-
+		// update visual of player's hand
+		updateHand(player);	
+	}
 
 	// might need to change this for multiplayer use
 	// if this is during the player's actionphase, update the actionevent on the newcard so that it can be bought
@@ -982,52 +1062,126 @@ function drawCard(player, partOfAction){
 	}
 }
 
+// condition is a cost condition (lets say only cards costing up to 6 are affected)
+// modifier is how much the cost is going to be modified (-1 for bridge)
+// type is if the cost alteration is specific to only one type(s) of cards
+function alterCost(condition, modifier, type) {
+
+	$('#kingdom>div, #victories>div, #treasures>div')
+	.filter( function() {
+		var cardCost = $(this).find('.cost').attr('id');
+		if (condition !== 'none') {
+
+			return (cardCost <= condition) ? true : false;
+
+		}
+		else {
+			return true;
+		}
+
+	})
+	.each(function() {
+		var cardCost = $(this).find('.cost').attr('id');
+		
+		console.log(this);
+		console.log('modifier: ' + modifier + ' cardCost: '+cardCost);
+
+		var newCost = parseInt(cardCost) + parseInt(modifier);
+		if (newCost <= 0) {
+			newCost = 0;
+		}
+		
+		console.log('new cost is ' + newCost+ ' ('+cardCost+' + '+modifier+')');
+		
+		$(this).find('.cost').attr('id', newCost).find('p').html(newCost);
+
+	})
+
+
+
+	switch (type){
+		
+	}
+}
+
 //move the discarded cards back into the deck, empty the discard pile. this function essentially swaps each card in the deck (from place 0 to end of deck) with a random other card in the deck. i found this method of shuffling online somewhere- if it isn't random enough, maybe it would work better running through the for loop multiple times?
 function shuffleDeck(player) {
-	if (player.discard.length == 0) {
+		console.log('deck: ' + player.deck.length + ', discard: ' + player.discard.length);
+
+	// if the discard pile has no cards in it (and there's no more cards to draw..)
+	if (player.discard.length === 0) {
+
 		console.log('nomorecards!');
+		return 'nomorecards';
 
 	}
+	// else means that there are still cards in the discard pile, in which to shuffle into your deck
 	else {
+		console.log('shuffling cards');
+		// for each card in player.discard,
 		for (var n = 0; n < player.discard.length - 1; n++) {
+
+			// the variable k is set equal to n, the index of the current loop, plus a random value between 0-1 multiplied by player.discard.length - the current index
+			//  k = n + random other number (in player.discard)
 			var k = n + Math.floor(Math.random() * (player.discard.length - n));
+
+			// temp is the card holder, it takes the randomized index # and stores that kth card
 			var temp = player.discard[k];
+
+			// the randomized index card is set equal to the nth index card
 			player.discard[k] = player.discard[n];
+
+			// the nth index card is set equal to temp, which used to be the randomized index card
 			player.discard[n] = temp;
+
+			// basically, we're going through the discard pile card by card, replacing it with another random card in the deck
 		}
 		player.deck = player.discard;
 		player.discard = [];
 	}
+	statusUpdate(player);
 }
-	var action = false;
+
+var action = false;
 
 // a function to check if the player has action cards in their hand
 function actionCheck(player) {
 	// starts by switching action variable to false. the action variable is used to determine if there are action cards in the player's hand or not
-console.log('player.actions: ' + player.actions);
-	if (player.actions == 0) {
+	if (player.actions === 0) {
 		console.log('actionCheck( player has no more actions, continue');
 		buyPhase(player);
 		return;
 	}
-console.log('player.actions: ' + player.actions);
 
 	console.log('actionCheck( action variable set to false');
 	action = false;
-console.log('player.actions: ' + player.actions);
-	// goes through each card in your hand and determines if it is an action card or not. used to turn Actionphase on/off
-	for (var n in player.hand) {	
+		if ($('#playerCards img').hasClass('Action')) {
+			action = true;
+		}
 
+		if (action) {
+			actionPhase(player);
+			console.log('action!');
+		}
+		else {
+			buyPhase(player);
+			console.log('buy!');
+		}
+	// goes through each card in your hand and determines if it is an action card or not. used to turn Actionphase on/off
+/*	for (var n in player.hand) {	
+console.log('testing for actions on player.hand[n] '+ player.hand[n].name);
 		if (action) {
 			continue;
 		}
 		// runs if the card's type has the string 'Action' in it
+
+
 		if (player.hand[n].type.indexOf('Action') != -1) {
 
 			console.log('actionCheck( ' + player.hand[n].name + ' is an Action card, so action = true');
 
 			// var action is a switch to 
-			action = true;
+			
 		}
 	}
 
@@ -1035,15 +1189,13 @@ console.log('player.actions: ' + player.actions);
 	if (action) {
 
 		console.log('actionCheck( there are action cards, so begin actionPhase()');
-		console.log('player.actions: ' + player.actions);
 		announce('action phase is initiated!');
 		actionPhase(player);
 	}
 	else {
 
 		buyPhase(player);
-	}
-	
+	}*/
 	// if there are no action cards in their hand, the player's buyphase() is initiated
 }
 
@@ -1058,76 +1210,74 @@ function turnOffActions(player) {
 		// sets element equal to the card element and nullifies the onlick event
 		var element = document.getElementById('playerCards').children[each];
 		element.onclick = null;
+		element.setAttribute('class', 'playerHand');
+
 	}
 } 
-
 var actionPhaze = false;
 
 // initiates action phase for player
 function actionPhase(player){
 
+<<<<<<< HEAD
+	$('#playerCards img').each(function() {
+		updateActionEvent(player,this);
+	})
+=======
     announce('choose action card to play!');
 
     // set actionphaze to true, to signify that the actionphase is in effect
     actionPhaze = true;
 
+>>>>>>> 071e6a2ceecc90ab60953a0a6566616c729e5f0f
 	console.log('actionPhase( updating action events for all cards!');
-	// for every card in the player's hand
-	for (var each=0; each<player.hand.length; each ++) {
-		// update the action event each card, by grabbing the playerCards div and updating the action event for each child element in playerCards
 
-		updateActionEvent(player,document.getElementById(each+1));
-		// set the card's object's element property to match the card's element on the page
-		player.hand[each].element = document.getElementById(each+1);
-	}
 }
 
 // a function to play a card, given the card's element and the player
 function playCard(element, player, wait) {
-	console.log('===============');
-	console.log('PLAYING CARD: ' + player.hand[element.id-1].name);
+	console.log('========================================================');
+	console.log('=PLAYING CARD: ' + element.id + ' )+++++++++++++++++++++++');
+	console.log('============================================')
 
+	var cardArray = $.makeArray($("#playerCards img"))
+	,	index = cardArray.indexOf(element)
 	// creates cardOb, the element in the player's hand according to the newly found index
-	var cardOb = player.hand[(element.id)-1];
-	
+
+	, 	cardOb = player.hand[index]	
 	// grabs the inPlay element
-	var inPlay = document.getElementById('inPlay');
+	,	inPlay = document.getElementById('inPlay');
 
 	playCards.push(cardOb);
 
-	console.log('playCard( add ' + cardOb.name + ' to inPlay element');	
+	console.log('=( add ' + cardOb.name + ' to inPlay element )+++++++++++++++');	
 	// adds the image of the played card to the inPlay element
-	addImage('70px', '5px', cardOb.image, inPlay, 'inPlayCard', 'play'+playCard.length);
+	addImage('70px', '5px', cardOb.image, inPlay, 'inPlayCard', 'play'+playCard.length + ' )+++++++++++++++++++++++');
 
 	// announce that the player played the card
-	announce(player.Name + ' has played a ' + player.hand[element.id-1].name);
+	announce(player.Name + ' has played a ' + cardOb.name);
 
-	
-
-	console.log('playCard( splice ' + cardOb.name + ' from player.hand');
+	console.log('=( splice ' + cardOb.name + ' from player.hand )+++++++++++++++++++');
 	// splice the card from the player's hand
-	player.hand.splice(parseInt(element.id)-1, 1);
+	player.hand.splice(index, 1);
 
 	updateHand(player);
 
 	// subtract one from the player's actions	
 	player.actions -= 1;
 
-	console.log('playCard( -1 from player.actions: ' + player.actions);
+	console.log('=( -1 from player.actions: ' + player.actions + ' )++++++++++++');
 
-	console.log('playCard( execute ' + cardOb.name + "'s .action function");
+	console.log('=( execute ' + cardOb.name + "'s .action function )++++++++++++++");
 	// now that the correct object is found, execute the card's action
+	console.log('***********************************************************');
+	console.log('==========NOWPLAYINGACTION METHOD!===========================');
 	cardOb.action(player, cardOb);
-	console.log('==========cardEnd=====')
 
 	statusUpdate(player);
 
-	if (cardOb.actionWait) {
-		console.log('playCard( this is part of an action card, wait and dont run actionCheck()')
-	}
-
-	else {
-		console.log('playCard( this is not part of an action card, run actionCheck()');
+	if (!cardOb.actionWait) {
+		console.log('no actionwait.... run action check');
 		actionCheck(player);
 	}
 }
@@ -1135,76 +1285,51 @@ function playCard(element, player, wait) {
 // an array for storing the cards in play- during cleanupphase, they move into discard pile
 var playCards = [];
 
-
 // a function for updating the click event on a card, based upon the element/card's class name
 function updateActionEvent(player, element) {
 
 	// if it's an Action card, give it an onclick event to playCard
-	if (player.hand[parseInt(element.id)-1].type.indexOf('Action') != -1) {
+	if ($('#'+element.id).hasClass('Action')) {
 
-		console.log('updateActionEvent( action card detected.. add onclick event to ' + player.hand[element.id-1].name + ' in hand');
 		element.onclick = function() {
+			var cardArray = $.makeArray($("#playerCards img"))
+			,	index = cardArray.indexOf(this);
 
-			if (player.hand[element.id-1].actionWait) {
-				console.log(element.id);
-				console.log(player.hand[element.id-1].name + ' onclick( actionWait detected: run playCard() with a wait');
-				playCard(element, players[0], 'wait');
+			if (player.hand[index].actionWait) {
+				playCard(this, players[0], 'wait');
 			}
 			else {
-				console.log(player.hand[element.id-1].name + ' onclick( runPlayCard()');
-				playCard(element, players[0]);
+				console.log(player.hand[index].name + ' onclick( runPlayCard()');
+				playCard(this, players[0]);
 			}
 		};
-		element.setAttribute('class', 'actionCard');
-
-	}
-
-	// if the classname is 'normal', take away the onclick event
-	else if (element.className == 'normal') {
-		console.log('updateActionEvent( className is normal, nullify onclick for '+ player.hand[element.id-1].name);
-		element.onclick = null;
 	}
 }
-function turnBuyEventOff(element) {
-	  	element.onclick = function() {
- 		 	cardInspect(element.src);
- 		};
 
-}
 // a function to add an event in order to trigger buycard()
-function updateBuyEvent(element, pay) {
+function updateBuyEvent(element, pay, location) {
 
+	var buyButton = $(element).find('.buyButton');
 
-	// if the classname is buyable at all, adds buycard() to the click event
- 	if (element.className.indexOf('unbuyable') == -1 )  {
-		if (pay) {
- 			// console.log('updateBuyEvent( assign ' + element.id + "'s onclick function to buyCard()");
-			element.onclick = function() {
-				console.log(element.id + 'onclick(  run buyCard() with ' + element.id);
-				buyCard(element.id, players[0]);
-			}
-		}
-		else {
- 			// console.log('updateBuyEvent( assign ' + element.id + "'s onclick function to gainCard()");
-			element.onclick = function() {
+	buyButton.toggle();
 
-				console.log(element.id + 'onclick( run gainCard() with' + element.id);
-				gainCard(element.id, players[0]);
-
-				console.log(element.id + 'onclick( run actionCheck()');
-				actionCheck(players[0]);
-			}
-		}
+	if (pay) {
+		buyButton.bind('click', function() {
+			buyCard(this, players[0]);
+		});
 	}
 
-	// if the className is normal or its a normal kingdom card, the click event is set back to cardInspect
-  else if (element.className == 'normal') {
-  	// console.log('updateBuyEvent( assign ' + element.id + "'s onclick to cardInspect()");
-  	element.onclick = function() {
- 		 	cardInspect(element.src);
- 		};
-  }
+	else {
+		buyButton.bind('click', function() {
+			gainCard(element.id, players[0], location)
+			if (location === 'hand') {
+				updateHand(players[0]);
+			}
+			//actionCheck(players[0]);
+		});
+	}
 }
+
 // a variable to signify that its the player's first buy in the turn, so that treasure cards aren't counted more than once
 var firstBuy = true;
 
@@ -1224,140 +1349,62 @@ function buyPhase(player) {
 	if (player.buys > 0) {
 
 		console.log('buyPhase( player still has buys');
+		console.log('firstBuy: ' + firstBuy);
 		// only runs while its the player's first buy
-		while (firstBuy == true) {
+		if (firstBuy === true) {
 	
 			console.log('buyPhase( its the players first buy');
 			// goes through each card in the player's hand to check if there are treasure cards
+			$.each(player.hand, function() {
+				if (this.treasure) {
+					player.money += this.treasure;
+					console.log('processing ' + this.name + ': add ' + this.treasure);
+				};
 
-			for (i = 0;  i < player.hand.length; i += 1) {
-				// if the card's type is treasure,
-				if (player.hand[i].treasure) {
-					console.log('buyPhase( processing ' + player.hand[i].name + '...' + ' add ' + player.hand[i].treasure + ' to player.money');
-					// add the value of the treasure card to the player's usable money supply
-					player.money += player.hand[i].treasure;
-				}	
-			}
+			});
 
 			// since its run through and counted treasure cards in the player's hand, firstBuy is turned off, so that next time buyPhase is run, money is not counted again
 			console.log('buyPhase( firstBuy done with');
 			firstBuy = false;
 		}
-	statusUpdate(player);
 
-	setGainable(player, player.money, true);
+		statusUpdate(player);
+
+		setGainable(player, player.money, true, false, 'discard');
 	}
 }
-function setGainable(player, cost, pay) {
-	console.log('setGainable() with cost limit: ' + cost+ ', with paying');
 
-	// goes through all the available cards in the kingdom to set them to buyable
-	if (pay) {
-	}
-	else {
-		console.log('setGainable( no pay')
-	}
-	console.log('setGainable( update buy events for all cards');
-	for (var card in KingdomCards) {
-		// if there are no more cards left in that pile, the class is set to unbuyable
-		if (KingdomCards[card].quantity <= 0) {
-			document.getElementById(KingdomCards[card].name).setAttribute('class', 'unbuyable');
-			// console.log('setGainable( '+ KingdomCards[card].name + ' class set to unbuyable');
-		}
+function setGainable(player, cost, pay, type, location) {
+	$.each($('#kingdom>div, #treasures>div, #victories>div').find('.cost'), function() {
+
+		if (parseInt(this.id) <= cost) {
+			var buyButton = $(this).parent()
+			.not('.exhausted')
+			.find('.buyButton')
+			.unbind()
+			.toggle();
 		
+			if (pay) {
+				buyButton.bind('click', function() {
+					buyCard($(this).parent().attr('id'), players[0]);
 
-		// if the cost of the card is less than or equal to how much money the player has, 	
-		if (KingdomCards[card].cost <= cost) {
-	
-		// the card's dom object's class is switched to 'buyable'
-		document.getElementById(KingdomCards[card].name).setAttribute('class', 'buyable');
-		// console.log('setGainable( '+ KingdomCards[card].name + ' class set to buyable');
-		}		
+				});
+			}
 
-			
-		// if the cost of the card is less than what the player has in money, it is set to unbuyable
+			else {
+				buyButton.bind('click', function() {
+					gainCard($(this).parent().attr('id'), players[0], location)
+					if (location === 'hand') {
+						updateHand(players[0]);
+					}
+					actionCheck(players[0]);
+				});
+			}
+		}
 		else {
-			document.getElementById(KingdomCards[card].name).setAttribute('class', 'unbuyable');
-			// console.log('setGainable( '+ KingdomCards[card].name + ' class set to unbuyable');
+			$(this).parent().css('opacity', '0.4');
 		}
-
-		// if there is a pay option noted, the card must be paid for (as in BUYING)
-		if (pay) {
-			// a click event is added to the card, based on its buyability
-			// true means that the card must be paid for
-			// console.log('setGainable( run updateBuyEvent for ' + KingdomCards[card].name + ", with paying");
-			updateBuyEvent(document.getElementById(KingdomCards[card].name), true);
-		}
-		// else means that the player doesn't need to use up their money or buys to gain the card
-		else {
-			// console.log('setGainable( run updateBuyEvent for ' + KingdomCards[card].name + ", without paying");
-			updateBuyEvent(document.getElementById(KingdomCards[card].name), false);
-		}
-	}
-	// goes through all the available Treasure cards to see if they're buyable or not		
-	for (var card in Treasure) {
-		// if the cost of the card is less than or equal to how much money the player has, 	
-		if (Treasure[card].cost <= cost) {
-	
-		// the card's dom object's class is switched to 'buyable'
-		document.getElementById(Treasure[card].name).setAttribute('class', 'buyableTreasure');
-		// console.log('setGainable( '+Treasure[card].name+' class set to buyable');
-
-		}
-			
-		// if its too expensive for how much money they have, it is set to unbuyable
-		else {
-			document.getElementById(Treasure[card].name).setAttribute('class', 'unbuyableTreasure');
-			// console.log('setGainable( '+Treasure[card].name+' class set to unbuyable');
-
-		}
-			
-		// if there is a pay option noted, the card must be paid for (as in BUYING)
-		if (pay) {
-			// a click event is added to the card, based on its buyability
-			// true means that the card must be paid for
-			// console.log('setGainable( run updateBuyEvent() for ' + Treasure[card].name + ", with paying");
-			updateBuyEvent(document.getElementById(Treasure[card].name), true);
-
-		}
-		// else means that the player doesn't need to use up their money or buys to gain the card
-		else {
-			// console.log('setGainable( run updateBuyEvent() for ' + Treasure[card].name + ",without paying");
-			updateBuyEvent(document.getElementById(Treasure[card].name), false);
-
-		}
-	}
-
-	// goes through victory cards to see if they're buyable or not	
-	for (var card in Victory) {
-		
-		if (Victory[card].cost <= cost) {
-	
-			// the card's dom object's class is switched to 'buyable'
-			document.getElementById(Victory[card].name).setAttribute('class', 'buyableVictory');
-			// console.log('setGainable( '+ Victory[card].name+' class set to buyable');
-		}				
-		// if its too expensive for how much money they have, it is set to unbuyable
-		else {
-			document.getElementById(Victory[card].name).setAttribute('class', 'unbuyableVictory');
-			// console.log('setGainable( '+ Victory[card].name+' class set to unbuyable');
-		}
-			
-		// if there is a pay option noted, the card must be paid for (as in BUYING)
-		if (pay) {
-			// a click event is added to the card, based on its buyability
-			// true means that the card must be paid for
-			// console.log('setGainable( run updateBuyEvent() for ' + Victory[card].name + ", with paying");
-			updateBuyEvent(document.getElementById(Victory[card].name), true);
-
-		}
-		// else means that the player doesn't need to use up their money or buys to gain the card
-		else {
-			// console.log('setGainable( run updateBuyEvent() for ' + Victory[card].name + "', without paying");
-			updateBuyEvent(document.getElementById(Victory[card].name), false);
-
-		}
-	}
+	});
 }
 
 // a function to buy a card, given a player and the name of a card
@@ -1365,19 +1412,22 @@ function buyCard(card, player) {
 	console.log('buyCard( buying ' + card);
 	
 	// subract 1 buy from the player
+	console.log(player.buys);
 	console.log('buyCard( minus buys');
 	player.buys -= 1;
+	console.log(player.buys);
 
+	var cardCost = parseInt($('#'+card).find('.cost').attr('id'));
 	// and player gains that card
-	card = gainCard(card, player);
+	card = gainCard(card, player, 'discard');
 
-	console.log(card);
-	console.log('buyCard( minus ' + card.cost + ' from player.money');
+
+	console.log('buyCard( minus ' + cardCost + ' from player.money');
 	// subtract the cost of the card from the player's money
-	player.money -= card.cost;
+	player.money -= cardCost;
 
 	// if the player has no more buys,
-	if (player.buys == 0) {
+	if (player.buys === 0) {
 
 		console.log('buyCard( no more buys..');
 		console.log('buyCard( begin Cleanup');
@@ -1435,65 +1485,51 @@ function logger () {
 	};
 
 
-
-
-    return logger;
 };
 
+// a function to gain a card, given its name, the target player, & where the card is going to be placed
+function gainCard(card, player, location) {
+console.log('running gainCard() with card: ' + card + ' and location: ' + location);
 
-
-
-
-// a function to gain a card, given its name and the target player
-function gainCard(card,player) {
-
-	console.log('gainCard( going through all Kingdom Cards');
-	// loops through KingdomCards in order to find the card object (because we're given just the name of the card)
-	for (var each in KingdomCards) {
+	// creates an array containing all gainable cards
+	var allCards = KingdomCards.concat(Treasure, Victory);
 	
-		// if the given card name is matched up with the card object,
-		if (card == KingdomCards[each].name) {
-			console.log('gainCard( gaining card identified: ' + KingdomCards[each].name);
-			// set card equal to the card object and break from the loop
-			card = KingdomCards[each];
-			break;
-		}
+	// for each of the cards, see if the name given to the function matches the card's name
+	$.each(allCards, function() {
+		if (card === this.name) {
+			card = this;
+			// if it does match, return false to get out of the .each loop
+			return false;
+		};
+	});
+
+	switch (location) {
+		case 'hand': 
+			player.hand.push(card);
+			console.log('gainCard( push ' + card.name + ' into player.hand');
+			updateHand(player);
+		break;	
+		case 'discard':
+			player.discard.push(card);
+			console.log('gainCard( push ' + card.name + ' into player.discard');
+		break;
+		case 'deck':
+			player.deck.push(card); 
+			console.log('gainCard( push ' + card.name + ' into player.deck');
+
+		break;
 	}
-	// does the same for Treasures	
-	for (var each in Treasure) {
-		if (card == Treasure[each].name) {
-
-			console.log('gainCard( gaining card identified: ' + Treasure[each].name);
-			card = Treasure[each];
-			break;
-		}
-	}
-	
-	// and the same for Victories
-	for (var each in Victory) {
-		if (card == Victory[each].name) {
-
-			console.log('gainCard( gaining card identified: ' + Victory[each].name);
-			card = Victory[each];
-			break;
-		}
-	}
-	console.log('gainCard( gaining ' + card.name);
-
-	console.log('gainCard( push ' + card.name + ' into player.discard');
-	// push the card into the player's discard pile
-	player.discard.push(card);
-
 
 	// subtract 1 from the card's quantity
 	card.quantity --;
 
-	console.log('gainCard( minus 1 from ' + card.name + "'s quantity: " + card.quantity);
-
 	announce(player.Name+ ' gained a '+card.name);
 
+	updateHealthMeters();
+
+
 	// if the gained card is a victory card, add the victory points from the card to the player's victory points
-	if (card.type == 'victory') {
+	if (card.type === 'victory') {
 
 		console.log('gainCard( ' + card.victory + ' victory points added to player.victory: ' + player.victory);
 		player.victory += card.victory;
@@ -1501,17 +1537,22 @@ function gainCard(card,player) {
 	
 	// if the card pile has run out (quantity = 0), 
 	if (card.quantity <= 0) {
-		console.log('gainCard( ' + card.name + ' has run out..');
 
-		console.log('gainCard( ' + card.name + "'s opacity changed to 0.4");
-		// set the card's opacity to 0.4
-		document.getElementById(card.name).style.opacity = '0.4';
+		$('#'+card.name).addClass('exhausted');
+
+		console.log('gainCard( ' + card.name + ' has run out..');
 
 		console.log('gainCard( push ' + card.name + ' into gameConfig.exhausted');
 		// push the card into the list of exhausted cards
 		gameConfig.exhausted.push(card);	
 	}
 
+	$('.buyButton')
+		.hide()
+		.parent()
+		.not('.exhausted')
+		.css('opacity', '1');
+	
 	return card;
 } 
 
@@ -1519,13 +1560,6 @@ function gainCard(card,player) {
 function turn(player) {
 	console.log('===============');
 	console.log('BEGIN NEW TURN');
-	// logs the player's hand
-	console.log(		player.Name		+
-									"'s hand: "		
-	 														 );
-	for (i =0; i<player.hand.length; i++) {
-		console.log('| '+ player.hand[i].name);
-	}
 	
 	// performs test to see if there are action cards in the player's hand
 	actionCheck(player);
@@ -1535,17 +1569,14 @@ function turn(player) {
 function discardCard(player, cardIndex, element) {
 	if (element) {
 		// push given card into player's discard pile
-		console.log('discardCard( push ' + player.hand[element.id-1].name + ' into player.discard');
 		player.discard.push(player.hand[parseInt(element.id)-1]);
 
-		console.log('discardCard( splice ' + player.hand[element.id-1].name + ' from player.hand');
+
 		player.hand.splice(parseInt(element.id)-1, 1);
 	}
 	else {
-		console.log('discardCard( pushed '+player.hand[cardIndex].name + ' into discard pile');
 		player.discard.push(player.hand[cardIndex]);
 
-		console.log('discardCard( spliced '+player.hand[cardIndex].name+' out of hand');
 		player.hand.splice(cardIndex, 1);
 	}
 
@@ -1570,11 +1601,50 @@ function discardHand(player) {
 // starts as false because it opens on player's turn, before clean up
 var cleanedUp = false
 
-
-
 //to prepare for the players next turn, all player attributes get reset to default values, hand is discarded and a new one drawn
 function cleanupPhase(player) {
-	console.log('cleanupPhase( begin');
+
+	// a function to reset the cost div of the cards, given a wrapped set and array of corresponding objects
+	function resetCost(wrappedSet, objects) {
+
+		// within the wrapped set, get the elements with the cost class
+		wrappedSet.find('.cost')
+
+		// for each of these cost div's, 
+		.each( function(index) {
+
+			// get the original cost of the card, from the card Object
+			var originalCost = objects[index].cost;
+
+			// this refers to the cost div, 
+			$(this)
+
+			// set its id to the original cost,
+			.attr('id', originalCost)
+
+			// then find the paragraph element within and change the text to match the original cost
+			.find('p')
+			.text(originalCost)
+		})
+	}
+	// now run the above function for kingdom, treasure, and victory cards
+	resetCost($('#kingdom>div'), KingdomCards);
+	resetCost($('#treasures>div'), Treasure);
+	resetCost($('#victories>div'), Victory);
+	
+
+	// goes through all kingdom, treasure, and victory supply DOM elements
+	$('#kingdom>div, #treasures>div, #victories>div')
+
+	// excludes exhausted cards
+	.not('.exhausted')
+
+	// change opacity back to 1
+	.css('opacity', 1)
+
+	// find the corresponding buy button and hide it
+	.find('.buyButton').hide();
+		console.log('cleanupPhase( begin');
 
 	for (var each in playCards) {
 	
@@ -1591,6 +1661,7 @@ function cleanupPhase(player) {
 			player.discard.push(playCards[each]);
 		}
 	}
+
 
 	console.log('cleanupPhase( reset playCards array and inPlay element');
 	playCards = [];
@@ -1614,7 +1685,6 @@ function cleanupPhase(player) {
 
 	// actions go back to 1
 	player.actions = 1;
-console.log('player.actions: ' + player.actions)
 	// buys go back to 1
 	player.buys = 1;
 
@@ -1628,26 +1698,7 @@ console.log('player.actions: ' + player.actions)
 	// enables the 'buy' button, in case it got turned off during the player's turn
 	document.getElementById('buy').disabled = false;
 	
-	console.log('cleanupPhase( turnBuyEventOff on all cards');
-	for (var i=0; i<KingdomCards.length; i += 1) {
 
-		var element = document.getElementById(KingdomCards[i].name);
-		turnBuyEventOff(element);
-	}
-
-	for (var each in Treasure) {
-		var element = document.getElementById(Treasure[each].name);
-		element.setAttribute('class', 'kingdomTreasure');
-
-		turnBuyEventOff(element);
-	}
-
-	for (var each in Victory) {
-		var element = document.getElementById(Victory[each].name);
-		element.setAttribute('class', 'victory');
-
-		turnBuyEventOff(element);
-	}
 
 	// start player's turn ((this WILL have to change when it comes time to add multiplayer functionality
 	turn(players[0]);					
@@ -1671,7 +1722,7 @@ function addStat(text, style) {
 	// creates a text node called stat with the given text
 	var stat = document.createTextNode(text);
 
-	if (style == 'bold') {
+	if (style === 'bold') {
 		var span = document.createElement('span');
 		span.style.fontSize = '25px';
 		span.style.margin = '30px';
@@ -1688,7 +1739,17 @@ function addStat(text, style) {
 
 // updates player's stats
 function statusUpdate (player) {
+	
+	var array = [player.actions, player.money, player.buys, player.deck.length, player.discard.length];
 
+<<<<<<< HEAD
+	$('#bigStats li')
+		.each( function(stat,element) {		
+			$(element).text(array[stat]);
+		});
+
+}	
+=======
     // sets statBox to DIV element 'stats'
     var statBox = document.getElementById("bigStats");
 
@@ -1723,6 +1784,7 @@ function statusUpdate (player) {
     // once all stats are added to stats list, append the list to statBox
     statBox.appendChild(stats);
 }   
+>>>>>>> 071e6a2ceecc90ab60953a0a6566616c729e5f0f
 
 function wrap(parent, child) {
         var wrap = document.createElement('div');
@@ -1751,7 +1813,7 @@ function addImage(width, margin, source, destination, crass, id) {
     }
 
 	// if the image is being added to playerCards, log the player's handlength
-	if (destination == document.getElementById("playerCards")) {
+	if (destination === document.getElementById("playerCards")) {
 	}
 
     // if there is a class specified, set image's class to match
@@ -1759,7 +1821,7 @@ function addImage(width, margin, source, destination, crass, id) {
         image.setAttribute('class', crass);
 
 		// if the class of the image is kingdomcard, the image is going to have to be wrapped in a div wrapper, in order to display only part of the card
-		if (crass == 'kingdomCard' || crass == 'kingdomCardBottom' || crass == 'kingdomTreasure' || crass == 'victoryAttr' || crass == 'victoryName') {
+		if (crass === 'kingdomCard' || crass === 'kingdomCardBottom' || crass === 'kingdomTreasure' || crass === 'victoryAttr' || crass === 'victoryName') {
 			wrap(destination, image)
 		}
 
@@ -1767,14 +1829,18 @@ function addImage(width, margin, source, destination, crass, id) {
 			destination.appendChild(image);
 		}
 
-
 	}
 	else {
 		destination.appendChild(image);
-	}
-	
+	}	
 }
+<<<<<<< HEAD
+
+		var playerhands = [];
+		
+=======
         var playerhands = [];
+>>>>>>> 071e6a2ceecc90ab60953a0a6566616c729e5f0f
 function populateKingdom() {
 
 	// sets the kingdom variable equal to the div in the document by the same name
@@ -1782,19 +1848,25 @@ function populateKingdom() {
 
 	// clears what was on there before
 	kingdom.innerHTML = '';
+	
+	// gets the kingdomcards array built from cards.html page
+	var cardNames = JSON.parse(localStorage.getItem('kingdomcards'));
 
-	// loops through each kingdom card
-	for (var each in KingdomCards) {
-		var newKingdom = document.createElement('div');
-		kingdom.appendChild(newKingdom);
-		newKingdom.setAttribute('id', KingdomCards[each].name);
-		newKingdom.setAttribute('class', 'normal');
-		
-		// if the type of kingdom you're trying to populate has no type, simply add the images normally
-		addImage('100px', '0px', KingdomCards[each].image, newKingdom, 'kingdomCard', KingdomCards[each].name);
+	// sets KingdomCards to empty
+	KingdomCards = [];
 
-		addImage('100px', '0px', KingdomCards[each].image, newKingdom, 'kingdomCardBottom')
+<<<<<<< HEAD
+	// goes through each chosen card
+	$.each(cardNames, function(index) {
 
+		// CARD is the indv card
+		var CARD = cardNames[index];
+
+		// goes through each expansion
+		$.each(ALLEXPANSIONS, function() {
+
+			var EXPANSION = this;
+=======
 		// with a line break in the middle
 		if (each == KingdomCards.length/2-1) {
 			insertBR(kingdom);
@@ -1836,9 +1908,105 @@ console.log(kingdomCards);
             document.getElementById("clean").onclick = function() {cleanupPhase(players[0])};
 
             turn(players[0]);
+>>>>>>> 071e6a2ceecc90ab60953a0a6566616c729e5f0f
 
+			// goes through each expansion
+			$.each(EXPANSION, function() {
+
+<<<<<<< HEAD
+				if (this.name === CARD) {
+					// add quantity property (make it adjustable in initial settings LATER ON)
+					this.quantity = 10;
+					// pushes this card into KingdomCards
+					KingdomCards.push(this);
+				}
+			});
+		});
+	});
+
+	// goes through each newly created kingdomcard
+	$.each(KingdomCards, function(){
+		// set card equal to this particular card
+		var card = this;
+		// create a div for storing the card, with id equal to card's name
+		$('<div id = '+ card.name+'></div>')
+
+			// add corresponding class (type of card)
+			.addClass(card.type)
+
+			// inside it, append all other divs associated with the card
+						// a img wrapper for the graphic portion of the card
+			.append(	$('<div class = "kingdomCardWrap"> <img class = "kingdomCard" src = ' + card.image + ' width = "100px"> </div>'),
+						// a img wrapper for the bottom portion of the card
+						$('<div class = "kingdomCardBottomWrap"> <img class = "kingdomCardBottom" src = ' + card.image +' width = "100px"></div>'),
+						// a buy button div
+						$('<div class = "buyButton"> + </div>'),
+						// a cost div, with a coin img and id equal to card's cost
+						$('<div class = "cost"><img src = "images/coin.png"><p>' + card.cost + '</p></div>').attr('id', card.cost),
+						// a div for storing the healthmeter of the card, used to estimate the quantity of the card
+						$('<div class = "healthMeter"></div>'),
+						// a div for storing the probability of drawing the card next
+						$('<div class = "probability"></div>')
+			)
+			// bind events to the card div
+			.bind({
+				// on click, its going to run cardInspect and show a larger preview of the card
+				click: function() {
+					cardInspect($(this).find('img').attr('src'))
+				},
+				// upon mouse enter, the probability is going to be calculated
+				mouseenter: function() {
+					calculateProbability(this.id)
+				}
+			})
+			// after all this creationing, put into the kingdom div on the page
+			.appendTo('#kingdom');
+	})
+
+	$.each(Treasure, function() {
+		var card = this;
+		$('<div id = '+ card.name + ' class = "treasure"></div>')
+			.append(	$('<div class = "kingdomTreasureWrap"> <img class = "kingdomTreasure" src = ' + card.image + ' width = "100px"> </div>'),
+						$('<div class = "buyButton"> + </div>'),
+						$('<div class = "cost"><img src = "images/coin.png"><p>' + card.cost + '</p></div>').attr('id', card.cost),
+						$('<div class = "probability"></div>')
+			)
+			.bind({
+				click: function() {
+					cardInspect($(this).find('img').attr('src'))
+				},
+				mouseenter: function() {
+					calculateProbability(this.id)
+				}
+			})
+			.appendTo('#treasures');
+	});
+		
+	$.each(Victory, function() {
+		var card = this;
+		$('<div id = '+ card.name + ' class = "victory"></div>')
+			.append(	$('<div class = "victoryAttrWrap"> <img class = "victoryAttr" src = ' + card.image + ' width = "164px"> </div>'),
+						$('<div class = "victoryNameWrap"> <img class = "victoryName" src = ' + card.image + ' width = "164px"> </div>'),
+						$('<div class = "buyButton"> + </div>'),
+						$('<div class = "cost"><img src = "images/coin.png"><p>' + card.cost + '</p></div>').attr('id', card.cost),
+						$('<div class = "probability"></div><br>')
+			)
+			.bind({
+				click: function() {
+					cardInspect($(this).find('img').attr('src'))
+				},
+				mouseenter: function() {
+					calculateProbability(this.id)
+				}
+			})
+			.appendTo('#victories');
+	});
 }
 
+populateKingdom();
+
+//THE START OF THE GAME
+=======
 if (end) {
         endGame();
 }
@@ -1849,13 +2017,23 @@ function endGame() {
 
 //set the variable player equal to the player's object
         player = players[player];
+>>>>>>> 071e6a2ceecc90ab60953a0a6566616c729e5f0f
 
-//go through each card in player's hand and put them into player's deck
-		for (i=0; i<player.hand.length; i++) {
+function startGame() {
 
-			player.deck.push(player.hand.pop());
-		}
+	deal();
 
+<<<<<<< HEAD
+			cleanedUp = false;
+			statusUpdate(players[0]);
+
+			//assign phase buttons to current player
+			document.getElementById("buy").onclick = function() {buyPhase(players[0])};
+			document.getElementById("clean").onclick = function() {cleanupPhase(players[0])};
+
+			turn(players[0]);
+}
+=======
 //go through each card in player's discard pile and puts them into their deck
         for (var card in player.discard) {
             player.deck.push(player.discard.pop());
@@ -1894,3 +2072,4 @@ function endGame() {
                     winner.victory                          +
                     ' Victory Points!'               );
 }
+>>>>>>> 071e6a2ceecc90ab60953a0a6566616c729e5f0f
