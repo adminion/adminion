@@ -19,8 +19,6 @@ block content
                             td #{option}
                             td 
                                 input(type="number", class="config", name=option, id="game-config-" + option, min="2", max="4", value=value) 
-
-
         h3 Players:
         #PlayersList
             table
@@ -28,6 +26,7 @@ block content
                     tr
                         th Player No.
                         th Handle
+        br
         label(for="chat_log") Chat Log:
         br
         textarea(id='chat_log', cols='100', rows='15', disabled='disabled')

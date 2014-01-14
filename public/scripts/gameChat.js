@@ -59,16 +59,16 @@ $(document).ready(function documentReady () {
     });
 
     socket.on('connecting', function () {
-        sysMsg('connecting...');
+        sysMsg('connecting to server...');
     });
 
-    socket.on('connect', function () {
-        sysMsg('...connected.');
+    socket.once('connect', function () {
+        sysMsg('connected!');
         socket.emit('joinGame', gameId);
     });
 
     socket.on('disconnect', function () {
-        sysMsg('disconnected from server.');
+        sysMsg('connection to server lost!');
         console.log('disconnect from server - have we disconnected yet? i\'ll try to emit another event...');
         socket.emit('test', {foo:'bar'});
 
@@ -80,12 +80,12 @@ $(document).ready(function documentReady () {
     });
 
     socket.on('reconnect', function () {
-        sysMsg('...reconnected.');
+        sysMsg('reconnected!');
         enable_chat();
     });
 
     socket.on('entered', function (newPlayer, players) {
-        sysMsg(newPlayer + ' joined the game');
+        sysMsg(newPlayer + ' joined the game!');
 
     });
 
