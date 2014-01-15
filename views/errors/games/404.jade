@@ -1,0 +1,9 @@
+extends layout
+
+block content
+    h2 404 - game not found
+    p Sorry, but we are unable to find a game by this gameID
+    blockquote
+        h4=request.params.gameID
+    p 
+        a(href=request.body) Try again?

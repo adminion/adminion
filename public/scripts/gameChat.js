@@ -135,7 +135,7 @@ $(document).ready(function documentReady () {
         sysMsg(msg);
     });
 
-    socket.on('chat', function(handle, msg) {
+    socket.on('chat', function (handle, msg) {
         chat_addToLog(handle, msg);
     });
 });
