@@ -8,6 +8,12 @@ var config = require('./lib/config'),
     env = require('./lib/env'),
     utils = require('./lib/utils');
 
+var memory = {};
+
+var deadWorkers;
+var readyWorkers;
+var suicide;
+
 console.log('Starting Adminion game server...');
 
 cluster.setupMaster({
@@ -32,28 +38,45 @@ cluster.on('disconnect', function disconnect (worker) {
 
 cluster.on('exit', function exit (worker) {
     debug.emit('msg', 'Worker ' + worker.id + ' died.');
+    
     delete memory[worker.id];
-      
+    
+    deadWorkers +=1;
+
+    if (suicide) {
+        if (deadWorkers === config.workers) {
+            process.kill();
+        }
+    } else {
+        cluster.fork();
+    }
+
 });
 
 function restart (worker) { 
     console.log('trying to restart the server...');
+    // if a given worker was specified
     if (worker) {
         worker.kill();
         cluster.fork();
     } else {
         for (var id in cluster.workers) {
             cluster.workers[id].kill();
-            cluster.fork();            
         }
+
+        startWorkers();
     }
 };
 
 function stop () {
 
+    suicide = true;
+    deadWorkers = 0;
+
     for (var id in cluster.workers) {
         cluster.workers[id].kill();
     }
+
 };
 
 function totalMemory () {
@@ -122,8 +145,6 @@ function allReady () {
 };
 
 
-var memory = {};
-var readyWorkers = 0;
 
 function initWorker (worker) {
     // when a message from this worker is received
@@ -146,10 +167,15 @@ function initWorker (worker) {
     });
 };
 
+function startWorkers() {
 
-// start all the workers
-for (var i = 0; i < config.workers; i+=1) {
+    readyWorkers = 0;
 
-    initWorker(cluster.fork());
+    // start all the workers
+    for (var i = 0; i < config.workers; i+=1) {
+
+        cluster.fork();
+    }
 }
 
+startWorkers();
