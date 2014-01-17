@@ -46,7 +46,10 @@ function sysMsg (msg) {
 
 $(document).ready(function documentReady () {
 
-
+    $('.config').on('change', function (event) {
+        console.log(event);
+        socket.emit('config', event.target.value);
+    });
 
     $('#chat_input').on('keyup', function (event) {
         if (event.keyCode === 13) {
@@ -127,7 +130,8 @@ $(document).ready(function documentReady () {
     socket.on('config', function (adjustments) {
         console.log(adjustments);
         for (option in adjustments) {
-            $('game-config-' + option).value(adjustments[option]);
+            console.log(option);
+            $('#' + option).value(adjustments[option]);
         }
     });
 
