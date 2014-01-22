@@ -1,7 +1,7 @@
 {
 	"workers" : 1,
 	"debug" : {
-        "compact" : false,
+        "marker" : true,
         "printStack" : false
     }
 }

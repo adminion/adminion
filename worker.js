@@ -1,8 +1,12 @@
 
-global.debug = require('./lib/debug')();
-
 var cluster = require('cluster'),
     util = require('util');
+
+if (cluster.isMaster) {
+    console.log('Starting Adminion game server...');
+}
+
+global.debug = require('./lib/debug')();
 
 // create a server instance
 var AdminionServer = require('./lib/'),
@@ -14,20 +18,19 @@ AdminionServer.on('error', AdminionServer.kill);
 
 AdminionServer.on('ready', function ready () {
 
-    var mem = process.memoryUsage();
+    // if we're the master process (ie: `node worker.js`)
+    if (cluster.isMaster) {
 
-    var msg = 'Adminion Game Server';
+        // Output that the server is ready
+        console.log('Adminion Game Server ready --> ', AdminionServer.env.url());
 
-    if (cluster.isWorker) {
-        msg += ' worker #' + cluster.worker.id;
-    }
+        debug.emit('val', 'mem.heapTotal', mem.heapTotal);
 
-    msg += util.format(" ready --> %s", AdminionServer.env.url());
+    } else if (cluster.isWorker) {
+
+        debug.emit('msg', 'worker ' + cluster.worker.id + ' ready!');
     
-    debug.emit('msg', msg);
-    debug.emit('val', 'mem.heapTotal', mem.heapTotal);
-
-    if (cluster.isWorker) {
+        var mem = process.memoryUsage();
         process.send({'ready': true, 'memoryUsage': mem.heapTotal});
     }
 

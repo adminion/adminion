@@ -1,4 +1,6 @@
 
+console.log('Starting Adminion game server...');
+
 global.debug = require('./lib/debug')();
 
 var cluster = require('cluster'),
@@ -13,8 +15,6 @@ var memory = {};
 var deadWorkers;
 var readyWorkers;
 var suicide;
-
-console.log('Starting Adminion game server...');
 
 cluster.setupMaster({
     exec: "worker.js",
@@ -125,7 +125,7 @@ function allReady () {
     process.stdin.resume();
     process.stdin.setEncoding('utf8');
 
-    process.stdin.on('data', function (chunk) {
+    process.stdin.on('data', function stdinData(chunk) {
         switch (chunk.trim()) { 
             case 'restart':
                 restart();
@@ -139,7 +139,7 @@ function allReady () {
         process.stdout.write('> ');
     });
 
-    process.stdin.on('end', function end() {
+    process.stdin.on('end', function stdinEnd() {
         process.stdout.write('end');
     });
 };

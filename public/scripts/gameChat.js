@@ -48,7 +48,10 @@ $(document).ready(function documentReady () {
 
     $('.config').on('change', function (event) {
         console.log(event);
-        socket.emit('config', event.target.value);
+        var adjustments = {};
+
+        adjustments[event.target.id] = event.target.value
+        socket.emit('config', adjustments);
     });
 
     $('#chat_input').on('keyup', function (event) {
@@ -130,8 +133,9 @@ $(document).ready(function documentReady () {
     socket.on('config', function (adjustments) {
         console.log(adjustments);
         for (option in adjustments) {
-            console.log(option);
-            $('#' + option).value(adjustments[option]);
+            console.log('adjustments[' + option + ']');
+            console.log(adjustments[option]);
+            $('input#' + option)[0].value = adjustments[option];
         }
     });
 
