@@ -21,7 +21,6 @@ cluster.setupMaster({
     silent: (config.debug) ? false : true
 });
 
-
 cluster.on('fork', function fork (worker) {
     // debug.emit('msg', 'Forking worker ' + worker.id + '.');
 });
@@ -54,7 +53,9 @@ cluster.on('exit', function exit (worker) {
 });
 
 function restart (worker) { 
-    console.log('trying to restart the server...');
+
+    console.log('restarting the server...');
+
     // if a given worker was specified
     if (worker) {
         worker.kill();
@@ -129,11 +130,11 @@ function allReady () {
         switch (chunk.trim()) { 
             case 'restart':
                 restart();
-                break;
+            break;
 
             case 'stop':
                 stop();
-                break;
+            break;
         }
 
         process.stdout.write('> ');
@@ -169,12 +170,13 @@ function initWorker (worker) {
 
 function startWorkers() {
 
+    var forked = 0;
     readyWorkers = 0;
 
     // start all the workers
-    for (var i = 0; i < config.workers; i+=1) {
-
+    while (forked < config.workers) {
         cluster.fork();
+        forked +=1;
     }
 }
 
