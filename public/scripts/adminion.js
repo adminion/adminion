@@ -848,7 +848,6 @@ function trashCard(player, card, location) {
 	}
 }
 
-<<<<<<< HEAD
 function cardInspect(cardId) {
 	var displaybox = document.getElementById('cardDisplay');
 	displaybox.innerHTML = "";
@@ -856,10 +855,6 @@ function cardInspect(cardId) {
 	setTimeout(function(){
 		displaybox.innerHTML = "";
 	},5000);
-=======
-function cardInspect(card) {
-    window.open(card, 'name', 'location=no, height=480px, width=300px, menubar=no,status=no, titlebar=no, toolbar=no');
->>>>>>> 071e6a2ceecc90ab60953a0a6566616c729e5f0f
 }
 
 function updateHealthMeters() {
@@ -930,20 +925,10 @@ function calculateProbability(cardName) {
 		var probz = document.createElement('div');
 		probz.id = 'probability';
 
-<<<<<<< HEAD
 		// put text in it and add to the card's element
 		var text = document.createTextNode(percentage + '%');
 		probz.appendChild(text);
 		document.getElementById(cardName).appendChild(probz);
-=======
-}
-
-function probability() {
-    console.log('copper..');
-    calculateProbability('Pearl Diver')
-    console.log('/');
-    console.log(players[0].deck.length);
->>>>>>> 071e6a2ceecc90ab60953a0a6566616c729e5f0f
 
 		// remove the element after 200 ms
 		setTimeout(function(){
@@ -954,7 +939,6 @@ function probability() {
 
 //DEAL IS ONLY DONE ONCE IN THE START OF THE GAME
 function deal() {
-<<<<<<< HEAD
 
 	for (var player in players) {
 
@@ -965,13 +949,6 @@ function deal() {
 
 		//replaces what used to be just the player's name with the full player's profile(newPlayer)
 		players.splice(player, 1, newPlayer);
-=======
-    for (var player in players) {
-//CREATES A NEW PLAYER PROFILE AND INSERTS IT INTO THE ARRAY OF PLAYERS
-        var newPlayer = generatePlayer(players[player]);
-        //replaces what used to be just the player's name with the full player's profile(newPlayer)
-        players.splice(player, 1, newPlayer);
->>>>>>> 071e6a2ceecc90ab60953a0a6566616c729e5f0f
 
 		console.log('starting cards given to players');
 		
@@ -1219,17 +1196,9 @@ var actionPhaze = false;
 // initiates action phase for player
 function actionPhase(player){
 
-<<<<<<< HEAD
 	$('#playerCards img').each(function() {
 		updateActionEvent(player,this);
 	})
-=======
-    announce('choose action card to play!');
-
-    // set actionphaze to true, to signify that the actionphase is in effect
-    actionPhaze = true;
-
->>>>>>> 071e6a2ceecc90ab60953a0a6566616c729e5f0f
 	console.log('actionPhase( updating action events for all cards!');
 
 }
@@ -1742,49 +1711,12 @@ function statusUpdate (player) {
 	
 	var array = [player.actions, player.money, player.buys, player.deck.length, player.discard.length];
 
-<<<<<<< HEAD
 	$('#bigStats li')
 		.each( function(stat,element) {		
 			$(element).text(array[stat]);
 		});
 
 }	
-=======
-    // sets statBox to DIV element 'stats'
-    var statBox = document.getElementById("bigStats");
-
-    // resets statBox to nothin
-    statBox.innerHTML = "";
-
-    // creates stats, a list of stats to later publish
-    var stats = document.createElement("ul");
-
-	// adds all specificed stats
-	var stat = document.createTextNode(player.actions);
-	stats.appendChild(stat);
-	insertBR(stats);
-	var stat = document.createTextNode(player.money);
-	stats.appendChild(stat);
-	insertBR(stats);
-	var stat = document.createTextNode(player.buys);
-	stats.appendChild(stat);
-
-
-	insertBR(stats);
-	stat = document.createTextNode(player.deck.length);
-	stats.appendChild(stat);
-	insertBR(stats);
-	stat = document.createTextNode(player.discard.length);
-	stats.appendChild(stat);
-
-	// addStat("drawPile: "+player.deck.length);
-	// addStat("discard: "+player.discard.length);			
-	// addStat("VP: "+player.victory);			
-
-    // once all stats are added to stats list, append the list to statBox
-    statBox.appendChild(stats);
-}   
->>>>>>> 071e6a2ceecc90ab60953a0a6566616c729e5f0f
 
 function wrap(parent, child) {
         var wrap = document.createElement('div');
@@ -1834,13 +1766,9 @@ function addImage(width, margin, source, destination, crass, id) {
 		destination.appendChild(image);
 	}	
 }
-<<<<<<< HEAD
 
 		var playerhands = [];
 		
-=======
-        var playerhands = [];
->>>>>>> 071e6a2ceecc90ab60953a0a6566616c729e5f0f
 function populateKingdom() {
 
 	// sets the kingdom variable equal to the div in the document by the same name
@@ -1855,7 +1783,6 @@ function populateKingdom() {
 	// sets KingdomCards to empty
 	KingdomCards = [];
 
-<<<<<<< HEAD
 	// goes through each chosen card
 	$.each(cardNames, function(index) {
 
@@ -1866,54 +1793,10 @@ function populateKingdom() {
 		$.each(ALLEXPANSIONS, function() {
 
 			var EXPANSION = this;
-=======
-		// with a line break in the middle
-		if (each == KingdomCards.length/2-1) {
-			insertBR(kingdom);
-		}
-	}
-	
-	var treasurebox = document.getElementById('treasures');
-	
-	for (var each in Treasure) {
-		addImage('100px', '0px', Treasure[each].image, treasurebox, 'kingdomTreasure', Treasure[each].name);
-		if (each == 1) {
-			insertBR(treasurebox);
-		}	
-	}
-	
-	var victorybox = document.getElementById('victories');
-	
-	for (var each in Victory) {
-		var vicCard = document.createElement('div');
-		vicCard.setAttribute('id', Victory[each].name);
-		vicCard.setAttribute('class', 'victory');
-		addImage('164px', '0px', Victory[each].image, vicCard, 'victoryAttr');
-		addImage('164px', '0px', Victory[each].image, vicCard, 'victoryName', Victory[each].name);
-		insertBR(victorybox);	
-		victorybox.appendChild(vicCard);
-	}
-}
-    populateKingdom();
-//THE START OF THE GAME
-function startGame() {
-console.log(kingdomCards);
-    deal();
-
-            cleanedUp = false;
-            statusUpdate(players[0]);
-            //assign phase buttons to current player
-
-            document.getElementById("buy").onclick = function() {buyPhase(players[0])};
-            document.getElementById("clean").onclick = function() {cleanupPhase(players[0])};
-
-            turn(players[0]);
->>>>>>> 071e6a2ceecc90ab60953a0a6566616c729e5f0f
 
 			// goes through each expansion
 			$.each(EXPANSION, function() {
 
-<<<<<<< HEAD
 				if (this.name === CARD) {
 					// add quantity property (make it adjustable in initial settings LATER ON)
 					this.quantity = 10;
@@ -2006,24 +1889,11 @@ console.log(kingdomCards);
 populateKingdom();
 
 //THE START OF THE GAME
-=======
-if (end) {
-        endGame();
-}
-
-    //at the end of the game, we loop through each player
-function endGame() {
-    for (var player in players) {
-
-//set the variable player equal to the player's object
-        player = players[player];
->>>>>>> 071e6a2ceecc90ab60953a0a6566616c729e5f0f
 
 function startGame() {
 
 	deal();
 
-<<<<<<< HEAD
 			cleanedUp = false;
 			statusUpdate(players[0]);
 
@@ -2033,43 +1903,3 @@ function startGame() {
 
 			turn(players[0]);
 }
-=======
-//go through each card in player's discard pile and puts them into their deck
-        for (var card in player.discard) {
-            player.deck.push(player.discard.pop());
-        }
-//then loop through each players deck
-        for (var card in player.deck) {
-
-//set the variable card equal to the player's card in their deck
-            var Card = player.deck[card];
-
-//if the card is a victory card, add a victory point to the victor
-            if (card.type == 'victory') {
-                player.victory += card.value;
-            }
-        }
-    console.log(        player.Name                  +
-                                    ' has '                          +
-                                    player.victory           +
-                                    ' victory points!'  );
-    var winner;
-    for (var i = 0; i < players.length-1; i ++) {
-        if (players[i].victory > players[i+1].victory) {
-            winner = players[i];
-        }
-        else {
-            winner = players[i+1];
-        }
-    }
-    console.log(    players[i].Name         +
-                                ': '                                +
-                                players[i].victory  +
-                                ' Victory Points ' );
-    }
-    alert(  winner.Name                                 +
-                    ' has won the gamE with '   +
-                    winner.victory                          +
-                    ' Victory Points!'               );
-}
->>>>>>> 071e6a2ceecc90ab60953a0a6566616c729e5f0f

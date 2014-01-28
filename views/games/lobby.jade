@@ -26,6 +26,16 @@ block content
                     tr
                         th Player No.
                         th Handle
+                        th Ready
+                    - for (var i = 1; i <= request.game.config.maxPlayers; i+=1)
+                        tr
+                            td=i
+                            td &nbsp;
+                            td &nbsp;
+        h3 I'm ready!
+            input(id='imReady', name='imReady', type='checkbox', value='true')
+        input(id='startGame', disabled='disabled', type='button', value='Start the Game!')
+        br
         br
         label(for="chat_log") Chat Log:
         br

@@ -10,6 +10,8 @@ var gameId = url[4];
 
 var socket = io.connect();
 
+console.log(socket);
+
 var connectedPlayers = {};
 
 function chat_addToLog (handle, msg) {
@@ -31,13 +33,13 @@ function chat_send () {
 };
 
 function enable_chat () {
-    $('#chat_input')[0].disabled = '';
-    $('#chat_submit')[0].disabled = '';
+    $('#chat_input').prop('disabled', false);
+    $('#chat_submit').prop('disabled',false);
 };
 
 function disable_chat () {
-    $('#chat_input')[0].disabled = 'disabled';
-    $('#chat_submit')[0].disabled = 'disabled';
+    $('#chat_input').prop('disabled', true);
+    $('#chat_submit').prop('disabled', true);
 };
 
 function sysMsg (msg) {
@@ -47,11 +49,24 @@ function sysMsg (msg) {
 $(document).ready(function documentReady () {
 
     $('.config').on('change', function (event) {
-        console.log(event);
-        var adjustments = {};
+        // console.log(event);
 
-        adjustments[event.target.id] = event.target.value
-        socket.emit('config', adjustments);
+        console.log('%s -> %s', event.target.id, event.target.value);
+        
+        socket.emit('config', event.target.id, event.target.value);
+    });
+
+    $('#imReady').on('change', function (event) {
+ 
+        var ready = event.target.checked;
+
+        if (ready) {
+            console.log("I'm Ready!");
+        } else {
+            console.log("I'm NOT Ready!");
+        }
+        
+        socket.emit('ready', ready);
     });
 
     $('#chat_input').on('keyup', function (event) {
@@ -65,16 +80,25 @@ $(document).ready(function documentReady () {
     });
 
     socket.on('connecting', function () {
-        sysMsg('connecting to server...');
+        var msg = 'connecting to server established!';
+
+        console.log(msg);
+        sysMsg(msg);
     });
 
     socket.once('connect', function () {
-        sysMsg('connected!');
+        var msg = 'connected!';
+
+        console.log(msg); 
+        sysMsg(msg);
         socket.emit('joinGame', gameId);
     });
 
     socket.on('disconnect', function () {
-        sysMsg('connection to server lost!');
+        var msg = 'connection to server lost!';
+
+        console.log(msg)
+        sysMsg();
         console.log('disconnect from server - have we disconnected yet? i\'ll try to emit another event...');
         socket.emit('test', {foo:'bar'});
 
@@ -96,7 +120,7 @@ $(document).ready(function documentReady () {
     });
 
     socket.on('exited', function (oldPlayer, players) {
-        sysMsg(oldPlayer + ' left the game');
+        sysMsg(oldPlayer + ' left the game!');
 
     });
 
@@ -130,13 +154,10 @@ $(document).ready(function documentReady () {
         }
     });
 
-    socket.on('config', function (adjustments) {
-        console.log(adjustments);
-        for (option in adjustments) {
-            console.log('adjustments[' + option + ']');
-            console.log(adjustments[option]);
-            $('input#' + option)[0].value = adjustments[option];
-        }
+    socket.on('config', function (option, value) {
+        console.log('%s -> %s', option, value);
+
+        $('input#' + option)[0].value = value;
     });
 
     socket.on('msg', function (msg) {
@@ -145,6 +166,18 @@ $(document).ready(function documentReady () {
 
     socket.on('chat', function (handle, msg) {
         chat_addToLog(handle, msg);
+    });
+
+    socket.on('allReady', function (value) {
+
+
+        console.log(value ? 'all players are ready!' : 'NOT all players are ready!');
+
+        $('#startGame').prop('disabled', !value);
+    });
+
+    socket.on('starting', function (value) {
+        console.log('game starting:', value);
     });
 });
 
