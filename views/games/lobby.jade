@@ -1,7 +1,7 @@
 extends layout
 block socketio
     script(src='/socket.io/socket.io.js')
-    script(src='/scripts/gameChat.js')
+    script(src='/scripts/gameLobby.js')
     
 block menu
 block content
@@ -18,7 +18,10 @@ block content
                         tr
                             td #{option}
                             td 
-                                input(type="number", class="game config", name=option, id=option, min="2", max="4", value=value) 
+                                - if (request.game.isPlayerOne(request.user['_id']))
+                                    input(type="number", class="game config", name=option, id=option, min="2", max="4", value=value) 
+                                - else
+                                    input(type="number", disabled='disabled', class="game config", name=option, id=option, min="2", max="4", value=value) 
         h3 Players:
         #PlayersList
             table
@@ -34,8 +37,8 @@ block content
                             td &nbsp;
         h3 I'm ready!
             input(id='imReady', name='imReady', type='checkbox', value='true')
-        input(id='startGame', disabled='disabled', type='button', value='Start the Game!')
-        br
+            - if (request.game.isPlayerOne(request.user['_id']))
+                input(id='startGame', disabled='disabled', type='button', value='Start the Game!')
         br
         label(for="chat_log") Chat Log:
         br

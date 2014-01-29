@@ -53,6 +53,7 @@ cluster.on('exit', function exit (worker) {
 });
 
 function restart (worker) { 
+    var id;
 
     console.log('restarting the server...');
 
@@ -61,7 +62,7 @@ function restart (worker) {
         worker.kill();
         cluster.fork();
     } else {
-        for (var id in cluster.workers) {
+        for (id in cluster.workers) {
             cluster.workers[id].kill();
         }
 
@@ -70,11 +71,12 @@ function restart (worker) {
 };
 
 function stop () {
+    var id;
 
     suicide = true;
     deadWorkers = 0;
 
-    for (var id in cluster.workers) {
+    for (id in cluster.workers) {
         cluster.workers[id].kill();
     }
 
@@ -82,14 +84,16 @@ function stop () {
 
 function totalMemory () {
 
-    var masterMemory = process.memoryUsage().heapTotal;    
-    var workerTotal = 0;
+    var masterMemory = process.memoryUsage().heapTotal,
+        serverTotal,
+        workerId,
+        workerTotal = 0;
 
     // debug.emit('val', 'masterMemory', masterMemory, 'master.js', 73);
     // debug.emit('val', 'memory', memory, 'master.js', 74);
     // debug.emit('val', 'workerTotal', workerTotal, 'master.js', 75);
 
-    for (var workerId in memory) {
+    for (workerId in memory) {
         workerTotal += memory[workerId];
 
         // debug.emit('val', 'workerId', workerId, 'master', 78);
@@ -98,7 +102,7 @@ function totalMemory () {
 
     }
 
-    var serverTotal = masterMemory + workerTotal;
+    serverTotal = masterMemory + workerTotal;
 
     // debug.emit('val', 'serverTotal', serverTotal, 'master', 89);
 
@@ -116,7 +120,6 @@ function allReady () {
     
     console.log(util.format(msg, config.workers));
 
-    // notify the console user that the server is ready
     console.log('\nAdminion Game Server Started!\n --> %s', env.url());
 
     console.log('\ntotal memory usage: %s MB', totalMemory());
@@ -163,7 +166,7 @@ function initWorker (worker) {
             // if all of our workers are ready...
             if (readyWorkers === config.workers) {
                 allReady();
-            }
+            }       
         }
     });
 };

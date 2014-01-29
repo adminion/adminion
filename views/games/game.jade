@@ -4,18 +4,20 @@ extends layout
 
 block content
     #content
-        h2 #{playerOne.handle}'s Game [&nbsp;
-            a(href='/games/' + request.game['_id'] + '/lobby') Join
-            &nbsp;]
+        h2 #{playerOne.handle}'s Game 
+            - if (request.game.status === 'lobby')
+                &nbsp;[&nbsp;
+                a(href='/games/' + request.game['_id'] + '/lobby') Join
+                &nbsp;]
         table
             tbody
                 - var names = ['status', 'start', 'config']
                 - var game = request.game.toObject()
                 each value, name in game
-                    if names.indexOf(name) > -1
+                    - if (names.indexOf(name) > -1)
                         tr
                             td #{name}:
-                            if name === 'config'
+                            - if (name === 'config')
                                 td
                                     table
                                         tbody
@@ -25,6 +27,7 @@ block content
                                                     td=value2
                             else 
                                 td=value
-                tr
-                    td Open Seats: 
-                    td=request.game.openSeats() 
+                - if (request.game.status === 'lobby')
+                    tr
+                        td Open Seats: 
+                        td=request.game.openSeats() 
