@@ -6,7 +6,6 @@ var url = window.location.href.split('/'),
     port = url[2].split(':')[1],
     directory = url[3],
     gameId = url[4],
-    socket = io.connect(),
     connectedPlayers = {};
 
 console.log(socket);
