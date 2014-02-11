@@ -6,7 +6,8 @@ var url = window.location.href.split('/'),
     port = url[2].split(':')[1],
     directory = url[3],
     gameId = url[4],
-    connectedPlayers = {};
+    connectedPlayers = {},
+    socket;
 
 console.log(socket);
 
@@ -15,9 +16,9 @@ $(document).ready(function documentReady () {
     $('.config').on('change', function (event) {
         // console.log(event);
 
-        console.log('%s -> %s', event.target.id, event.target.value);
+        console.log('me: %s -> %s', event.target.id, event.target.value);
         
-        socket.emit('config', event.target.id, event.target.value);
+        socket.emit('gameConfig', event.target.id, event.target.value);
     });
 
     $('#imReady').on('change', function (event) {
@@ -25,9 +26,9 @@ $(document).ready(function documentReady () {
         var ready = event.target.checked;
 
         if (ready) {
-            console.log("I'm Ready!");
+            console.log("me: I'm Ready!");
         } else {
-            console.log("I'm NOT Ready!");
+            console.log("me: I'm NOT Ready!");
         }
         
         socket.emit('ready', ready);
@@ -47,6 +48,10 @@ $(document).ready(function documentReady () {
         chat_send();
     });
 
+    
+
+    socket = io.connect();
+
     socket.on('connecting', onConnecting);
 
     socket.on('connect', onConnect);
@@ -61,7 +66,9 @@ $(document).ready(function documentReady () {
 
     socket.on('roster', onRoster);
 
-    socket.on('joined', onJoined);
+    socket.on('gameConfig', onGameConfig);
+
+    socket.on('joinGame', onJoinGame);
 
     socket.on('config', onConfig);
 
@@ -90,7 +97,7 @@ function chat_addToLog (handle, msg) {
 
 function chat_send () {
     var msg = $('#chat_input')[0].value;
-    socket.send(msg);
+    socket.emit('gameChat', msg);
     $('#chat_input')[0].focus();
     $('#chat_input')[0].select();
 };
@@ -112,7 +119,11 @@ function gameUrl () {
 
 function onAllReady (value) {
 
-    console.log(value ? 'all players are ready!' : 'NOT all players are ready!');
+    var msg = 'server: ';
+
+    msg += value ? 'we are ready to start the game!' : 'we are not ready to start the game!';
+
+    console.log(msg);
 
     $('#startGame').prop('disabled', !value);
 
@@ -123,7 +134,7 @@ function onChat (handle, msg) {
 };
 
 function onConfig (option, value) {
-    console.log('%s -> %s', option, value);
+    console.log('server: %s -> %s', option, value);
 
     $('input#' + option)[0].value = value;
 };
@@ -133,7 +144,7 @@ function onConnect () {
 
     console.log(msg); 
     sysMsg(msg);
-    socket.emit('joinGame', gameId);
+    socket.emit('joinGame');
 
 };
 
@@ -156,22 +167,26 @@ function onDisconnect () {
 };
 
 function onEntered (newPlayer, players) {
-    sysMsg(newPlayer + ' joined the game!');
+    sysMsg('server: ' + newPlayer + ' joined the game!');
 
 };
 
 function onExited (oldPlayer, players) {
-    sysMsg(oldPlayer + ' left the game!');
+    sysMsg('server: ' + oldPlayer + ' left the game!');
 
 };
 
-function onJoined (result, reason) {
+function onGameConfig () {
+    console.log('server: configuration updated');
+};
+
+function onJoinGame (result, reason) {
     if (result) {
-        console.log('joined!');
+        console.log('server: joined!');
         enable_chat();
         $('#chat_input').focus();
     } else {
-        console.log('denied: ' + reason);
+        console.log('server: unable to join game: ' + reason);
         window.location = '/games/' + gameId;
     }
 };
@@ -186,7 +201,7 @@ function onReconnecting () {
 
 function onRoster (roster) {
     connectedPlayers = roster;
-    console.log('connectedPlayers');
+    console.log('server: connectedPlayers');
     console.log(connectedPlayers);
 
     $("#PlayersList").replaceWith(function () {
@@ -204,7 +219,7 @@ function onRoster (roster) {
 };
 
 function onStartGame () {
-    var msg = 'game starting NOW!';
+    var msg = 'server: game starting NOW!';
     console.log(msg);
     sysMsg(msg);
     window.location = gameUrl() + '/play';
@@ -217,7 +232,7 @@ function onStarting (value) {
     if (value) {
         seconds = value/1000;
         startTicker = setInterval(function () {
-            var msg = 'game starting in ' + seconds + ' seconds...';
+            var msg = 'server: game starting in ' + seconds + ' seconds...';
 
             console.log(msg);
             sysMsg(msg);
@@ -227,7 +242,7 @@ function onStarting (value) {
         }, 1000);
         
     } else {
-        console.log('start of game postponed!');
+        console.log('server: start of game postponed!');
         clearInterval(startTicker);
     }
 

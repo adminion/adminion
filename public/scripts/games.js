@@ -15,7 +15,7 @@ $(document).ready(function documentReady () {
 
 function onConnect () {
 
-    socket.emit('join');
+    socket.emit('watch');
 
 };
 
