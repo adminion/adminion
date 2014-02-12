@@ -9,7 +9,7 @@ then
 fi
 
 # install ubuntu package dependencies
-#apt-get update && apt-get install mongodb
+#apt-get update && apt-get install nodejs npm mongodb
 
 # install node module dependencies
 npm install
@@ -32,4 +32,9 @@ case $1 in
 		echo "$0: error: unrecognized argument '$1'"
 esac
 
-nodejs admin.js
+nodejs setup/admin.js
+
+echo "That's it! If all went well, you should be able to start your server!
+
+# ./adminion.sh
+"

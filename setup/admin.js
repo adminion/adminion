@@ -13,12 +13,25 @@ var config = require('../lib/config')
 
 console.log('Creating new superuser...');
 
-var	db = require('../lib/db')(config.mongodb);
+var tools = { 
+	config: { 
+		mongodb: config.mongodb 
+	} 
+};
+
+var dbConstructor = require('../lib/db'),
+	db = new dbConstructor(tools);
 
 db.once('ready', function() {
 	db.createAccount(root, passwd, function(err, account) {
 		
 		if (err) { 
+
+			if (err.message === 'User already exists with name adminionionator') {
+				console.log('Superuser already exists, skipping.');
+				process.exit();
+			}
+			
 			console.trace(err); 
 			process.exit(); 
 		};
@@ -26,8 +39,10 @@ db.once('ready', function() {
 		console.log('Created new superuser!');
 		console.log(account);
 		console.log("You should probably change your password from the default ('adminion').");
+
+		process.exit();
 		
 	});
 });
 
-db.connect();
+db.start();
