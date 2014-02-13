@@ -1,6 +1,6 @@
 
 var root = {
-	"email": "adminionionator"
+	"email": "adminion"
 	, "firstName": "adminion"
 	, "lastName": "adminion"
 	, "handle": "adminion"
