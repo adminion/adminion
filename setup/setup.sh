@@ -31,7 +31,7 @@ case $1 in
 esac
 
 # install ubuntu package dependencies
-apt-get update && apt-get install nodejs npm mongodb
+apt-get update && apt-get install openssl nodejs npm mongodb 
 
 # install node module dependencies
 npm install
