@@ -10,7 +10,7 @@ Adminion depends on [node](http://nodejs.org) and [mongodb](http://www.mongodb.o
 
 ### Ubuntu
 
-	# apt-get update && apt-get install node mongodb
+	# apt-get update && apt-get install nodejs mongodb
 
 ### Mac OS X
 
@@ -28,19 +28,33 @@ The easiest way to get (and later update) adminion is using git:
 ### Install required Node Modules
 Now use npm to install all module dependencies and create the default admin user:
 
-	$ cd adminion/ && sudo npm install
+	$ cd adminion/ && sudo ./setup/setup.sh
 	
 ## Start the game server
 
 	# ./adminion.sh
 
+Once installed, the adminionator will be the only account that may logon and is also the only account that can change system settings and CRUD accounts
+
+### Change adminionator password
+We recommend you change the default password ('adminion') to something a bit more secure:
+
+	https://localhost:1337/accounts/adminionator/update
+
+After logging on, enter the new password, verify it, then click "Update" to save. 
+
+### Create an account
+We also recommend you create your own user account for hosting and playing games:
+
+	https://localhost:1337/accounts/create
+
 ## Server configuration
-All server configuration options are defined within `config.json`.  If an option is omitted, the default value will be used.
+All server configuration options are defined within `config.json`.  If an option is omitted, the default value found within `config.default.json` will be used.
 
 ### Configuration options
 
-* `debug`: toggles debug output. default: `false`
-* `cacheUpdateInterval`: the frequency, in milliseconds, that the database cache is updated. default: `5 * 60 * 1000` // 5 minutes
+* `debug`: toggles debug output. When set to true, debug is enabled with its default configuration, however an object with configuration settings may be specified--see lib/debug.js for more details. default: `false`
+* `cacheUpdateInterval`: the frequency, in seconds, that the database cache is updated. default: `300` // 5 minutes
 * `serverName`: name of the server. default: `Adminion`
 * `host`: network address to be used. default: `localhost`
 * `port`: port number to be used. default: `1337`
@@ -68,23 +82,3 @@ You may specify the path(s) to your key and certificate.
 }
 ```
 The example above will prompt the server to use `./myServer-cert.pem` and `/path/.to/myServer-key.pem`.
-	
-## Start the game server
-We're now ready to start the server!
-
-	# ./adminion.sh
-
-Once installed, the adminionator will be the only account that may logon and is also the only account that can change system settings and CRUD accounts
-
-### Change adminionator password
-We recommend you change the default password ('adminion') to something a bit more secure:
-
-	https://localhost:1337/accounts/adminionator/update
-
-After logging on, enter the new password, verify it, then click "Update" to save. 
-
-### Create an account
-We also recommend you create your own user account for hosting and playing games:
-
-	https://localhost:1337/accounts/create
-	
