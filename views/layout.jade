@@ -3,7 +3,7 @@ html
     head
         block head
             // link(rel='stylesheet', href='/stylesheets/styles.css')
-            title= adminion.env.serverName
+            title= env.serverName
             block jquery
                 script(src='/scripts/jquery.js')
                 
@@ -29,7 +29,7 @@ html
                                     - // for each item in the array
                                     - each crumb, id in breadcrumbs
                                         if (!id)
-                                            a(href='/') #{adminion.env.serverName}
+                                            a(href='/') #{env.serverName}
                                         else
                                             if (!!crumb)
                                                 &nbsp;/&nbsp;
@@ -55,11 +55,11 @@ html
                                         &nbsp;]
                         block menu
                             #menu
-                                if (config.links && request.session.passport.user)
+                                if (links && request.session.passport.user)
                                     label(for='links') 
                                         h3 Player's Menu:
                                     ul#links
-                                        each url, title in config.links
+                                        each url, title in links
                                             li: a(href=url) #{title}
                 #body
                     block body

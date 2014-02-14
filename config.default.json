@@ -3,20 +3,14 @@
     "cacheUpdateInterval": 300000, 
     "host": "localhost", 
     "https": true,
-    "locals": {
-        "links" : {
-            "Games" : "/games"
-            , "Accounts" : "/accounts"
-        }
-    },
-    "port": "1337",
+    "cert": ".ssl/adminion-cert.pem",
+    "key": ".ssl/adminion-key.pem",
     "mongodb": "mongodb://localhost/adminion",
+    "port": "1337",
     "serverName": "Adminion",
     "session": {
         "cookie": { "maxAge" : 18000000 }, 
         "secret": "$4$1M1KLxrb$h0ynxcy1IZ0wQltG+iqdYZCmcfg$"
     },
-    "views": "views",
-    "viewEngine": "jade",
     "workers": 1
 }

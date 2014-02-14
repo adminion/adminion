@@ -24,7 +24,8 @@
 		"passport-local":			"*",
 		"passport-local-mongoose":	"*",
 		"passport.socketio": 		"*",
-		"socket.io": 				"*"
+		"socket.io": 				"*",
+        "voice.js":                 "*"
 	},
   "scripts": {
     "start": "./adminion.sh",

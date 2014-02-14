@@ -2,6 +2,6 @@
 	"workers" : 1,
 	"debug" : {
         "marker" : true,
-        "printStack" : false
+        "printStack" : true
     }
 }

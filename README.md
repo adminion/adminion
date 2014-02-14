@@ -27,7 +27,7 @@ Now enter the new `adminion` directory and run the setup script inside the setup
 ## Start Adminion
 The server should now start, unless of course i told it to do something that would prevent it from doing so...which is likely:
 
-	# ./adminion.sh
+	# adminion
 
 ## Configure Adminion
 All server configuration options are defined within `config.json`.  If an option is omitted, the default value found within `config.default.json` will be used:
@@ -37,21 +37,15 @@ All server configuration options are defined within `config.json`.  If an option
     "cacheUpdateInterval": 300000, 
     "host": "localhost", 
     "https": true,
-    "locals": {
-        "links" : {
-            "Games" : "/games"
-            , "Accounts" : "/accounts"
-        }
-    },
-    "port": "1337",
+    "cert": ".ssl/adminion-cert.pem",
+    "key": ".ssl/adminion-key.pem",
     "mongodb": "mongodb://localhost/adminion",
+    "port": "1337",
     "serverName": "Adminion",
     "session": {
         "cookie": { "maxAge" : 18000000 }, 
         "secret": "$4$1M1KLxrb$h0ynxcy1IZ0wQltG+iqdYZCmcfg$"
     },
-    "views": "views",
-    "viewEngine": "jade",
     "workers": 1
 }
 ```
@@ -60,12 +54,14 @@ All server configuration options are defined within `config.json`.  If an option
 
 * `debug`: toggles debug output. When set to true, debug is enabled with its default configuration, however an object with configuration settings may be specified--see lib/debug.js for more details. default: `false`
 * `cacheUpdateInterval`: the frequency, in seconds, that the database cache is updated. default: `300` // 5 minutes
-* `serverName`: name of the server. default: `Adminion`
 * `host`: network address to be used. default: `localhost`
-* `port`: port number to be used. default: `1337`
-* `ssl`: turns on or off SSL encryption. see [SSL](http://github.com/adminion/adminion#ssl) below for details. default: `true`
+* `https`: turns on or off SSL encryption. see [SSL](http://github.com/adminion/adminion#ssl) below for details. default: `true`
 * `cert`: path to the certificate. see [SSL](http://github.com/adminion/adminion#ssl) below for details. default: `.ssl/adminion-cert.pem`
 * `key`: path to the public key. see [SSL](http://github.com/adminion/adminion#ssl) below for details. default: `.ssl/adminion-key.pem`
+* `mongodb
+* `port`: port number to be used. default: `1337`
+* `serverName`: name of the server. default: `Adminion`
+* `session`: an object of options passed to express.session()
 
 #### Debug
 Debug messages are disabled by default, but contributors may find them useful.  
