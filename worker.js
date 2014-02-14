@@ -16,6 +16,7 @@ debug.emit('val', 'AdminionServer', AdminionServer);
 AdminionServer.on('error', AdminionServer.kill);
 
 AdminionServer.on('ready', function ready () {
+        var mem = process.memoryUsage();
 
     if (cluster.isMaster) {
 
@@ -27,7 +28,6 @@ AdminionServer.on('ready', function ready () {
 
         debug.emit('msg', 'worker ' + cluster.worker.id + ' ready!');
     
-        var mem = process.memoryUsage();
         process.send({'ready': true, 'memoryUsage': mem.heapTotal});
     }
 
