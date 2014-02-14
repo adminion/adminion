@@ -1,8 +1,8 @@
-Adminion
+Administrate your deck
 ========
 
 ## About Adminion
-Adminion has been written almost exclusively on [ubuntu](http://www.ubuntu.com) and depends on [node.js](http://nodejs.org), [OpenSSL](https://www.openssl.org/), [MongoDB](http://www.mongodb.org), and a number of [3rd-party node modules](https://github.com/adminion/adminion/blob/master/package.json#L17).  If anyone wants to try it on windows or mac, please let me know the results :)
+Adminion has been written almost exclusively on [ubuntu](http://www.ubuntu.com) and depends on [node.js](http://nodejs.org) v0.10.x, [OpenSSL](https://www.openssl.org/), [MongoDB](http://www.mongodb.org), and a number of [3rd-party node modules](https://github.com/adminion/adminion/blob/master/package.json#L17).  If anyone wants to try it on windows or mac, please let me know the results :)
 
 ## Get Adminion
 
