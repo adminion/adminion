@@ -44,5 +44,5 @@ ln -s $foo /bin/adminion
 
 echo "That's it! If all went well, you should be able to start your server!
 
-# ./adminion.sh
+# adminion.sh
 "
