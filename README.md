@@ -61,7 +61,7 @@ All server configuration options are defined within `config.json`.  If an option
 * `mongodb
 * `port`: port number to be used. default: `1337`
 * `serverName`: name of the server. default: `Adminion`
-* `session`: an object of options passed to express.session()
+* `session`: an object of options passed to [express.session]()\()
 
 #### Debug
 Debug messages are disabled by default, but contributors may find them useful.  

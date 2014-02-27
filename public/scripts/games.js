@@ -9,8 +9,6 @@ $(document).ready(function documentReady () {
 
     socket.on('games', onGames);
 
-    socket.emit('games');
-
 });
 
 function onConnect () {
@@ -19,18 +17,22 @@ function onConnect () {
 
 };
 
-function onGames (games, playerOnes) {
+function onGames (games) {
 
     console.log(games);
-    console.log(playerOnes);
+    
+    var game,
+        i,
+        newGames = '<ol>';
 
-    var newGames = '<ol>';
+    for (i in games) {
 
-    for (game in games) {
-        newGames += '<li><a href="/games/' + games[game]['_id'] + '">' + playerOnes[games[game]['_id']].handle + "s Game</a>";
+        game = games[i];
+
+        newGames += '<li><a href="/games/' + game._id + '">' + game.playerOne.displayName + "'s Game</a>";
 
         if (game.status === 'lobby') {
-            newGames += ' [ <a href="/games/' + game['_id'] + '/lobby">Join</a> ] ';
+            newGames += ' [ <a href="/games/' + game._id + '/lobby">Join</a> ] ';
         }
 
         newGames += '</li>';

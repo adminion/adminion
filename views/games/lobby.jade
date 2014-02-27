@@ -4,9 +4,14 @@ block socketio
     script(src='/scripts/gameLobby.js')
     
 block menu
+block buddyList
 block content
     #content
-        h2 #{playerOne.handle}'s Game
+        h2 #{request.game.playerOne.displayName}'s Game 
+            if (request.game.playerOne['_id'].toString() === request.user['_id'].toString())
+                &nbsp;[&nbsp;
+                button(id="killGame", name="killGame", value="true") Cancel
+                &nbsp;]&nbsp;
         h3 Game Config:
         #Config
             table
@@ -27,7 +32,7 @@ block content
             table
                 tbody
                     tr
-                        th Player No.
+                        th Seat
                         th Handle
                         th Ready
                     - for (var i = 1; i <= request.game.config.maxPlayers; i+=1)
@@ -38,7 +43,7 @@ block content
         h3 I'm ready!
             input(id='imReady', name='imReady', type='checkbox', value='true')
             - if (request.game.isPlayerOne(request.user['_id']))
-                input(id='startGame', disabled='disabled', type='button', value='Start the Game!')
+                button(id='startGame', disabled='disabled', value=true) Start the game!
         br
         label(for="chat_log") Chat Log:
         br

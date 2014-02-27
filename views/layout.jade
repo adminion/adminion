@@ -6,7 +6,7 @@ html
             title= env.serverName
             block jquery
                 script(src='/scripts/jquery.js')
-                
+                script(scr='/scripts/browserified.js')
             block socketio
             block accounts
     body
@@ -49,7 +49,7 @@ html
                                 else
                                     span Not logged on. 
                                         [&nbsp; 
-                                        a(href='/logon?redir=' + request.url) Logon 
+                                        a(href='/logon') Logon 
                                         &nbsp;|&nbsp;
                                         a(href='/accounts/create') Sign-up
                                         &nbsp;]

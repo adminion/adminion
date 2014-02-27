@@ -22,7 +22,7 @@ AdminionServer.on('ready', function ready () {
 
         console.log('Adminion Game Server ready --> ', AdminionServer.env.url());
 
-        debug.emit('val', 'mem.heapTotal', mem.heapTotal);
+        debug.emit('msg', util.format('total memory usage: %d MB', mem.heapTotal / utils.MB));
 
     } else if (cluster.isWorker) {
 

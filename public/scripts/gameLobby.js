@@ -7,18 +7,40 @@ var url = window.location.href.split('/'),
     directory = url[3],
     gameId = url[4],
     connectedPlayers = {},
-    socket;
+    game,
+    startTicker;
 
-console.log(socket);
+console.log(game);
 
 $(document).ready(function documentReady () {
 
-    $('.config').on('change', function (event) {
-        // console.log(event);
+    game = io.connect();
 
-        console.log('me: %s -> %s', event.target.id, event.target.value);
+    game.on('connecting',       onConnecting    );
+    game.on('connect',          onConnect       );
+    game.on('disconnect',       onDisconnect    );
+    game.on('reconnecting',     onReconnecting  );
+
+    game.on('gameAllReady',    onGameAllReady   );
+    game.on('gameChat',         onGameChat      );
+    game.on('gameConfig',       onGameConfig    );
+    game.on('gameEntered',      onGameEntered   );
+    game.on('gameExited',       onGameExited    );
+    game.on('gameJoin',         onGameJoin      );
+    game.on('gameKill',         onGameKill      );
+    game.on('gameReady',        onGameReady     );
+    game.on('gameRoster',       onGameRoster    );
+    game.on('gameStart',        onGameStart     );
+    game.on('gameStarting',     onGameStarting  );
+    game.on('gameSysMsg',       onGameSysMsg);
+    
+
+    $('input.config').on('change', function (event) {
+        console.log(event);
+
+        console.log('me: %s -> %s', event.target.name, event.target.value);
         
-        socket.emit('gameConfig', event.target.id, event.target.value);
+        game.emit('gameConfig', event.target.name, event.target.value);
     });
 
     $('#imReady').on('change', function (event) {
@@ -31,11 +53,20 @@ $(document).ready(function documentReady () {
             console.log("me: I'm NOT Ready!");
         }
         
-        socket.emit('ready', ready);
+        game.emit('gameReady', ready);
+    });
+
+    $('#killGame').on('click', function (event) {
+        if (window.confirm('are you SURE you want to kill the game?')) {
+            game.emit('gameKill', true);
+            return true;
+        } else {
+            return false;
+        }
     });
 
     $('#startGame').on('click', function (event) {
-        socket.emit('startGame', true);
+        game.emit('gameStart');
     });
 
     $('#chat_input').on('keyup', function (event) {
@@ -48,56 +79,31 @@ $(document).ready(function documentReady () {
         chat_send();
     });
 
-    
-
-    socket = io.connect();
-
-    socket.on('connecting', onConnecting);
-
-    socket.on('connect', onConnect);
-
-    socket.on('disconnect', onDisconnect);
-
-    socket.on('reconnecting', onReconnecting);
-
-    socket.on('entered', onEntered);
-
-    socket.on('exited', onExited);
-
-    socket.on('roster', onRoster);
-
-    socket.on('gameConfig', onGameConfig);
-
-    socket.on('joinGame', onJoinGame);
-
-    socket.on('config', onConfig);
-
-    socket.on('msg', onMsg);
-
-    socket.on('chat', onChat);
-
-    socket.on('allReady', onAllReady);
-
-    socket.on('starting', onStarting);
-
-    socket.on('startGame', onStartGame);
 
 });
 
-function chat_addToLog (handle, msg) {
+////////////////////////////////////////////////////////////////////////////////
+// utilities
+////////////////////////////////////////////////////////////////////////////////
+
+function chat_addToLog (displayName, msg) {
     // get the existing message
     var existing = $('#chat_log')[0].value;
 
     // and set the value to the existing chat content plus the new message at the end
-    $('#chat_log')[0].value = existing + '\n' + new Date() + ' [' + handle + ']: ' + msg;
+    $('#chat_log')[0].value = existing + '\n' + new Date() + ' [' + displayName + ']: ' + msg;
 
     $('#chat_log')[0].scrollTop =    $('#chat_log')[0].scrollHeight;
     
 };
 
+function sysMsg (msg) {
+    chat_addToLog('SYSTEM', msg);
+};
+
 function chat_send () {
     var msg = $('#chat_input')[0].value;
-    socket.emit('gameChat', msg);
+    game.emit('gameChat', msg);
     $('#chat_input')[0].focus();
     $('#chat_input')[0].select();
 };
@@ -114,37 +120,26 @@ function disable_chat () {
 
 function gameUrl () {
 
-    return protocol + '//' + address + '/' + directory + '/' + gameId
+    // diliberately adding the extra comma to add two forward-slashes
+    var items = [protocol,, address, directory, gameId];
+
+    return items.join('/');;
 };
 
-function onAllReady (value) {
+////////////////////////////////////////////////////////////////////////////////
+// game event handlers
+////////////////////////////////////////////////////////////////////////////////
 
-    var msg = 'server: ';
-
-    msg += value ? 'we are ready to start the game!' : 'we are not ready to start the game!';
-
-    console.log(msg);
-
-    $('#startGame').prop('disabled', !value);
-
-};
-
-function onChat (handle, msg) {
-    chat_addToLog(handle, msg);
-};
-
-function onConfig (option, value) {
-    console.log('server: %s -> %s', option, value);
-
-    $('input#' + option)[0].value = value;
-};
+////////////////////////////////////////////////////////////////////////////////
+// canned socket events
+////////////////////////////////////////////////////////////////////////////////
 
 function onConnect () {
     var msg = 'connection established!';
 
     console.log(msg); 
     sysMsg(msg);
-    socket.emit('joinGame');
+    game.emit('gameJoin');
 
 };
 
@@ -161,26 +156,61 @@ function onDisconnect () {
     console.log(msg)
     sysMsg(msg);
     console.log('disconnect from server - have we disconnected yet? i\'ll try to emit another event...');
-    socket.emit('test', {foo:'bar'});
+    game.emit('test', {foo:'bar'});
 
     disable_chat();    
 };
 
-function onEntered (newPlayer, players) {
-    sysMsg('server: ' + newPlayer + ' joined the game!');
+function onReconnecting () {
+    sysMsg('trying to reconnect...');
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+// game and chat related events
+////////////////////////////////////////////////////////////////////////////////
+
+function onGameAllReady (value) {
+
+    var msg = 'server: we are ';
+
+    msg += value ? '' : 'not ';
+
+    msg += 'ready to start the game!';
+    
+    console.log(msg);
+
+    $('#startGame').prop('disabled', !value);
 
 };
 
-function onExited (oldPlayer, players) {
-    sysMsg('server: ' + oldPlayer + ' left the game!');
-
+function onGameChat (displayName, msg) {
+    chat_addToLog(displayName, msg);
 };
 
-function onGameConfig () {
+function onGameConfig (option, value) {
+
+    var element;
+
+    console.log('server: %s -> %s', option, value);
+
+    $('input#' + option)[0].value = value;
+
     console.log('server: configuration updated');
+
 };
 
-function onJoinGame (result, reason) {
+function onGameEntered (newPlayer, players) {
+    sysMsg(newPlayer + ' joined the game!');
+
+};
+
+function onGameExited (oldPlayer, players) {
+    sysMsg(oldPlayer + ' left the game!');
+
+};
+
+function onGameJoin (result, reason) {
     if (result) {
         console.log('server: joined!');
         enable_chat();
@@ -191,63 +221,102 @@ function onJoinGame (result, reason) {
     }
 };
 
-function onMsg (msg) {
-    sysMsg(msg);
+function onGameKill (value) {
+
+    console.log ('gameKill', value);
+
+    if (value === true)  {
+        window.location = '/games';
+    }
 };
 
-function onReconnecting () {
-    sysMsg('trying to reconnect...');
+function onGameReady (value) {
+    $('#imReady').prop('checked', value);
 };
 
-function onRoster (roster) {
-    connectedPlayers = roster;
-    console.log('server: connectedPlayers');
-    console.log(connectedPlayers);
+function onGameRoster (roster) {
+
+    console.log('server: roster ->');
+    console.log(roster);
 
     $("#PlayersList").replaceWith(function () {
-        var updatedPlayersList = '<div id="PlayersList"><table>';
-        updatedPlayersList += '<tr><th>Player No.</th><th>Handle</th></tr>';
+
+        var pieces,
+            updatedPlayersList = '<div id="PlayersList"><table>' +
+                '<tr><th>Seat</th><th>Handle</th><th>Ready</th></tr>';
 
         for (var playerNo in roster) {
 
-            updatedPlayersList += '<tr><td>' + (playerNo) + '</td><td>' + roster[playerNo] + '</td></tr>\n';
+            pieces = [
+                playerNo, 
+                roster[playerNo].displayName, 
+                (roster[playerNo].ready === true) ? '&#10004;' : '&nbsp;'];
+
+            updatedPlayersList += '<tr><td>' + pieces.join('</td><td>') + '</td></tr>\n';
+
         };
 
         updatedPlayersList += '</table></div>';
+
+        console.log(updatedPlayersList);
+
         return updatedPlayersList;
     });
 };
 
-function onStartGame () {
-    var msg = 'server: game starting NOW!';
+function onGameStart () {
+    var msg = 'server: game starting NOW!',
+        newLocation;
+
     console.log(msg);
     sysMsg(msg);
-    window.location = gameUrl() + '/play';
+
+    newLocation = gameUrl() + '/play';
+
+    console.log('gameUrl(): ', newLocation);
+
+    window.location = newLocation;
 };
 
-function onStarting (value) {
-    var seconds,
-        startTicker;
+function onGameStarting (value) {
+
+    var msg,
+        seconds;
 
     if (value) {
+
+        $('#startGame').prop('disabled', true);
+
         seconds = value/1000;
         startTicker = setInterval(function () {
-            var msg = 'server: game starting in ' + seconds + ' seconds...';
 
-            console.log(msg);
-            sysMsg(msg);
+            if (seconds > 0) {
+                msg = 'game starting in ' + seconds + ' seconds...';
 
-            seconds -=1;
+                console.log(msg);
+                sysMsg(msg);
+
+                seconds -=1;
+                
+            } else {
+                clearInterval(startTicker);
+            }
 
         }, 1000);
         
     } else {
-        console.log('server: start of game postponed!');
         clearInterval(startTicker);
+
+        msg = 'someone isn\'t ready! Start of game postponed!';
+
+        console.log(msg);
+        sysMsg(msg);
+
     }
 
 };
 
-function sysMsg (msg) {
-    chat_addToLog('SYSTEM', msg);
+function onGameSysMsg (msg) {
+    sysMsg(msg);
 };
+
