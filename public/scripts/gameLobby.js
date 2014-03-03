@@ -190,11 +190,19 @@ function onGameChat (displayName, msg) {
 
 function onGameConfig (option, value) {
 
-    var element;
+    var element,
+        min;
 
     console.log('server: %s -> %s', option, value);
 
-    $('input#' + option)[0].value = value;
+    $('#' + option)[0].value = value;
+
+    if (option === 'maxPlayers') {
+
+        min = (value > 2 && value <= 8) ? value : 2;
+        
+        $('#' + option)[0].prop('min', min);
+    }
 
     console.log('server: configuration updated');
 
@@ -278,14 +286,17 @@ function onGameStart () {
     window.location = newLocation;
 };
 
-function onGameStarting (value) {
+function onGameStarting (value, player) {
 
     var msg,
         seconds;
 
     if (value) {
 
-        $('#startGame').prop('disabled', true);
+        $('#startGame')
+            .prop('disabled', true)
+            .text('Starting...');
+
 
         seconds = value/1000;
         startTicker = setInterval(function () {
@@ -307,7 +318,9 @@ function onGameStarting (value) {
     } else {
         clearInterval(startTicker);
 
-        msg = 'someone isn\'t ready! Start of game postponed!';
+        msg = player + ' isn\'t ready! Start of game postponed!';
+
+        $('#startGame').text('Start the game!')
 
         console.log(msg);
         sysMsg(msg);
