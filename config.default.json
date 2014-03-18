@@ -1,6 +1,12 @@
 {
     "debug": false,
     "cacheUpdateInterval": 300000, 
+    "cluster": {
+        "exec": "worker.js",
+        "args": [],
+        "silent": false,
+        "workers": 1
+    },
     "host": "localhost", 
     "https": true,
     "cert": ".ssl/adminion-cert.pem",
@@ -10,7 +16,7 @@
     "serverName": "Adminion",
     "session": {
         "cookie": { "maxAge" : 18000000 }, 
+        "key": "adminion.sid",
         "secret": "$4$1M1KLxrb$h0ynxcy1IZ0wQltG+iqdYZCmcfg$"
-    },
-    "workers": 1
+    }
 }

@@ -1,4 +1,5 @@
 
+console.log('needle');
 var cluster = require('cluster');
 
 if (cluster.isMaster) {
@@ -13,14 +14,18 @@ global.debug = require('./lib/debug')();
 
 debug.emit('val', 'AdminionServer', AdminionServer);
 
-AdminionServer.on('error', AdminionServer.kill);
+var server = AdminionServer();
 
-AdminionServer.on('ready', function ready () {
-        var mem = process.memoryUsage();
+debug.emit('val', 'server', server);
+
+server.on('error', server.kill);
+
+server.on('ready', function ready () {
+    var mem = process.memoryUsage();
 
     if (cluster.isMaster) {
 
-        console.log('Adminion Game Server ready --> ', AdminionServer.env.url());
+        console.log('Adminion Game Server ready --> ', server.env.url());
 
         debug.emit('msg', util.format('total memory usage: %d MB', mem.heapTotal / utils.MB));
 
@@ -34,4 +39,4 @@ AdminionServer.on('ready', function ready () {
     return true;
 });
 
-AdminionServer.start();
+server.start();

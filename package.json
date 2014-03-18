@@ -1,34 +1,35 @@
 {
-  "name": "adminion",
-  "description": "Administrate your deck.", 
-  "version": "0.6.0",
-	"repository": {
-		"type": "git", 
-		"url": "git://github.com/adminion/adminion.git"
-	},
-	"authors": [
-		"Jeff Harris <techjeffharris@gmail.com> (http://intangiblehost.net)",
-		"Zane DeSantis <linkinlogs4life@gmail.com>"
-	],
-	"license": {
-		"type": 	"BSD",
-		"file:": 	"LICENSE"
-	},
-	"dependencies": {
-		"connect-flash": 			"*",
-		"connect-mongo": 			"*",
-		"express": 					"*",
-		"jade": 					"*",
-		"mongoose":					"*",
-		"passport":					"*",
-		"passport-local":			"*",
-		"passport-local-mongoose":	"*",
-		"passport.socketio": 		"*",
-		"socket.io": 				"*",
+    "name": "adminion",
+    "description": "Administrate your deck.", 
+    "version": "0.6.0",
+    "repository": {
+    	"type": "git", 
+    	"url": "git://github.com/adminion/adminion.git"
+    },
+    "authors": [
+    	"Jeff Harris <techjeffharris@gmail.com> (http://intangiblehost.net)",
+    	"Zane DeSantis <linkinlogs4life@gmail.com>"
+    ],
+    "license": {
+    	"type": 	"BSD",
+    	"file:": 	"LICENSE"
+    },
+    "dependencies": {
+        "cluster-fuck":             "*",
+    	"connect-flash": 			"*",
+    	"connect-mongo": 			"*",
+    	"express": 					"*",
+    	"jade": 					"*",
+    	"mongoose":					"*",
+    	"passport":					"*",
+    	"passport-local":			"*",
+    	"passport-local-mongoose":	"*",
+    	"passport.socketio": 		"*",
+    	"socket.io": 				"*",
         "voice.js":                 "*"
-	},
-  "scripts": {
-    "start": "./adminion.sh",
-    "install": "setup/admin"
-  }
+    },
+    "scripts": {
+        "start": "./adminion.sh",
+        "install": "setup/setup.sh"
+    }
 }

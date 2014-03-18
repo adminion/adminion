@@ -1,7 +1,9 @@
 {
-	"workers" : 1,
+	"cluster" : { 
+        "workers" : 1 
+    },
 	"debug" : {
         "marker" : true,
-        "printStack" : true
+        "printStack" : false
     }
 }
