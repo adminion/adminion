@@ -36,13 +36,7 @@ apt-get update && apt-get install openssl nodejs npm mongodb
 # install node module dependencies
 npm install
 
-# preparing to create a symbolic link to the current install within /bin
-cwd=`pwd`
-foo="$cwd/adminion.sh"
-
-ln -s $foo /bin/adminion
-
 echo "That's it! If all went well, you should be able to start your server!
 
-# adminion.sh
+# adminion
 "

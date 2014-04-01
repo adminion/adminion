@@ -8,4 +8,4 @@ fi
 
 echo "Starting Adminion game server..."
 
-reset && node ./master.js
+reset && node ./cluster.js

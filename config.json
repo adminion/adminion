@@ -1,6 +1,7 @@
 {
 	"cluster" : { 
-        "workers" : 1 
+        "silent" : false,
+        "workers" : 1
     },
 	"debug" : {
         "marker" : true,

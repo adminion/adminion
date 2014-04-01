@@ -1,6 +1,7 @@
 
 
-# v0.6.0
+# v0.6
+## v0.6.0
 * each module now exports a factory function which is passed the tools it requires, then return server
 * factory functions should only only be used to define variables and functions which use those vars
 * all variables in modules should be private and getters/setters defined for those that need to be configurable
@@ -16,14 +17,15 @@
 * and much more i'm sure since I haven't been keeping track... 
 * more or less ready to converge with zane
 
-# v0.4.1
+# v0.4
+## v0.4.1
 * the core logic behind `lib/roster.js` has been incorporated into `models/game.js`
 * now when a player enters the lobby, they are added to game.players and the document is saved
 * the socket is also added to and removed from `sockets[gameID][playerID]` when entering and exiting lobby
 * `Player` model is now `Person` and creates `person` instead of `player`
 * routes to `/player*` should now be accessed using `/people*`
 
-# v0.4.0
+## v0.4.0
 * `lib/adminion.js` is now `lib/gameServer.js` and has had a MAJOR organizational overhaul.
 * integrated socket.io
 * when client connects to the lobby, they join the room whose name is the gameId
@@ -31,6 +33,7 @@
 * when player enters the game lobby, we pass the socket to roster who checks for funny business and adds them if they're legit.
 * working to get a standard error/500 procedure
 
+# v0.3
 ## v0.3.2
 * added breadcrumb support to `view/layout.jade`
 * updated `GET /games` to properly display all games by their unique name
@@ -61,7 +64,7 @@
 * have zane play with the game server to find and report bugs while developing
 * create script to ensure passwords match when registering
 
-# v0.3.0
+## v0.3.0
 * adminion is now an `EventEmitter`.
 * db library is now an `EventEmitter`
 * sessions work!
@@ -93,8 +96,7 @@
   * `/cards/:card/update`
   * `/cards/:card/delete`
   
-
-
+# v0.2
 ## v0.2.4
 * overhauled `README.md`, now its actually a nice readme 
 * zane uploaded graphical card selector

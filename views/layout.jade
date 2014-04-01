@@ -7,6 +7,7 @@ html
             block jquery
                 script(src='/scripts/jquery.js')
                 script(scr='/scripts/browserified.js')
+
             block socketio
             block accounts
     body
@@ -32,7 +33,7 @@ html
                                             a(href='/') #{env.serverName}
                                         else
                                             if (!!crumb)
-                                                &nbsp;/&nbsp;
+                                                | &nbsp;/&nbsp;
                                                 - var url = ''
                                                 - for (var i=1; i<=id   ; i++)
                                                     - url += '/' + breadcrumbs[i]
@@ -43,16 +44,16 @@ html
                                 if (request.session.passport.user)
                                     span Logged on as 
                                         a(href='/accounts/' + request.session.passport.user) #{request.session.passport.user}
-                                        &nbsp;[&nbsp;
+                                        | &nbsp;[&nbsp;
                                         a(href='/logoff') Logoff
-                                        &nbsp;]&nbsp;
+                                        | &nbsp;]&nbsp;
                                 else
                                     span Not logged on. 
-                                        [&nbsp; 
+                                        | [&nbsp; 
                                         a(href='/logon') Logon 
-                                        &nbsp;|&nbsp;
+                                        | &nbsp;|&nbsp;
                                         a(href='/accounts/create') Sign-up
-                                        &nbsp;]
+                                        | &nbsp;]
                         block menu
                             #menu
                                 if (links && request.session.passport.user)
