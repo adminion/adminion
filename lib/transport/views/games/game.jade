@@ -6,9 +6,9 @@ block content
     #content
         h2 #{request.game.playerOne.displayName}'s Game 
             - if (request.game.status === 'lobby')
-                &nbsp;[&nbsp;
+                | &nbsp;[&nbsp;
                 a(href='/games/' + request.game['_id'] + '/lobby') Join
-                &nbsp;]
+                | &nbsp;]
         table
             tbody
                 - var names = ['status', 'start', 'config']
@@ -25,7 +25,7 @@ block content
                                                 tr
                                                     td #{name2}:
                                                     td=value2
-                            else 
+                            - else 
                                 td=value
                 - if (request.game.status === 'lobby')
                     tr

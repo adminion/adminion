@@ -24,7 +24,7 @@ html
                                 // breadcrumbs leave a trail as players navigate the server
                                 h3
                                     - // remove everything after and including the '?'
-                                    - var breadcrumbs = request.url.replace(/\?.*$/, '')
+                                    - var breadcrumbs = request.originalUrl.replace(/\?.*$/, '')
                                     - // split the string by '/' into an array
                                     - breadcrumbs = breadcrumbs.split('/')
                                     - // for each item in the array
@@ -52,7 +52,7 @@ html
                                         | [&nbsp; 
                                         a(href='/logon') Logon 
                                         | &nbsp;|&nbsp;
-                                        a(href='/accounts/create') Sign-up
+                                        a(href='/register') Register
                                         | &nbsp;]
                         block menu
                             #menu

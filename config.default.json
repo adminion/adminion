@@ -2,10 +2,14 @@
     "debug": false,
     "cacheUpdateInterval": 300000, 
     "cluster": {
-        "exec": "worker.js",
         "args": [],
+        "exec": "server.js",
+        "repl": {
+            "name": "Adminion",
+            "socket": "adminion.sock"
+        },
         "silent": false,
-        "workers": 1
+        "shutdownTimeout": 10000
     },
     "host": "localhost", 
     "https": true,

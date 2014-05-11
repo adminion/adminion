@@ -1,0 +1,9 @@
+extends ../errors/layout
+
+block content
+    h2 404 - account not found
+    p Sorry, but we are unable to find a account by this email
+    blockquote
+        h4=request.params.email
+    p 
+        a(href=request.originalUrl) Try again?

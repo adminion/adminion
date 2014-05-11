@@ -16,17 +16,25 @@
         "url": "git://github.com/adminion/adminion.git"
     },
     "dependencies": {
-        "cluster-fuck":             "*",
+        "body-parser":              "*", 
+        "cookie-parser":            "*",
         "connect-flash":            "*",
         "connect-mongo":            "*",
-        "express":                  "*",
+        "express":                  "4.x",
+        "express-session":          "*",
         "jade":                     "*",
+        "method-override":          "*",
         "mongoose":                 "*",
+        "morgan":                   "*",
         "passport":                 "*",
         "passport-local":           "*",
         "passport-local-mongoose":  "*",
         "passport.socketio":        "*",
-        "socket.io":                "*",
+        "prepl":                    "*",
+        "serve-static":             "*",
+        "socket.io":                "1.x",
+        "static-favicon":           "*",
+        "techjeffharris-utils":     "*",
         "voice.js":                 "*"
     }
 }

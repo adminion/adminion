@@ -5,11 +5,11 @@ block menu
 block content
 	#content
 		h2 Logon
-			&nbsp;[&nbsp;
+			| &nbsp;[&nbsp;
 			a(href='/accounts/create') Create Account
-			&nbsp;]&nbsp;
-		if (err)
-			p.err=err
+			| &nbsp;]&nbsp;
+		if (request.cookies.err)
+			p.err=request.cookies.err
 		- var action = '/logon'
 		- var redir = request.cookies.redir || '/'
 		form(action=action, method='POST')

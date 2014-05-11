@@ -1,4 +1,4 @@
-extends layout
+extends ../errors/layout
 
 block content
     h2 404 - game not found
@@ -6,4 +6,4 @@ block content
     blockquote
         h4=request.params.gameID
     p 
-        a(href=request.body) Try again?
+        a(href=request.originalUrl) Try again?

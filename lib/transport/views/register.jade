@@ -2,12 +2,12 @@ extends layout
 
 block content
 	#content
-		h2 Create Account			
+		h2 Register			
 
 		if (err)
 			p.err=err
 
-		form(action='/accounts', method='POST')
+		form(action='/register', method='POST')
 			input(type='hidden', name='redir', value=redir)
 			table
 				tbody
@@ -29,6 +29,6 @@ block content
 						td: input(type='password', name='verifyPassword', id='verifyPassword')
 					tr
 						td: label(for='displayName') Display Name: 
-						td: input(type='text', name='displayName', id='displayName')		
+						td: input(type='text', name='displayName', id='displayName')
 			p
-				input(type='submit', value='Create')
+				input(type='submit', value='Register')

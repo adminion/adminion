@@ -9,9 +9,9 @@ block content
     #content
         h2 #{request.game.playerOne.displayName}'s Game 
             if (request.game.playerOne['_id'].toString() === request.user['_id'].toString())
-                &nbsp;[&nbsp;
+                | &nbsp;[&nbsp;
                 button(id="killGame", name="killGame", value="true") Cancel
-                &nbsp;]&nbsp;
+                | &nbsp;]&nbsp;
         h3 Game Config:
         #Config
             table
