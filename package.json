@@ -32,7 +32,7 @@
         "passport.socketio":        "*",
         "prepl":                    "*",
         "serve-static":             "*",
-        "socket.io":                "1.x",
+        "socket.io":                "1.0.x",
         "static-favicon":           "*",
         "techjeffharris-utils":     "*",
         "voice.js":                 "*"

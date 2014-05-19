@@ -26,15 +26,29 @@ case $1 in
 		rm /bin/adminion
 		exit
 		;;
+	"")
+		;;
 	*)
 		echo "$0: error: unrecognized argument '$1'"
+		;;
 esac
 
 # install ubuntu package dependencies
-apt-get update && apt-get install openssl nodejs npm mongodb 
+apt-get update
+apt-get install -y openssl nodejs npm mongodb
 
 # install node module dependencies
 npm install
+npm update
+
+here=`pwd`
+
+if [[ ! -e "$here/adminion.sh" ]]
+then
+	ln -s $here/adminion.sh /usr/local/bin/adminion
+else
+	echo "$here/adminion.sh exists!"
+fi
 
 echo "That's it! If all went well, you should be able to start your server!
 
