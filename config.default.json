@@ -15,7 +15,12 @@
     "https": true,
     "cert": ".ssl/adminion-cert.pem",
     "key": ".ssl/adminion-key.pem",
-    "mongodb": "mongodb://localhost/adminion",
+    "mongodb": {
+        "uri": "mongodb://localhost/adminion",
+        "options": {
+            "auto_reconnect": true
+        }
+    },
     "port": "1337",
     "serverName": "Adminion",
     "session": {

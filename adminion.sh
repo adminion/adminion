@@ -8,4 +8,4 @@ fi
 
 echo "Starting Adminion game server..."
 
-reset && nodejs server.js
+DEBUG=socket.io:* nodejs server.js

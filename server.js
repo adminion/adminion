@@ -24,8 +24,6 @@ process.on('SIGINT', function () {
 
 // debug.emit('val', 'config', config)
     
-console.log('Starting Adminion game server...');
-
 debug.emit('val', 'Adminion', Adminion);
 
 server = new Adminion();
@@ -38,9 +36,9 @@ server.on('error', server.kill);
 
 server.on('ready', function ready () {
 
-    console.log('Adminion game server started: %s', env.url())
-    
     debug.emit('msg', util.format('total memory usage: %d MB', process.memoryUsage().rss / utils.MB ));
+    
+    console.log('\nAdminion game server started: %s', env.url())
     
     return true;
 });
