@@ -1,5 +1,6 @@
 
 var Adminion = require('./lib/'),
+    cli,
     config = require('./lib/config'),
     env = require('./lib/env'),
     prepl  = require('prepl'),
@@ -24,7 +25,7 @@ process.on('SIGINT', function () {
 
 // debug.emit('val', 'config', config)
     
-debug.emit('val', 'Adminion', Adminion);
+// debug.emit('val', 'Adminion', Adminion);
 
 server = new Adminion();
 
@@ -47,4 +48,25 @@ server.on('stopped', function stopped () {
     process.exit();
 });
 
-server.start();
+cli = new prepl({
+    name: env.serverName,
+    socket: env.serverName + '.sock'
+});
+
+// debug.emit('val', 'cli', cli);
+
+cli.register({
+    name: 'update',
+    help: 'Update the server\'s cached memory',
+    action: function (socket) {
+        server.update(function () {
+            socket.write('cache updated')
+        })
+    }
+})
+
+cli.on('ready', function() {
+    server.start();
+});
+
+cli.start();

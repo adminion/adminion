@@ -1,7 +1,7 @@
 {
 	"debug" : {
         "marker" : true,
-        "printStack" : true,
+        "printStack" : false,
         "stackTraceLimit": 100
     }
 }
