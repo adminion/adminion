@@ -1,5 +1,5 @@
 # we don't want git to track what modules we use.  we do that in package.json
-node_modules/*
+node_modules/
 # stop git from considering whether or not i want to commit those darn gedit swap files
 *~
 # we don't want git keeping track of ssl keys and certs!
@@ -8,5 +8,3 @@ node_modules/*
 *.log
 # we don't want git trying to any .DS_Store files
 .DS_Store
-tokens.json
-setup/harmony.js
