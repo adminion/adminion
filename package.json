@@ -1,40 +1,43 @@
 {
-    "name": "adminion",
-    "description": "Administrate your deck.", 
-    "version": "0.6.0",
-    "authors": [
-        "Jeff Harris <techjeffharris@gmail.com> (http://intangiblehost.net)",
-        "Zane DeSantis <linkinlogs4life@gmail.com>"
-    ],
-    "license": {
-        "type":     "BSD",
-        "file:":    "LICENSE"
-    },
-    "bin": "./adminion.js",
-    "repository": {
-        "type": "git", 
-        "url": "git://github.com/adminion/adminion.git"
-    },
-    "dependencies": {
-        "body-parser":              "*", 
-        "cookie-parser":            "*",
-        "connect-flash":            "*",
-        "connect-mongo":            "*",
-        "express":                  "4.x",
-        "express-session":          "*",
-        "jade":                     "*",
-        "method-override":          "*",
-        "mongoose":                 "*",
-        "morgan":                   "*",
-        "passport":                 "*",
-        "passport-local":           "*",
-        "passport-local-mongoose":  "*",
-        "passport.socketio":        "*",
-        "prepl":                    "*",
-        "serve-static":             "*",
-        "socket.io":                "1.0.x",
-        "static-favicon":           "*",
-        "techjeffharris-utils":     "*",
-        "voice.js":                 "*"
-    }
+  "name": "adminion",
+  "description": "Administrate your deck.",
+  "version": "0.6.0",
+  "authors": [
+    "Jeff Harris <techjeffharris@gmail.com> (http://intangiblehost.net)",
+    "Zane DeSantis <linkinlogs4life@gmail.com>"
+  ],
+  "license": {
+    "type": "BSD",
+    "file:": "LICENSE"
+  },
+  "bin": "./adminion.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/adminion/adminion.git"
+  },
+  "dependencies": {
+    "body-parser": "*",
+    "cookie-parser": "*",
+    "connect-flash": "*",
+    "connect-mongo": "*",
+    "debug": "*",
+    "express": "4.x",
+    "express-session": "*",
+    "jade": "*",
+    "method-override": "*",
+    "mongoose": "*",
+    "mongoose-auto-increment": "*",
+    "morgan": "*",
+    "passport": "*",
+    "passport-local": "*",
+    "passport-local-mongoose": "*",
+    "passport.socketio": "*",
+    "prepl": "*",
+    "serve-static": "*",
+    "socket.io": "1.0.x",
+    "static-favicon": "*",
+    "techjeffharris-utils": "*",
+    "voice.js": "*",
+    "mongoose-auto-increment": "~3.0.2"
+  }
 }

@@ -11,8 +11,14 @@ fi
 # if argument 1...
 case $1 in 
 	-g)
+		gen $2
+		;;
 	--generate)
+		gen $2
+		;;
 	-s)
+		gen $2
+		;;
 	--ssl)
 		gen $2	
 		;;

@@ -2,14 +2,17 @@
 var Adminion = require('./lib/'),
     cli,
     config = require('./lib/config'),
+
+    Debug = require('debug'),
+    debug = Debug('adminion'),
+
+
     env = require('./lib/env'),
     prepl  = require('prepl'),
     util = require('util'),
     utils = require('./lib/utils'),
     interrupt,
     server;
-
-global.debug = require('./lib/debug')(config.debug);
 
 process.on('SIGINT', function () {
     if (interrupt) {
@@ -22,22 +25,18 @@ process.on('SIGINT', function () {
     }
         
 });
-
-// debug.emit('val', 'config', config)
     
-// debug.emit('val', 'Adminion', Adminion);
-
 server = new Adminion();
 
 server.setMaxListeners(0);
 
-// debug.emit('val', 'server', server);
+debug('server', server);
 
 server.on('error', server.kill);
 
 server.on('ready', function ready () {
 
-    debug.emit('msg', util.format('total memory usage: %d MB', process.memoryUsage().rss / utils.MB ));
+    debug(util.format('total memory usage: %d MB', process.memoryUsage().rss / utils.MB ));
     
     console.log('\nAdminion game server started: %s', env.url())
     
@@ -53,7 +52,7 @@ cli = new prepl({
     socket: env.serverName + '.sock'
 });
 
-// debug.emit('val', 'cli', cli);
+debug('cli', cli);
 
 cli.register({
     name: 'update',
@@ -66,7 +65,12 @@ cli.register({
 })
 
 cli.on('ready', function() {
+    debug('cli ready')
     server.start();
 });
+
+cli.on('starting', function () {
+    debug('cli starting');
+})
 
 cli.start();

@@ -1,4 +1,15 @@
-
+# v0.7
+## v0.7.0
+* now using [visionmedia/debug](https://github.com/visionmedia/debug) rather than reinventing the wheel.
+* server now loads two main modules: data and transport.
+  - data module keeps application cache (including sockets) in memory and persists long-term storage to the the database.
+  - transport:http now uses express v4.0
+    - split routes into separate router files
+    - `public/`, `routers/`, and `views/` are now located in `lib/transport/http`
+  - transport:realtime now uses socket.io v1.0
+    - updated [passport.socketio](https://github.com/jfromaniello/passport.socketio) to add backward-compatible support for socket.io v1.0
+    - now using separate `Namespace`s for `/`, `/chat`, and `/games`
+    - `Namepsace`s are stored in separate files for clarity in `lib/transport/realtime/`
 
 # v0.6
 ## v0.6.0

@@ -1,16 +1,5 @@
 {
-    "debug": false,
     "cacheUpdateInterval": 300000, 
-    "cluster": {
-        "args": [],
-        "exec": "server.js",
-        "repl": {
-            "name": "Adminion",
-            "socket": "adminion.sock"
-        },
-        "silent": false,
-        "shutdownTimeout": 10000
-    },
     "host": "localhost", 
     "https": true,
     "cert": ".ssl/adminion-cert.pem",
